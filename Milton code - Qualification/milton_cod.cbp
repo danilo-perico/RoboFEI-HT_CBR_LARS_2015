@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="milton_cod" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/milton_cod" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/milton_cod" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add directory="/usr/local/include/opencv" />
+					<Add directory="/usr/local/include/opencv2" />
+					<Add directory="/home/fei/Dropbox/Codigos/DXL_SDK_LINUX_v1_01/include" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="/usr/local/lib/libopencv_calib3d.so" />
+					<Add library="/usr/local/lib/libopencv_contrib.so" />
+					<Add library="/usr/local/lib/libopencv_core.so" />
+					<Add library="/usr/local/lib/libopencv_features2d.so" />
+					<Add library="/usr/local/lib/libopencv_flann.so" />
+					<Add library="/usr/local/lib/libopencv_gpu.so" />
+					<Add library="/usr/local/lib/libopencv_highgui.so" />
+					<Add library="/usr/local/lib/libopencv_imgproc.so" />
+					<Add library="/usr/local/lib/libopencv_legacy.so" />
+					<Add library="/usr/local/lib/libopencv_ml.so" />
+					<Add library="/usr/local/lib/libopencv_nonfree.so" />
+					<Add library="/usr/local/lib/libopencv_objdetect.so" />
+					<Add library="/usr/local/lib/libopencv_photo.so" />
+					<Add library="/usr/local/lib/libopencv_stitching.so" />
+					<Add library="/usr/local/lib/libopencv_ts.so" />
+					<Add library="/usr/local/lib/libopencv_video.so" />
+					<Add library="/usr/local/lib/libopencv_videostab.so" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="DXL_SDK_LINUX_v1_01/src/dxl_hal.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="DXL_SDK_LINUX_v1_01/src/dynamixel.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="andar.cpp" />
+		<Unit filename="andar_curto.cpp" />
+		<Unit filename="andar_de_lado.cpp" />
+		<Unit filename="andar_rapido.cpp" />
+		<Unit filename="chutepedireito.cpp" />
+		<Unit filename="chutepedireito_fitPC.cpp" />
+		<Unit filename="distancia_bola.cpp" />
+		<Unit filename="espera_mov.cpp" />
+		<Unit filename="inclinar.cpp" />
+		<Unit filename="levanta_abaixa_perna_dir.cpp" />
+		<Unit filename="levanta_abaixa_perna_esq.cpp" />
+		<Unit filename="levantar_de_barriga.cpp" />
+		<Unit filename="levantar_de_costas.cpp" />
+		<Unit filename="levantar_de_costas_fitPC.cpp" />
+		<Unit filename="main.cpp" />
+		<Unit filename="roboereto.cpp" />
+		<Unit filename="travar_servos.cpp" />
+		<Unit filename="virar.cpp" />
+		<Unit filename="visao.cpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

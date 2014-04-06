@@ -1,0 +1,1012 @@
+# depslib dependency file v1.0
+1390829224 source:/home/humanoidfei/Dropbox/Codigos/milton_cod/DXL_SDK_LINUX_v1_01/src/dxl_hal.c
+	<stdio.h>
+	<stdio.h>
+	<string.h>
+	<unistd.h>
+	<fcntl.h>
+	<termios.h>
+	<linux/serial.h>
+	<sys/ioctl.h>
+	<sys/time.h>
+	"dxl_hal.h"
+
+1265977698 /home/humanoidfei/Dropbox/Codigos/milton_cod/DXL_SDK_LINUX_v1_01/src/dxl_hal.h
+
+1390225349 source:/home/humanoidfei/Dropbox/Codigos/milton_cod/DXL_SDK_LINUX_v1_01/src/dynamixel.c
+	"dxl_hal.h"
+	"dynamixel.h"
+
+1391525686 source:/home/humanoidfei/Dropbox/Codigos/milton_cod/funcoes.c
+	<dynamixel.h>
+
+1391520200 source:/home/humanoidfei/Dropbox/Codigos/milton_cod/main.c
+	<stdio.h>
+	<termio.h>
+	<unistd.h>
+	<dynamixel.h>
+	<time.h>
+	<sys/resource.h>
+	<sys/types.h>
+	<dirent.h>
+	<stdlib.h>
+	<termios.h>
+
+1390829224 source:/home/fei/Dropbox/Codigos/milton_cod/DXL_SDK_LINUX_v1_01/src/dxl_hal.c
+	<stdio.h>
+	<stdio.h>
+	<string.h>
+	<unistd.h>
+	<fcntl.h>
+	<termios.h>
+	<linux/serial.h>
+	<sys/ioctl.h>
+	<sys/time.h>
+	"dxl_hal.h"
+
+1265977698 /home/fei/Dropbox/Codigos/milton_cod/DXL_SDK_LINUX_v1_01/src/dxl_hal.h
+
+1392212766 source:/home/fei/Dropbox/Codigos/milton_cod/DXL_SDK_LINUX_v1_01/src/dynamixel.c
+	"dxl_hal.h"
+	"dynamixel.h"
+
+1392212766 source:/home/fei/Dropbox/Codigos/milton_cod/main.c
+	<stdio.h>
+	<termio.h>
+	<unistd.h>
+	<dynamixel.h>
+	<time.h>
+	<sys/resource.h>
+	<sys/types.h>
+	<dirent.h>
+	<stdlib.h>
+	<termios.h>
+
+1392127429 source:/home/fei/Dropbox/Codigos/milton_cod/funcoes.c
+	<dynamixel.h>
+
+1392139538 source:/home/fei/Dropbox/Codigos/milton_cod/virar.c
+	<dynamixel.h>
+
+1390829224 source:/home/fei/Documents/milton_cod 12-02-2014/DXL_SDK_LINUX_v1_01/src/dxl_hal.c
+	<stdio.h>
+	<stdio.h>
+	<string.h>
+	<unistd.h>
+	<fcntl.h>
+	<termios.h>
+	<linux/serial.h>
+	<sys/ioctl.h>
+	<sys/time.h>
+	"dxl_hal.h"
+
+1265977698 /home/fei/Documents/milton_cod 12-02-2014/DXL_SDK_LINUX_v1_01/src/dxl_hal.h
+
+1392233856 source:/home/fei/Documents/milton_cod 12-02-2014/DXL_SDK_LINUX_v1_01/src/dynamixel.c
+	"dxl_hal.h"
+	"dynamixel.h"
+
+1392229605 source:/home/fei/Documents/milton_cod 12-02-2014/chutepedireito_fitPC.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392311048 source:/home/fei/Documents/milton_cod 12-02-2014/andar.cpp
+	<dynamixel.h>
+
+1392227789 source:/home/fei/Documents/milton_cod 12-02-2014/espera_mov.cpp
+	<dynamixel.h>
+	<unistd.h>
+
+1392229696 source:/home/fei/Documents/milton_cod 12-02-2014/inclinar.cpp
+	<dynamixel.h>
+	<unistd.h>
+
+1392229401 source:/home/fei/Documents/milton_cod 12-02-2014/levanta_abaixa_perna_dir.cpp
+	<dynamixel.h>
+
+1392229404 source:/home/fei/Documents/milton_cod 12-02-2014/levanta_abaixa_perna_esq.cpp
+	<dynamixel.h>
+
+1392317926 source:/home/fei/Documents/milton_cod 12-02-2014/levantar_de_barriga.cpp
+	<dynamixel.h>
+
+1392318309 source:/home/fei/Documents/milton_cod 12-02-2014/main.cpp
+	<stdio.h>
+	<termio.h>
+	<unistd.h>
+	<dynamixel.h>
+	<sys/resource.h>
+	<sys/types.h>
+	<dirent.h>
+	<stdlib.h>
+	<termios.h>
+	<string.h>
+	<cvaux.h>
+	<highgui.h>
+	<cxcore.h>
+	<time.h>
+	<assert.h>
+	<float.h>
+	<limits.h>
+	<math.h>
+	<ctype.h>
+	<iostream>
+
+1392227909 source:/home/fei/Documents/milton_cod 12-02-2014/roboereto.cpp
+	<dynamixel.h>
+
+1392227789 source:/home/fei/Documents/milton_cod 12-02-2014/travar_servos.cpp
+	<dynamixel.h>
+
+1392230109 source:/home/fei/Documents/milton_cod 12-02-2014/virar.cpp
+	<dynamixel.h>
+	<math.h>
+	<cmath>
+
+1392229392 source:/home/fei/Documents/milton_cod 12-02-2014/levantar_de_costas_fitPC.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392303214 source:/home/fei/Documents/milton_cod 12-02-2014/visao.cpp
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<cvaux.h>
+	<highgui.h>
+	<cxcore.h>
+	<time.h>
+	<assert.h>
+	<float.h>
+	<limits.h>
+	<math.h>
+	<ctype.h>
+	<iostream>
+	<string>
+	<dynamixel.h>
+
+1392310267 source:/home/fei/Documents/milton_cod 12-02-2014/distancia_bola.cpp
+	<dynamixel.h>
+	<math.h>
+	<stdio.h>
+
+1392317720 source:/home/fei/Documents/milton_cod 12-02-2014/levantar_de_costas.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392318949 source:/home/fei/Documents/milton_cod 12-02-2014/chutepedireito.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1390829224 source:/home/fei/Documentos/milton_cod 13-02-14/DXL_SDK_LINUX_v1_01/src/dxl_hal.c
+	<stdio.h>
+	<stdio.h>
+	<string.h>
+	<unistd.h>
+	<fcntl.h>
+	<termios.h>
+	<linux/serial.h>
+	<sys/ioctl.h>
+	<sys/time.h>
+	"dxl_hal.h"
+
+1392233856 source:/home/fei/Documentos/milton_cod 13-02-14/DXL_SDK_LINUX_v1_01/src/dynamixel.c
+	"dxl_hal.h"
+	"dynamixel.h"
+
+1392390540 source:/home/fei/Documentos/milton_cod 13-02-14/andar.cpp
+	<dynamixel.h>
+
+1392323785 source:/home/fei/Documentos/milton_cod 13-02-14/chutepedireito.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392229605 source:/home/fei/Documentos/milton_cod 13-02-14/chutepedireito_fitPC.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392379927 source:/home/fei/Documentos/milton_cod 13-02-14/distancia_bola.cpp
+	<dynamixel.h>
+	<math.h>
+	<stdio.h>
+
+1392227789 source:/home/fei/Documentos/milton_cod 13-02-14/espera_mov.cpp
+	<dynamixel.h>
+	<unistd.h>
+
+1392229696 source:/home/fei/Documentos/milton_cod 13-02-14/inclinar.cpp
+	<dynamixel.h>
+	<unistd.h>
+
+1392229401 source:/home/fei/Documentos/milton_cod 13-02-14/levanta_abaixa_perna_dir.cpp
+	<dynamixel.h>
+
+1392323485 source:/home/fei/Documentos/milton_cod 13-02-14/levanta_abaixa_perna_esq.cpp
+	<dynamixel.h>
+
+1392317926 source:/home/fei/Documentos/milton_cod 13-02-14/levantar_de_barriga.cpp
+	<dynamixel.h>
+
+1392317720 source:/home/fei/Documentos/milton_cod 13-02-14/levantar_de_costas.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392229392 source:/home/fei/Documentos/milton_cod 13-02-14/levantar_de_costas_fitPC.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392387264 source:/home/fei/Documentos/milton_cod 13-02-14/main.cpp
+	<stdio.h>
+	<termio.h>
+	<unistd.h>
+	<dynamixel.h>
+	<sys/resource.h>
+	<sys/types.h>
+	<dirent.h>
+	<stdlib.h>
+	<termios.h>
+	<string.h>
+	<cvaux.h>
+	<highgui.h>
+	<cxcore.h>
+	<time.h>
+	<assert.h>
+	<float.h>
+	<limits.h>
+	<math.h>
+	<ctype.h>
+	<iostream>
+
+1392227909 source:/home/fei/Documentos/milton_cod 13-02-14/roboereto.cpp
+	<dynamixel.h>
+
+1392227789 source:/home/fei/Documentos/milton_cod 13-02-14/travar_servos.cpp
+	<dynamixel.h>
+
+1392379920 source:/home/fei/Documentos/milton_cod 13-02-14/virar.cpp
+	<dynamixel.h>
+	<math.h>
+	<cmath>
+
+1392378358 source:/home/fei/Documentos/milton_cod 13-02-14/visao.cpp
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<cvaux.h>
+	<highgui.h>
+	<cxcore.h>
+	<time.h>
+	<assert.h>
+	<float.h>
+	<limits.h>
+	<math.h>
+	<ctype.h>
+	<iostream>
+	<string>
+	<dynamixel.h>
+
+1392323203 /home/fei/Documentos/milton_cod 13-02-14/DXL_SDK_LINUX_v1_01/include/dynamixel.h
+
+1396548977 /home/fei/Dropbox/Codigos/DXL_SDK_LINUX_v1_01/include/dynamixel.h
+
+1343256930 /usr/local/include/opencv/cvaux.h
+	"opencv2/core/core_c.h"
+	"opencv2/core/core.hpp"
+	"opencv2/imgproc/imgproc_c.h"
+	"opencv2/imgproc/imgproc.hpp"
+	"opencv2/video/tracking.hpp"
+	"opencv2/video/background_segm.hpp"
+	"opencv2/features2d/features2d.hpp"
+	"opencv2/calib3d/calib3d.hpp"
+	"opencv2/objdetect/objdetect.hpp"
+	"opencv2/legacy/legacy.hpp"
+	"opencv2/legacy/compat.hpp"
+	"opencv2/legacy/blobtrack.hpp"
+	"opencv2/contrib/contrib.hpp"
+
+1343256930 /usr/local/include/opencv/highgui.h
+	"opencv2/core/core_c.h"
+	"opencv2/core/core.hpp"
+	"opencv2/highgui/highgui_c.h"
+	"opencv2/highgui/highgui.hpp"
+
+1350514538 /usr/local/include/opencv/cxcore.h
+	"opencv2/core/core_c.h"
+	"opencv2/core/core.hpp"
+
+1390829224 source:/home/fei/Documents/milton_cod 14-02-14/DXL_SDK_LINUX_v1_01/src/dxl_hal.c
+	<stdio.h>
+	<stdio.h>
+	<string.h>
+	<unistd.h>
+	<fcntl.h>
+	<termios.h>
+	<linux/serial.h>
+	<sys/ioctl.h>
+	<sys/time.h>
+	"dxl_hal.h"
+
+1392233856 source:/home/fei/Documents/milton_cod 14-02-14/DXL_SDK_LINUX_v1_01/src/dynamixel.c
+	"dxl_hal.h"
+	"dynamixel.h"
+
+1392418425 source:/home/fei/Documents/milton_cod 14-02-14/andar.cpp
+	<dynamixel.h>
+
+1392323785 source:/home/fei/Documents/milton_cod 14-02-14/chutepedireito.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392229605 source:/home/fei/Documents/milton_cod 14-02-14/chutepedireito_fitPC.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392379927 source:/home/fei/Documents/milton_cod 14-02-14/distancia_bola.cpp
+	<dynamixel.h>
+	<math.h>
+	<stdio.h>
+
+1392417529 source:/home/fei/Documents/milton_cod 14-02-14/espera_mov.cpp
+	<dynamixel.h>
+	<unistd.h>
+
+1392229696 source:/home/fei/Documents/milton_cod 14-02-14/inclinar.cpp
+	<dynamixel.h>
+	<unistd.h>
+
+1392229401 source:/home/fei/Documents/milton_cod 14-02-14/levanta_abaixa_perna_dir.cpp
+	<dynamixel.h>
+
+1392323485 source:/home/fei/Documents/milton_cod 14-02-14/levanta_abaixa_perna_esq.cpp
+	<dynamixel.h>
+
+1392317926 source:/home/fei/Documents/milton_cod 14-02-14/levantar_de_barriga.cpp
+	<dynamixel.h>
+
+1392317720 source:/home/fei/Documents/milton_cod 14-02-14/levantar_de_costas.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392229392 source:/home/fei/Documents/milton_cod 14-02-14/levantar_de_costas_fitPC.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392227909 source:/home/fei/Documents/milton_cod 14-02-14/roboereto.cpp
+	<dynamixel.h>
+
+1392227789 source:/home/fei/Documents/milton_cod 14-02-14/travar_servos.cpp
+	<dynamixel.h>
+
+1392400004 source:/home/fei/Documents/milton_cod 14-02-14/virar.cpp
+	<dynamixel.h>
+	<math.h>
+	<cmath>
+
+1392378358 source:/home/fei/Documents/milton_cod 14-02-14/visao.cpp
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<cvaux.h>
+	<highgui.h>
+	<cxcore.h>
+	<time.h>
+	<assert.h>
+	<float.h>
+	<limits.h>
+	<math.h>
+	<ctype.h>
+	<iostream>
+	<string>
+	<dynamixel.h>
+
+1392418133 source:/home/fei/Documents/milton_cod 14-02-14/main.cpp
+	<stdio.h>
+	<termio.h>
+	<unistd.h>
+	<dynamixel.h>
+	<sys/resource.h>
+	<sys/types.h>
+	<dirent.h>
+	<stdlib.h>
+	<termios.h>
+	<string.h>
+	<cvaux.h>
+	<highgui.h>
+	<cxcore.h>
+	<time.h>
+	<assert.h>
+	<float.h>
+	<limits.h>
+	<math.h>
+	<ctype.h>
+	<iostream>
+
+1392417478 source:/home/fei/Documents/milton_cod 14-02-14/andar_de_lado.cpp
+	<dynamixel.h>
+
+1390829224 source:/home/fei/Documentos/milton_cod 14-02-14 v1/DXL_SDK_LINUX_v1_01/src/dxl_hal.c
+	<stdio.h>
+	<stdio.h>
+	<string.h>
+	<unistd.h>
+	<fcntl.h>
+	<termios.h>
+	<linux/serial.h>
+	<sys/ioctl.h>
+	<sys/time.h>
+	"dxl_hal.h"
+
+1392233856 source:/home/fei/Documentos/milton_cod 14-02-14 v1/DXL_SDK_LINUX_v1_01/src/dynamixel.c
+	"dxl_hal.h"
+	"dynamixel.h"
+
+1392726127 source:/home/fei/Documentos/milton_cod 14-02-14 v1/andar.cpp
+	<dynamixel.h>
+
+1392751873 source:/home/fei/Documentos/milton_cod 14-02-14 v1/andar_de_lado.cpp
+	<dynamixel.h>
+
+1392323785 source:/home/fei/Documentos/milton_cod 14-02-14 v1/chutepedireito.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392229605 source:/home/fei/Documentos/milton_cod 14-02-14 v1/chutepedireito_fitPC.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392379927 source:/home/fei/Documentos/milton_cod 14-02-14 v1/distancia_bola.cpp
+	<dynamixel.h>
+	<math.h>
+	<stdio.h>
+
+1392754523 source:/home/fei/Documentos/milton_cod 14-02-14 v1/espera_mov.cpp
+	<dynamixel.h>
+	<unistd.h>
+
+1392229696 source:/home/fei/Documentos/milton_cod 14-02-14 v1/inclinar.cpp
+	<dynamixel.h>
+	<unistd.h>
+
+1392229401 source:/home/fei/Documentos/milton_cod 14-02-14 v1/levanta_abaixa_perna_dir.cpp
+	<dynamixel.h>
+
+1392323485 source:/home/fei/Documentos/milton_cod 14-02-14 v1/levanta_abaixa_perna_esq.cpp
+	<dynamixel.h>
+
+1392317926 source:/home/fei/Documentos/milton_cod 14-02-14 v1/levantar_de_barriga.cpp
+	<dynamixel.h>
+
+1392317720 source:/home/fei/Documentos/milton_cod 14-02-14 v1/levantar_de_costas.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392229392 source:/home/fei/Documentos/milton_cod 14-02-14 v1/levantar_de_costas_fitPC.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392816607 source:/home/fei/Documentos/milton_cod 14-02-14 v1/main.cpp
+	<stdio.h>
+	<termio.h>
+	<unistd.h>
+	<dynamixel.h>
+	<sys/resource.h>
+	<sys/types.h>
+	<dirent.h>
+	<stdlib.h>
+	<termios.h>
+	<string.h>
+	<cvaux.h>
+	<highgui.h>
+	<cxcore.h>
+	<time.h>
+	<assert.h>
+	<float.h>
+	<limits.h>
+	<math.h>
+	<ctype.h>
+	<iostream>
+
+1392227909 source:/home/fei/Documentos/milton_cod 14-02-14 v1/roboereto.cpp
+	<dynamixel.h>
+
+1392227789 source:/home/fei/Documentos/milton_cod 14-02-14 v1/travar_servos.cpp
+	<dynamixel.h>
+
+1392728125 source:/home/fei/Documentos/milton_cod 14-02-14 v1/virar.cpp
+	<dynamixel.h>
+	<math.h>
+	<cmath>
+
+1392810324 source:/home/fei/Documentos/milton_cod 14-02-14 v1/visao.cpp
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<cvaux.h>
+	<highgui.h>
+	<cxcore.h>
+	<time.h>
+	<assert.h>
+	<float.h>
+	<limits.h>
+	<math.h>
+	<ctype.h>
+	<iostream>
+	<string>
+	<dynamixel.h>
+
+1392734066 source:/home/fei/Documentos/milton_cod 14-02-14 v1/andar_curto.cpp
+	<dynamixel.h>
+
+1392816757 source:/home/fei/Documentos/milton_cod 14-02-14 v1/andar_rapido.cpp
+	<dynamixel.h>
+
+1390829224 source:/home/fei/Documents/milton_cod 19-02-2014/DXL_SDK_LINUX_v1_01/src/dxl_hal.c
+	<stdio.h>
+	<stdio.h>
+	<string.h>
+	<unistd.h>
+	<fcntl.h>
+	<termios.h>
+	<linux/serial.h>
+	<sys/ioctl.h>
+	<sys/time.h>
+	"dxl_hal.h"
+
+1392233856 source:/home/fei/Documents/milton_cod 19-02-2014/DXL_SDK_LINUX_v1_01/src/dynamixel.c
+	"dxl_hal.h"
+	"dynamixel.h"
+
+1392726127 source:/home/fei/Documents/milton_cod 19-02-2014/andar.cpp
+	<dynamixel.h>
+
+1392734066 source:/home/fei/Documents/milton_cod 19-02-2014/andar_curto.cpp
+	<dynamixel.h>
+
+1392751873 source:/home/fei/Documents/milton_cod 19-02-2014/andar_de_lado.cpp
+	<dynamixel.h>
+
+1392816757 source:/home/fei/Documents/milton_cod 19-02-2014/andar_rapido.cpp
+	<dynamixel.h>
+
+1392991835 source:/home/fei/Documents/milton_cod 19-02-2014/chutepedireito.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392229605 source:/home/fei/Documents/milton_cod 19-02-2014/chutepedireito_fitPC.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392379927 source:/home/fei/Documents/milton_cod 19-02-2014/distancia_bola.cpp
+	<dynamixel.h>
+	<math.h>
+	<stdio.h>
+
+1392754523 source:/home/fei/Documents/milton_cod 19-02-2014/espera_mov.cpp
+	<dynamixel.h>
+	<unistd.h>
+
+1392229696 source:/home/fei/Documents/milton_cod 19-02-2014/inclinar.cpp
+	<dynamixel.h>
+	<unistd.h>
+
+1392229401 source:/home/fei/Documents/milton_cod 19-02-2014/levanta_abaixa_perna_dir.cpp
+	<dynamixel.h>
+
+1392323485 source:/home/fei/Documents/milton_cod 19-02-2014/levanta_abaixa_perna_esq.cpp
+	<dynamixel.h>
+
+1392317926 source:/home/fei/Documents/milton_cod 19-02-2014/levantar_de_barriga.cpp
+	<dynamixel.h>
+
+1392317720 source:/home/fei/Documents/milton_cod 19-02-2014/levantar_de_costas.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392229392 source:/home/fei/Documents/milton_cod 19-02-2014/levantar_de_costas_fitPC.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392997695 source:/home/fei/Documents/milton_cod 19-02-2014/main.cpp
+	<stdio.h>
+	<termio.h>
+	<unistd.h>
+	<dynamixel.h>
+	<sys/resource.h>
+	<sys/types.h>
+	<dirent.h>
+	<stdlib.h>
+	<termios.h>
+	<string.h>
+	<cvaux.h>
+	<highgui.h>
+	<cxcore.h>
+	<time.h>
+	<assert.h>
+	<float.h>
+	<limits.h>
+	<math.h>
+	<ctype.h>
+	<iostream>
+
+1392227909 source:/home/fei/Documents/milton_cod 19-02-2014/roboereto.cpp
+	<dynamixel.h>
+
+1392227789 source:/home/fei/Documents/milton_cod 19-02-2014/travar_servos.cpp
+	<dynamixel.h>
+
+1392902822 source:/home/fei/Documents/milton_cod 19-02-2014/virar.cpp
+	<dynamixel.h>
+	<math.h>
+	<cmath>
+	<unistd.h>
+
+1392996686 source:/home/fei/Documents/milton_cod 19-02-2014/visao.cpp
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<cvaux.h>
+	<highgui.h>
+	<cxcore.h>
+	<time.h>
+	<assert.h>
+	<float.h>
+	<limits.h>
+	<math.h>
+	<ctype.h>
+	<iostream>
+	<string>
+	<dynamixel.h>
+
+1392726127 source:/home/danilo/Dropbox/Codigos/milton_cod - Qualification/andar.cpp
+	<dynamixel.h>
+
+1394217004 source:/home/danilo/Dropbox/Codigos/milton_cod - Qualification/andar_curto.cpp
+	<dynamixel.h>
+
+1392751873 source:/home/danilo/Dropbox/Codigos/milton_cod - Qualification/andar_de_lado.cpp
+	<dynamixel.h>
+
+1392816757 source:/home/danilo/Dropbox/Codigos/milton_cod - Qualification/andar_rapido.cpp
+	<dynamixel.h>
+
+1392991835 source:/home/danilo/Dropbox/Codigos/milton_cod - Qualification/chutepedireito.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392229605 source:/home/danilo/Dropbox/Codigos/milton_cod - Qualification/chutepedireito_fitPC.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392379927 source:/home/danilo/Dropbox/Codigos/milton_cod - Qualification/distancia_bola.cpp
+	<dynamixel.h>
+	<math.h>
+	<stdio.h>
+
+1390829224 source:/home/danilo/Dropbox/Codigos/milton_cod - Qualification/DXL_SDK_LINUX_v1_01/src/dxl_hal.c
+	<stdio.h>
+	<stdio.h>
+	<string.h>
+	<unistd.h>
+	<fcntl.h>
+	<termios.h>
+	<linux/serial.h>
+	<sys/ioctl.h>
+	<sys/time.h>
+	"dxl_hal.h"
+
+1392233856 source:/home/danilo/Dropbox/Codigos/milton_cod - Qualification/DXL_SDK_LINUX_v1_01/src/dynamixel.c
+	"dxl_hal.h"
+	"dynamixel.h"
+
+1392754523 source:/home/danilo/Dropbox/Codigos/milton_cod - Qualification/espera_mov.cpp
+	<dynamixel.h>
+	<unistd.h>
+
+1392229696 source:/home/danilo/Dropbox/Codigos/milton_cod - Qualification/inclinar.cpp
+	<dynamixel.h>
+	<unistd.h>
+
+1392229401 source:/home/danilo/Dropbox/Codigos/milton_cod - Qualification/levanta_abaixa_perna_dir.cpp
+	<dynamixel.h>
+
+1392323485 source:/home/danilo/Dropbox/Codigos/milton_cod - Qualification/levanta_abaixa_perna_esq.cpp
+	<dynamixel.h>
+
+1392317926 source:/home/danilo/Dropbox/Codigos/milton_cod - Qualification/levantar_de_barriga.cpp
+	<dynamixel.h>
+
+1392317720 source:/home/danilo/Dropbox/Codigos/milton_cod - Qualification/levantar_de_costas.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392229392 source:/home/danilo/Dropbox/Codigos/milton_cod - Qualification/levantar_de_costas_fitPC.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392997695 source:/home/danilo/Dropbox/Codigos/milton_cod - Qualification/main.cpp
+	<stdio.h>
+	<termio.h>
+	<unistd.h>
+	<dynamixel.h>
+	<sys/resource.h>
+	<sys/types.h>
+	<dirent.h>
+	<stdlib.h>
+	<termios.h>
+	<string.h>
+	<cvaux.h>
+	<highgui.h>
+	<cxcore.h>
+	<time.h>
+	<assert.h>
+	<float.h>
+	<limits.h>
+	<math.h>
+	<ctype.h>
+	<iostream>
+
+1392227909 source:/home/danilo/Dropbox/Codigos/milton_cod - Qualification/roboereto.cpp
+	<dynamixel.h>
+
+1392227789 source:/home/danilo/Dropbox/Codigos/milton_cod - Qualification/travar_servos.cpp
+	<dynamixel.h>
+
+1392902822 source:/home/danilo/Dropbox/Codigos/milton_cod - Qualification/virar.cpp
+	<dynamixel.h>
+	<math.h>
+	<cmath>
+	<unistd.h>
+
+1394216842 source:/home/danilo/Dropbox/Codigos/milton_cod - Qualification/visao.cpp
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<cvaux.h>
+	<highgui.h>
+	<cxcore.h>
+	<time.h>
+	<assert.h>
+	<float.h>
+	<limits.h>
+	<math.h>
+	<ctype.h>
+	<iostream>
+	<string>
+	<dynamixel.h>
+	<unistd.h>
+
+1390829224 source:/home/fei/Dropbox/Codigos/milton_cod - Qualification/DXL_SDK_LINUX_v1_01/src/dxl_hal.c
+	<stdio.h>
+	<stdio.h>
+	<string.h>
+	<unistd.h>
+	<fcntl.h>
+	<termios.h>
+	<linux/serial.h>
+	<sys/ioctl.h>
+	<sys/time.h>
+	"dxl_hal.h"
+
+1392233856 source:/home/fei/Dropbox/Codigos/milton_cod - Qualification/DXL_SDK_LINUX_v1_01/src/dynamixel.c
+	"dxl_hal.h"
+	"dynamixel.h"
+
+1392726127 source:/home/fei/Dropbox/Codigos/milton_cod - Qualification/andar.cpp
+	<dynamixel.h>
+
+1392751873 source:/home/fei/Dropbox/Codigos/milton_cod - Qualification/andar_de_lado.cpp
+	<dynamixel.h>
+
+1392816757 source:/home/fei/Dropbox/Codigos/milton_cod - Qualification/andar_rapido.cpp
+	<dynamixel.h>
+
+1392991835 source:/home/fei/Dropbox/Codigos/milton_cod - Qualification/chutepedireito.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392229605 source:/home/fei/Dropbox/Codigos/milton_cod - Qualification/chutepedireito_fitPC.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392379927 source:/home/fei/Dropbox/Codigos/milton_cod - Qualification/distancia_bola.cpp
+	<dynamixel.h>
+	<math.h>
+	<stdio.h>
+
+1392754523 source:/home/fei/Dropbox/Codigos/milton_cod - Qualification/espera_mov.cpp
+	<dynamixel.h>
+	<unistd.h>
+
+1392229696 source:/home/fei/Dropbox/Codigos/milton_cod - Qualification/inclinar.cpp
+	<dynamixel.h>
+	<unistd.h>
+
+1392229401 source:/home/fei/Dropbox/Codigos/milton_cod - Qualification/levanta_abaixa_perna_dir.cpp
+	<dynamixel.h>
+
+1392323485 source:/home/fei/Dropbox/Codigos/milton_cod - Qualification/levanta_abaixa_perna_esq.cpp
+	<dynamixel.h>
+
+1392317926 source:/home/fei/Dropbox/Codigos/milton_cod - Qualification/levantar_de_barriga.cpp
+	<dynamixel.h>
+
+1392317720 source:/home/fei/Dropbox/Codigos/milton_cod - Qualification/levantar_de_costas.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392229392 source:/home/fei/Dropbox/Codigos/milton_cod - Qualification/levantar_de_costas_fitPC.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1396548994 source:/home/fei/Dropbox/Codigos/milton_cod - Qualification/main.cpp
+	<stdio.h>
+	<termio.h>
+	<unistd.h>
+	<dynamixel.h>
+	<sys/resource.h>
+	<sys/types.h>
+	<dirent.h>
+	<stdlib.h>
+	<termios.h>
+	<string.h>
+	<cvaux.h>
+	<highgui.h>
+	<cxcore.h>
+	<time.h>
+	<assert.h>
+	<float.h>
+	<limits.h>
+	<math.h>
+	<ctype.h>
+	<iostream>
+
+1392227909 source:/home/fei/Dropbox/Codigos/milton_cod - Qualification/roboereto.cpp
+	<dynamixel.h>
+
+1392227789 source:/home/fei/Dropbox/Codigos/milton_cod - Qualification/travar_servos.cpp
+	<dynamixel.h>
+
+1392902822 source:/home/fei/Dropbox/Codigos/milton_cod - Qualification/virar.cpp
+	<dynamixel.h>
+	<math.h>
+	<cmath>
+	<unistd.h>
+
+1395694396 source:/home/fei/Dropbox/Codigos/milton_cod - Qualification/visao.cpp
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<cvaux.h>
+	<highgui.h>
+	<cxcore.h>
+	<time.h>
+	<assert.h>
+	<float.h>
+	<limits.h>
+	<math.h>
+	<ctype.h>
+	<iostream>
+	<string>
+	<dynamixel.h>
+	<unistd.h>
+
+1394217004 source:/home/fei/Dropbox/Codigos/milton_cod - Qualification/andar_curto.cpp
+	<dynamixel.h>
+
+1390829224 source:/home/perico/Dropbox/Codigos/milton_cod - Qualification/DXL_SDK_LINUX_v1_01/src/dxl_hal.c
+	<stdio.h>
+	<stdio.h>
+	<string.h>
+	<unistd.h>
+	<fcntl.h>
+	<termios.h>
+	<linux/serial.h>
+	<sys/ioctl.h>
+	<sys/time.h>
+	"dxl_hal.h"
+
+1392233856 source:/home/perico/Dropbox/Codigos/milton_cod - Qualification/DXL_SDK_LINUX_v1_01/src/dynamixel.c
+	"dxl_hal.h"
+	"dynamixel.h"
+
+1392726127 source:/home/perico/Dropbox/Codigos/milton_cod - Qualification/andar.cpp
+	<dynamixel.h>
+
+1394217004 source:/home/perico/Dropbox/Codigos/milton_cod - Qualification/andar_curto.cpp
+	<dynamixel.h>
+
+1392751873 source:/home/perico/Dropbox/Codigos/milton_cod - Qualification/andar_de_lado.cpp
+	<dynamixel.h>
+
+1392816757 source:/home/perico/Dropbox/Codigos/milton_cod - Qualification/andar_rapido.cpp
+	<dynamixel.h>
+
+1392991835 source:/home/perico/Dropbox/Codigos/milton_cod - Qualification/chutepedireito.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392229605 source:/home/perico/Dropbox/Codigos/milton_cod - Qualification/chutepedireito_fitPC.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392379927 source:/home/perico/Dropbox/Codigos/milton_cod - Qualification/distancia_bola.cpp
+	<dynamixel.h>
+	<math.h>
+	<stdio.h>
+
+1392754523 source:/home/perico/Dropbox/Codigos/milton_cod - Qualification/espera_mov.cpp
+	<dynamixel.h>
+	<unistd.h>
+
+1392229696 source:/home/perico/Dropbox/Codigos/milton_cod - Qualification/inclinar.cpp
+	<dynamixel.h>
+	<unistd.h>
+
+1392229401 source:/home/perico/Dropbox/Codigos/milton_cod - Qualification/levanta_abaixa_perna_dir.cpp
+	<dynamixel.h>
+
+1392323485 source:/home/perico/Dropbox/Codigos/milton_cod - Qualification/levanta_abaixa_perna_esq.cpp
+	<dynamixel.h>
+
+1392317926 source:/home/perico/Dropbox/Codigos/milton_cod - Qualification/levantar_de_barriga.cpp
+	<dynamixel.h>
+
+1392317720 source:/home/perico/Dropbox/Codigos/milton_cod - Qualification/levantar_de_costas.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392229392 source:/home/perico/Dropbox/Codigos/milton_cod - Qualification/levantar_de_costas_fitPC.cpp
+	<dynamixel.h>
+	<stdio.h>
+
+1392227909 source:/home/perico/Dropbox/Codigos/milton_cod - Qualification/roboereto.cpp
+	<dynamixel.h>
+
+1392227789 source:/home/perico/Dropbox/Codigos/milton_cod - Qualification/travar_servos.cpp
+	<dynamixel.h>
+
+1392902822 source:/home/perico/Dropbox/Codigos/milton_cod - Qualification/virar.cpp
+	<dynamixel.h>
+	<math.h>
+	<cmath>
+	<unistd.h>
+
+1395694396 source:/home/perico/Dropbox/Codigos/milton_cod - Qualification/visao.cpp
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<cvaux.h>
+	<highgui.h>
+	<cxcore.h>
+	<time.h>
+	<assert.h>
+	<float.h>
+	<limits.h>
+	<math.h>
+	<ctype.h>
+	<iostream>
+	<string>
+	<dynamixel.h>
+	<unistd.h>
+
+1395857768 source:/home/perico/Dropbox/Codigos/milton_cod - Qualification/main.cpp
+	<stdio.h>
+	<termio.h>
+	<unistd.h>
+	<dynamixel.h>
+	<sys/resource.h>
+	<sys/types.h>
+	<dirent.h>
+	<stdlib.h>
+	<termios.h>
+	<string.h>
+	<cvaux.h>
+	<highgui.h>
+	<cxcore.h>
+	<time.h>
+	<assert.h>
+	<float.h>
+	<limits.h>
+	<math.h>
+	<ctype.h>
+	<iostream>
+
