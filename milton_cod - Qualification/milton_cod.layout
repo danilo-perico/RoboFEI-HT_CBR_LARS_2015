@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Release" />
+	<File name="DXL_SDK_LINUX_v1_01/src/dxl_hal.c" open="1" top="0" tabpos="5">
+		<Cursor position="476" topLine="6" />
+	</File>
+	<File name="DXL_SDK_LINUX_v1_01/src/dynamixel.c" open="0" top="0" tabpos="2">
+		<Cursor position="427" topLine="6" />
+	</File>
+	<File name="andar.cpp" open="0" top="0" tabpos="3">
+		<Cursor position="4444" topLine="454" />
+	</File>
+	<File name="andar_curto.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="9539" topLine="25" />
+	</File>
+	<File name="andar_de_lado.cpp" open="0" top="0" tabpos="5">
+		<Cursor position="99" topLine="0" />
+	</File>
+	<File name="andar_rapido.cpp" open="1" top="0" tabpos="6">
+		<Cursor position="19089" topLine="33" />
+	</File>
+	<File name="chutepedireito.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="647" topLine="29" />
+	</File>
+	<File name="chutepedireito_fitPC.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="3803" topLine="87" />
+	</File>
+	<File name="distancia_bola.cpp" open="0" top="0" tabpos="4">
+		<Cursor position="325" topLine="0" />
+	</File>
+	<File name="espera_mov.cpp" open="0" top="0" tabpos="7">
+		<Cursor position="62" topLine="0" />
+	</File>
+	<File name="inclinar.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="42" topLine="15" />
+	</File>
+	<File name="levanta_abaixa_perna_dir.cpp" open="0" top="0" tabpos="3">
+		<Cursor position="2540" topLine="4" />
+	</File>
+	<File name="levanta_abaixa_perna_esq.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="690" topLine="27" />
+	</File>
+	<File name="levantar_de_barriga.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="1588" topLine="20" />
+	</File>
+	<File name="levantar_de_costas.cpp" open="1" top="0" tabpos="4">
+		<Cursor position="4350" topLine="0" />
+	</File>
+	<File name="levantar_de_costas_fitPC.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="4346" topLine="106" />
+	</File>
+	<File name="main.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="2930" topLine="82" />
+	</File>
+	<File name="roboereto.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="71" topLine="0" />
+	</File>
+	<File name="travar_servos.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="145" topLine="0" />
+	</File>
+	<File name="virar.cpp" open="1" top="0" tabpos="2">
+		<Cursor position="1483" topLine="37" />
+	</File>
+	<File name="visao.cpp" open="1" top="0" tabpos="3">
+		<Cursor position="12643" topLine="337" />
+	</File>
+</CodeBlocks_layout_file>
