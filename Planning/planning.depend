@@ -1,0 +1,24 @@
+# depslib dependency file v1.0
+1396884570 source:/home/thiago/planning/main.cpp
+	<iostream>
+	"planning.h"
+	<errno.h>
+	<unistd.h>
+	<sys/ipc.h>
+	<sys/shm.h>
+
+1396881338 /home/thiago/planning/planning.h
+	<string>
+	<vector>
+	<list>
+	<iostream>
+	<assert.h>
+
+1396881338 source:/home/thiago/planning/planning.cpp
+	<string>
+	<vector>
+	<list>
+	<iostream>
+	<assert.h>
+	"planning.h"
+

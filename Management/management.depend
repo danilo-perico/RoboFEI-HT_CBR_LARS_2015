@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1396893713 source:/home/thiago/management/main.cpp
+	<iostream>
+	<sys/types.h>
+	<unistd.h>
+
