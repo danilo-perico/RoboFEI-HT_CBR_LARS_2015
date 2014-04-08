@@ -19,7 +19,7 @@
 #include <errno.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
-#include <blackboard.h>
+#include "blackboard.h"
 
 #define KEY 123
 

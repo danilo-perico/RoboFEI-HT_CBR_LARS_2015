@@ -4,3 +4,19 @@
 	<sys/types.h>
 	<unistd.h>
 
+1396981943 source:/home/thiago/GitHub/RoboFEI-HT/Management/main.cpp
+	<iostream>
+	<sys/types.h>
+	<unistd.h>
+	"../blackboard.h"
+
+1396978836 /home/thiago/GitHub/RoboFEI-HT/blackboard.h
+
+1396979428 source:/home/thiago/GitHub/RoboFEI-HT/blackboard.cpp
+	<stdio.h>
+	<unistd.h>
+	<errno.h>
+	<sys/ipc.h>
+	<sys/shm.h>
+	"blackboard.h"
+
