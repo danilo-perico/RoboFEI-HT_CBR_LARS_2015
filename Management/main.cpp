@@ -19,7 +19,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <string.h>
-#include "../blackboard.h"
+#include "../Include/blackboard.h"
 
 using namespace std;
 
@@ -51,13 +51,14 @@ int main()
     char path6[100];   //communication
 
     //captura e converte o caminho absoluto para qualquer usuário
+    //ja tentamos concatenar, mas dá erro de tipo misturado!
     path = getenv("HOME");
-    sprintf(path1,"%sRoboFEI-HT/Vision/bin/Debug/vision",path);
-    sprintf(path2,"%sRoboFEI-HT/Decision/bin/Debug/decision",path);
+    sprintf(path1,"%s/RoboFEI-HT/Vision/bin/Debug/vision",path);
+    sprintf(path2,"%s/RoboFEI-HT/Decision/bin/Debug/decision",path);
     sprintf(path3,"%s/RoboFEI-HT/Planning/bin/Debug/planning",path);
-    sprintf(path4,"%sRoboFEI-HT/Control/bin/Debug/control",path);
-    sprintf(path5,"%sRoboFEI-HT/Localization/bin/Debug/localization",path);
-    sprintf(path6,"%sRoboFEI-HT/Communication/bin/Debug/communication",path);
+    sprintf(path4,"%s/RoboFEI-HT/Control/bin/Debug/control",path);
+    sprintf(path5,"%s/RoboFEI-HT/Localization/bin/Debug/localization",path);
+    sprintf(path6,"%s/RoboFEI-HT/Communication/bin/Debug/communication",path);
 
     using_shared_memory(); //Função que cria e acopla a memória compartilhada
 
