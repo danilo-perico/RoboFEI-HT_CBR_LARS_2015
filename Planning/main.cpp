@@ -37,7 +37,7 @@ int main()
        DECISION_ACTION_A = 1;
        cout << DECISION_ACTION_A<<endl;
        cout << DECISION_ACTION_B<<endl;
-       sleep(1);
+       //sleep(1);
        //cin >> DECISION_ACTION_A;
        //cin >> DECISION_ACTION_B;
        //sleep(1);

@@ -18,6 +18,7 @@
 #include <iostream>
 #include <sys/types.h>
 #include <unistd.h>
+#include <string.h>
 #include "../blackboard.h"
 
 using namespace std;
@@ -41,16 +42,36 @@ int spawn (char* program, char** arg_list)
 
 int main()
 {
+    char *path;
+    char path1[100];   //vision
+    char path2[100];   //decision
+    char path3[100];   //planning
+    char path4[100];   //control
+    char path5[100];   //localization
+    char path6[100];   //communication
+
+    //captura e converte o caminho absoluto para qualquer usuário
+    path = getenv("HOME");
+    sprintf(path1,"%sRoboFEI-HT/Vision/bin/Debug/vision",path);
+    sprintf(path2,"%sRoboFEI-HT/Decision/bin/Debug/decision",path);
+    sprintf(path3,"%s/RoboFEI-HT/Planning/bin/Debug/planning",path);
+    sprintf(path4,"%sRoboFEI-HT/Control/bin/Debug/control",path);
+    sprintf(path5,"%sRoboFEI-HT/Localization/bin/Debug/localization",path);
+    sprintf(path6,"%sRoboFEI-HT/Communication/bin/Debug/communication",path);
+
     using_shared_memory(); //Função que cria e acopla a memória compartilhada
 
     char* arg_list[] = {
     NULL
     };
-   // spawn ("/home/thiago/GitHub/RoboFEI-HT/Vision/bin/Debug/vision", arg_list);
-   // spawn ("/home/thiago/GitHub/RoboFEI-HT/Decision/bin/Debug/decision", arg_list);
-    spawn ("/home/thiago/GitHub/RoboFEI-HT/Planning/bin/Debug/planning",arg_list);
-   // spawn ("/home/thiago/GitHub/RoboFEI-HT/Control/bin/Debug/control", arg_list);
-   // spawn ("/home/thiago/GitHub/RoboFEI-HT/Localization/bin/Debug/localization", arg_list);
-   // spawn ("/home/thiago/GitHub/RoboFEI-HT/Communication/bin/Debug/communication", arg_list);
+
+    //inicializa os processos;
+    //spawn (path1,arg_list);
+    //spawn (path2,arg_list);
+    spawn (path3,arg_list);
+    //spawn (path4,arg_list);
+    //spawn (path5,arg_list);
+    //spawn (path6,arg_list);
+
     return 0;
 }

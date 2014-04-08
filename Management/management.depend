@@ -20,3 +20,19 @@
 	<sys/shm.h>
 	"blackboard.h"
 
+1396979428 source:/home/thiago/RoboFEI-HT/blackboard.cpp
+	<stdio.h>
+	<unistd.h>
+	<errno.h>
+	<sys/ipc.h>
+	<sys/shm.h>
+	"blackboard.h"
+
+1396978836 /home/thiago/RoboFEI-HT/blackboard.h
+
+1396984255 source:/home/thiago/RoboFEI-HT/Management/main.cpp
+	<iostream>
+	<sys/types.h>
+	<unistd.h>
+	"../blackboard.h"
+
