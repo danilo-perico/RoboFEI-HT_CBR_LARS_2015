@@ -1,6 +1,6 @@
 #include <iostream>
 #include <communication.h>
-#include "/home/perico/RoboFEI-HT/blackboard.h"
+#include "blackboard.h"
 
 #define DEBUG
 //#define _cpluplus
