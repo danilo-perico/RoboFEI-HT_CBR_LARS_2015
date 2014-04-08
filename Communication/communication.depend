@@ -1,0 +1,40 @@
+# depslib dependency file v1.0
+1396891732 source:/home/perico/RoboFEI-HT/Communication/communication/communication.cc
+	<iostream>
+
+1396979054 source:/home/perico/RoboFEI-HT/Communication/communication/src/communication.cpp
+
+1396984727 source:/home/perico/RoboFEI-HT/blackboard.cpp
+	<stdio.h>
+	<unistd.h>
+	<errno.h>
+	<sys/ipc.h>
+	<sys/shm.h>
+	"blackboard.h"
+
+1396984727 /home/perico/RoboFEI-HT/blackboard.h
+
+1396979484 source:/home/RoboFEI-HT/blackboard.cpp
+	<stdio.h>
+	<unistd.h>
+	<errno.h>
+	<sys/ipc.h>
+	<sys/shm.h>
+	"blackboard.h"
+
+1396979081 /home/RoboFEI-HT/blackboard.h
+
+1396982473 source:/home/RoboFEI-HT/Communication/src/communication.cc
+	<iostream>
+	<communication.h>
+	"/home/RoboFEI-HT/blackboard.h"
+
+1396978632 /home/RoboFEI-HT/Communication/include/communication.h
+
+1396985349 source:/home/perico/RoboFEI-HT/Communication/src/communication.cc
+	<iostream>
+	<communication.h>
+	"blackboard.h"
+
+1396978632 /home/perico/RoboFEI-HT/Communication/include/communication.h
+
