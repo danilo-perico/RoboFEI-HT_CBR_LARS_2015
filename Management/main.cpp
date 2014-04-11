@@ -72,7 +72,7 @@ int main()
     spawn (path3,arg_list);
     //spawn (path4,arg_list);
     //spawn (path5,arg_list);
-    //spawn (path6,arg_list);
+    spawn (path6,arg_list);
 
     return 0;
 }

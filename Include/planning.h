@@ -12,14 +12,14 @@ class planning
 private:
 	int write_command;
 
-	int write_parameters;
+	int write_parameter_vel;
+
+	int write_parameter_angle;
 
 public:
-	int read_action;
+	int read_actionA;
 
-	int read_velocity;
-
-	int read_angle;
+	int read_actionB;
 
 	void stop();
 

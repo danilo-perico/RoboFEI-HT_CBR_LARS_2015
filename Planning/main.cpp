@@ -29,12 +29,11 @@ int main()
        using_shared_memory(); //Função que cria e acopla a memória compartilhada
        planning plan;
        // READ VARIABLES
-       plan.read_action = PLANNING_COMMAND;
-       plan.read_velocity = PLANNING_PARAMETER_VEL;
-       plan.read_angle = PLANNING_PARAMETER_ANGLE;
+       plan.read_actionA= DECISION_ACTION_A;
+       plan.read_actionB = DECISION_ACTION_B;
        while(1){
-           cout<<plan.read_action<<"  "<<plan.read_velocity<<"  "<<plan.read_angle<<endl;
-           switch (plan.read_action) {
+           cout<<plan.read_actionA<<"  "<<plan.read_actionB<<endl;
+           switch (plan.read_actionA) {
                 case 1:
                         plan.stop();
                         break;
