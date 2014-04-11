@@ -70,14 +70,15 @@
 #define LOCALIZATION_X *(mem+52)
 #define LOCALIZATION_Y *(mem+53)
 #define LOCALIZATION_THETA *(mem+54)
-#define VISION_DIST_BALL *(mem+55)
-#define VISION_DIST_GOAL *(mem+56)
-#define VISION_DIST_OPP1 *(mem+57)
-#define VISION_DIST_OPP2 *(mem+58)
-#define VISION_DIST_OPP3 *(mem+59)
+#define VISION_DIST_BALL *(memf+1)
+#define VISION_DIST_GOAL *(memf+2)
+#define VISION_DIST_OPP1 *(memf+3)
+#define VISION_DIST_OPP2 *(memf+4)
+#define VISION_DIST_OPP3 *(memf+5)
 
 //----global variables------------------------------------------------
 extern int *mem ; //Variável que manipula memória compartilhada
+extern float *memf ; //Variável que manipula memória compartilhada
 
 //----Functions prototype---------------------------------------------
 int using_shared_memory(); //Função que cria e acopla a memória compartilhada
