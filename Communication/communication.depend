@@ -31,10 +31,12 @@
 
 1396978632 /home/RoboFEI-HT/Communication/include/communication.h
 
-1396985349 source:/home/perico/RoboFEI-HT/Communication/src/communication.cc
+1397151887 source:/home/perico/RoboFEI-HT/Communication/src/communication.cc
 	<iostream>
 	<communication.h>
-	"blackboard.h"
+	<blackboard.h>
+	<pthread.h>
+	<unistd.h>
 
 1396978632 /home/perico/RoboFEI-HT/Communication/include/communication.h
 
