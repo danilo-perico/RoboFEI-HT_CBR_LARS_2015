@@ -4,8 +4,8 @@
 #include <iostream>
 #include <assert.h>
 
-#include "../Include/blackboard.h"
-#include "../Include/planning.h"
+#include "blackboard.h"
+#include "planning.h"
 
 
 void planning::stop()

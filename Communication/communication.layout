@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="src/communication.cc" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1037" topLine="0" />
-		</Cursor>
+	<File name="src/communication.cc" open="1" top="1" tabpos="0">
+		<Cursor position="859" topLine="30" />
+	</File>
+	<File name="../blackboard.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="1257" topLine="35" />
 	</File>
 </CodeBlocks_layout_file>

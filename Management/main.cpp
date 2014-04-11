@@ -16,10 +16,12 @@
 
 
 #include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <string.h>
-#include "../Include/blackboard.h"
+#include "blackboard.h"
 
 using namespace std;
 
@@ -56,7 +58,7 @@ int main()
     sprintf(path1,"%s/RoboFEI-HT/Vision/bin/Debug/vision",path);
     sprintf(path2,"%s/RoboFEI-HT/Decision/bin/Debug/decision",path);
     sprintf(path3,"%s/RoboFEI-HT/Planning/bin/Debug/planning",path);
-    sprintf(path4,"%s/RoboFEI-HT/Control/bin/Debug/control",path);
+    sprintf(path4,"%s/RoboFEI-HT/Control/bin/Debug/Control",path);
     sprintf(path5,"%s/RoboFEI-HT/Localization/bin/Debug/localization",path);
     sprintf(path6,"%s/RoboFEI-HT/Communication/bin/Debug/communication",path);
 
@@ -69,10 +71,13 @@ int main()
     //inicializa os processos;
     //spawn (path1,arg_list);
     spawn (path2,arg_list);
+      sleep(3);
     spawn (path3,arg_list);
-    //spawn (path4,arg_list);
+    spawn (path4,arg_list);
     //spawn (path5,arg_list);
     spawn (path6,arg_list);
+
+
 
     return 0;
 }

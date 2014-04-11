@@ -1,23 +1,26 @@
 # depslib dependency file v1.0
-1396986891 source:/home/perico/RoboFEI-HT/Decision/decision/decision.cc
+1397231454 source:/home/fei/Pasta_github/RoboFEI-HT/Control/main.cpp
 	<iostream>
+	<stdio.h>
+	<communication.h>
+	<blackboard.h>
+	<pthread.h>
+	<unistd.h>
 
-1396984727 source:/home/perico/RoboFEI-HT/blackboard.cpp
+1396893420 source:/home/fei/Pasta_github/RoboFEI-HT/blackboard.cpp
 	<stdio.h>
 	<unistd.h>
 	<errno.h>
 	<sys/ipc.h>
 	<sys/shm.h>
-	"blackboard.h"
-
-1397150937 source:/home/perico/RoboFEI-HT/Decision/src/decision.cc
-	<iostream>
 	<blackboard.h>
-	<unistd.h>
 
-1397230493 source:/home/fei/RoboFEI-HT/Decision/src/decision.cc
+1397231454 source:/home/fei/RoboFEI-HT/Control/main.cpp
 	<iostream>
+	<stdio.h>
+	<communication.h>
 	<blackboard.h>
+	<pthread.h>
 	<unistd.h>
 
 1397230494 source:/home/fei/RoboFEI-HT/blackboard.cpp

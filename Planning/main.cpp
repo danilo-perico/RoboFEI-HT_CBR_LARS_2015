@@ -28,19 +28,21 @@ int main()
 {
        using_shared_memory(); //Função que cria e acopla a memória compartilhada
        planning plan;
-       // READ VARIABLES
-       plan.read_actionA= DECISION_ACTION_A;
-       plan.read_actionB = DECISION_ACTION_B;
        while(1){
+
+           // READ VARIABLES
+           plan.read_actionA= DECISION_ACTION_A;
+           plan.read_actionB = DECISION_ACTION_B;
+
            cout<<plan.read_actionA<<"  "<<plan.read_actionB<<endl;
            switch (plan.read_actionA) {
-                case 1:
+                case 15:
                         plan.stop();
                         break;
-                case 2:
+                case 16:
                         plan.turn_left();
                         break;
-                case 3:
+                case 50:
                         plan.turn_right();
                         break;
            }
