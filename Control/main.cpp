@@ -26,10 +26,10 @@ while(1)
 
     cout << "Command received = "<< PLANNING_COMMAND << " | Velocidade =  "<<
     PLANNING_PARAMETER_VEL << " | Angle = "<< PLANNING_PARAMETER_ANGLE<<endl;
-    CONTROL_ACTION = 1;
-    sleep(1);
+    CONTROL_ACTION = PLANNING_COMMAND;
+    usleep(300000);
 
-
+    cout<< "CONTROL_ACTION = "<<CONTROL_ACTION<<endl<<endl;
 }
     return 0;
 }
