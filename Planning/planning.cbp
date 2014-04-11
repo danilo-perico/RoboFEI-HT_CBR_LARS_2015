@@ -32,11 +32,11 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="../Include/blackboard.h" />
+		<Unit filename="../Include/planning.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="planning.cpp" />
-		<Unit filename="planning.h" />
 		<Unit filename="../blackboard.cpp" />
-		<Unit filename="../blackboard.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />

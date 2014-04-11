@@ -68,7 +68,7 @@ int main()
 
     //inicializa os processos;
     //spawn (path1,arg_list);
-    //spawn (path2,arg_list);
+    spawn (path2,arg_list);
     spawn (path3,arg_list);
     //spawn (path4,arg_list);
     //spawn (path5,arg_list);

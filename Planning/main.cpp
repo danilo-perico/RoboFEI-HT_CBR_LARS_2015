@@ -17,31 +17,35 @@
 
 #include <iostream>
 #include <unistd.h>
-#include "planning.h"
-#include "../blackboard.h"
+#include "../Include/planning.h"
+#include "../Include/blackboard.h"
 
+#define DEBUG
 
 using namespace std;
 
-
-
 int main()
 {
-     using_shared_memory(); //Função que cria e acopla a memória compartilhada
-
-    while(1){
-       //teste de leitura de memória
-       cout << PLANNING_COMMAND << endl;
-       cout << PLANNING_PARAMETER_VEL << endl;
-       cout << PLANNING_PARAMETER_ANGLE << endl;
-       DECISION_ACTION_A = 1;
-       cout << DECISION_ACTION_A<<endl;
-       cout << DECISION_ACTION_B<<endl;
-       //sleep(1);
-       //cin >> DECISION_ACTION_A;
-       //cin >> DECISION_ACTION_B;
-       //sleep(1);
-    }
-
+       using_shared_memory(); //Função que cria e acopla a memória compartilhada
+       planning plan;
+       // READ VARIABLES
+       plan.read_action = PLANNING_COMMAND;
+       plan.read_velocity = PLANNING_PARAMETER_VEL;
+       plan.read_angle = PLANNING_PARAMETER_ANGLE;
+       while(1){
+           cout<<plan.read_action<<"  "<<plan.read_velocity<<"  "<<plan.read_angle<<endl;
+           switch (plan.read_action) {
+                case 1:
+                        plan.stop();
+                        break;
+                case 2:
+                        plan.turn_left();
+                        break;
+                case 3:
+                        plan.turn_right();
+                        break;
+           }
+       sleep(1)    ;
+       }
     return 0;
 }

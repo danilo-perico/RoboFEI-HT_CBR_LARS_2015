@@ -53,28 +53,44 @@
 	"planning.h"
 	"../blackboard.h"
 
-1396881338 source:/home/thiago/RoboFEI-HT/Planning/planning.cpp
+1397227737 source:/home/thiago/RoboFEI-HT/Planning/planning.cpp
 	<string>
 	<vector>
 	<list>
 	<iostream>
 	<assert.h>
-	"planning.h"
+	"../Include/blackboard.h"
+	"../Include/planning.h"
 
-1396881338 /home/thiago/RoboFEI-HT/Planning/planning.h
+1397225849 /home/thiago/RoboFEI-HT/Planning/planning.h
 	<string>
 	<vector>
 	<list>
 	<iostream>
 	<assert.h>
 
-1396979428 source:/home/thiago/RoboFEI-HT/blackboard.cpp
+1397227929 source:/home/thiago/RoboFEI-HT/blackboard.cpp
 	<stdio.h>
 	<unistd.h>
 	<errno.h>
 	<sys/ipc.h>
 	<sys/shm.h>
-	"blackboard.h"
+	"Include/blackboard.h"
 
 1396978836 /home/thiago/RoboFEI-HT/blackboard.h
+
+1397228204 source:/home/thiago/RoboFEI-HT/Planning/main.cpp
+	<iostream>
+	<unistd.h>
+	"../Include/planning.h"
+	"../Include/blackboard.h"
+
+1397224335 /home/thiago/RoboFEI-HT/Include/blackboard.h
+
+1397225849 /home/thiago/RoboFEI-HT/Include/planning.h
+	<string>
+	<vector>
+	<list>
+	<iostream>
+	<assert.h>
 
