@@ -19,7 +19,7 @@
 #include <errno.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
-#include "Include/blackboard.h"
+#include "blackboard.h"
 
 //#define DEBUG
 

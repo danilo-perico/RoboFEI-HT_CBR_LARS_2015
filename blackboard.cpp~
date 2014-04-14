@@ -3,7 +3,7 @@
 ******************************************************************************
   * @file       blackboard.h
   * @author     Isaac Jesus da Silva - ROBOFEI-HT - FEI
-  * @version    V0.0.1
+  * @version    V0.0.2
   * @created    07/04/2014
   * @Modified   11/04/2014
   * @e-mail     isaac25silva@yahoo.com.br
@@ -38,7 +38,6 @@ int using_shared_memory()
     // --- Variaveis usada para memoria compartilhada -----
     int shmid ;  // identificador da memoria comum //
     const unsigned short int size = 2048; // tamanho da memória em Bytes
-    char *path="nome_de_arquivo_existente" ;
     int flag = 0;
     //-----------------------------------------------------
 
@@ -46,12 +45,12 @@ int using_shared_memory()
      //
 
      //shmget:para criar um segmento de memória compartilhada
-     if (( shmid = shmget(ftok(path,(key_t)KEY), size,0)) == -1)
+     if (( shmid = shmget((key_t)KEY, size,0)) == -1)
      {
           perror("Erro no shmget") ;
           printf("\nMemória será criada\n");
          //return(1) ;
-        if (( shmid = shmget(ftok(path,(key_t)KEY), size, IPC_CREAT|IPC_EXCL|SHM_R|SHM_W)) == -1)
+        if (( shmid = shmget((key_t)KEY, size, IPC_CREAT|IPC_EXCL|SHM_R|SHM_W)) == -1)
         {
             perror("Erro no shmget") ;
             return(1) ;
@@ -61,7 +60,7 @@ int using_shared_memory()
 #ifdef DEBUG
      printf("Sou o processo com pid: %d \n",getpid()) ;
      printf("Identificador do segmento recuperado: %d \n",shmid) ;
-     printf("Este segmento e associado a chave unica: %d\n", ftok(path,(key_t)KEY));
+     printf("Este segmento e associado a chave unica: %d\n",(key_t)KEY);
 #endif
     //
     // acoplamento do processo a zona de memoria
