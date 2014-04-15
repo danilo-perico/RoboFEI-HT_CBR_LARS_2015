@@ -13,8 +13,8 @@
 
 
 #include <iostream>
-#include <communication.h>
-#include <blackboard.h>
+#include "communication.h"
+#include "blackboard.h"
 #include<pthread.h>
 #include <unistd.h>
 
