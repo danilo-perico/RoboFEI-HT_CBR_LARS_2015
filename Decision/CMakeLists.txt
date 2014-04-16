@@ -10,20 +10,20 @@ include_directories(
 
 #MESSAGE(STATUS "CMAKE_SOURCE_DIR:         " ${RoboFEI-HT_SOURCE_DIR})
 #MESSAGE(STATUS "CMAKE_BINARY_DIR:         " ${RoboFEI-HT_BINARY_DIR})
-#MESSAGE(STATUS "CMAKE_BINARY_DIR:         " ${CMAKE_BINARY_DIR})
 
 #cria executável
-add_executable(communication src/communication.cpp)
+add_executable(decision src/decision.cpp)
 
-#adiciona as dependências = e.g. communication depende do blackboard
-add_dependencies(communication blackboard)
+#adiciona as dependências = e.g. decison depende do blackboard
+add_dependencies(decision blackboard)
 
 #adiciona o link para a biblioteca criada blackboard
-target_link_libraries(communication
+target_link_libraries(decision
   blackboard
+  ${OpenCV_LIBRARIES}
 )
 #indica caminho para instalação 
-install(TARGETS communication DESTINATION ${RoboFEI-HT_BINARY_DIR}/bin)
+install(TARGETS decision DESTINATION ${RoboFEI-HT_BINARY_DIR}/bin)
 #install(TARGETS communication DESTINATION /usr/local/bin)
 
 

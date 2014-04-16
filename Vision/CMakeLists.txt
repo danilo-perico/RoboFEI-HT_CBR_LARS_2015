@@ -1,7 +1,10 @@
+find_package(OpenCV REQUIRED)
+
 #inclui o caminho para os headers (*.h) usando a variável de ambiente (e.g.: ${RoboFEI-HT_SOURCE_DIR})  
 include_directories(
   include
   ${RoboFEI-HT_SOURCE_DIR}/Blackboard/include
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 #link_directories(
@@ -10,17 +13,17 @@ include_directories(
 
 #MESSAGE(STATUS "CMAKE_SOURCE_DIR:         " ${RoboFEI-HT_SOURCE_DIR})
 #MESSAGE(STATUS "CMAKE_BINARY_DIR:         " ${RoboFEI-HT_BINARY_DIR})
-#MESSAGE(STATUS "CMAKE_BINARY_DIR:         " ${CMAKE_BINARY_DIR})
 
 #cria executável
-add_executable(communication src/communication.cpp)
+add_executable(vision src/vision.cpp)
 
 #adiciona as dependências = e.g. communication depende do blackboard
-add_dependencies(communication blackboard)
+add_dependencies(vision blackboard)
 
-#adiciona o link para a biblioteca criada blackboard
-target_link_libraries(communication
+#adiciona o link para a biblioteca criada para o blackboard
+target_link_libraries(vision
   blackboard
+  ${OpenCV_LIBRARIES}
 )
 #indica caminho para instalação 
 install(TARGETS communication DESTINATION ${RoboFEI-HT_BINARY_DIR}/bin)

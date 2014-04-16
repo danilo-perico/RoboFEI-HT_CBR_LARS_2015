@@ -13,17 +13,17 @@ include_directories(
 #MESSAGE(STATUS "CMAKE_BINARY_DIR:         " ${CMAKE_BINARY_DIR})
 
 #cria executável
-add_executable(communication src/communication.cpp)
+add_executable(localization src/localization.cpp)
 
-#adiciona as dependências = e.g. communication depende do blackboard
-add_dependencies(communication blackboard)
+#adiciona as dependências = e.g. localization depende do blackboard
+add_dependencies(localization blackboard)
 
 #adiciona o link para a biblioteca criada blackboard
-target_link_libraries(communication
+target_link_libraries(localization
   blackboard
 )
 #indica caminho para instalação 
-install(TARGETS communication DESTINATION ${RoboFEI-HT_BINARY_DIR}/bin)
+install(TARGETS localization DESTINATION ${RoboFEI-HT_BINARY_DIR}/bin)
 #install(TARGETS communication DESTINATION /usr/local/bin)
 
 
