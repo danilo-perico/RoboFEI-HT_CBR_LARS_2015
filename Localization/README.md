@@ -1,4 +1,0 @@
-RoboFEI-HT
-Localization process
-
-
