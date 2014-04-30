@@ -1,7 +1,7 @@
 /*--------------------------------------------------------------------
 
 ******************************************************************************
-  * @file       communication.cc
+  * @file       communication.cpp
   * @author     Danilo Hernnai Perico - ROBOFEI-HT - FEI
   * @version    V0.0.1
   * @created    08/04/2014
@@ -47,7 +47,7 @@ cout << "Communication" << endl;
 
 while(1)
 {
-for (int i = 0;i<100000;i++)
+for (int i = 0;i<10000;i++)
 {
 //SENT VARIABLES TO DECISION
 COM_ACTION_ROBOT1 = 1;
@@ -76,7 +76,7 @@ COM_POS_OPP_C_ROBOT3 = 62;
 COM_POS_OPP_C_ROBOT4 = 63;
 COM_REFEREE;
 
-usleep(1);
+usleep(50);
 //RECEIVED VARIABLES FROM DECISION
 A = DECISION_STATE;
 B = DECISION_POSITION_A;
@@ -89,7 +89,7 @@ H = DECISION_OPP3_POS;
 }
 
 #ifdef DEBUG
-cout << A <<" "<< B <<" "<< C <<" "<< D <<" "<<E <<" "<< F <<" "<< G<<" "<< H << endl;
+cout << "communication received " << A <<" "<< B <<" "<< C <<" "<< D <<" "<<E <<" "<< F <<" "<< G<<" "<< H << endl;
 #endif
 
 }

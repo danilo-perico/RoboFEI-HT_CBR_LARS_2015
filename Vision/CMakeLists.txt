@@ -18,7 +18,9 @@ include_directories(
 add_executable(vision src/vision.cpp)
 
 #adiciona as dependências = e.g. communication depende do blackboard
-add_dependencies(vision blackboard)
+add_dependencies(vision blackboard
+		${OpenCV_LIBRARIES}
+)
 
 #adiciona o link para a biblioteca criada para o blackboard
 target_link_libraries(vision
@@ -26,7 +28,7 @@ target_link_libraries(vision
   ${OpenCV_LIBRARIES}
 )
 #indica caminho para instalação 
-install(TARGETS communication DESTINATION ${RoboFEI-HT_BINARY_DIR}/bin)
+install(TARGETS vision DESTINATION ${RoboFEI-HT_BINARY_DIR}/bin)
 #install(TARGETS communication DESTINATION /usr/local/bin)
 
 

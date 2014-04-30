@@ -17,8 +17,8 @@
 
 #include <iostream>
 #include <unistd.h>
-#include "../Include/planning.h"
-#include "../Include/blackboard.h"
+#include "planning.h"
+#include "blackboard.h"
 
 #define DEBUG
 
@@ -46,7 +46,7 @@ int main()
                         plan.turn_right();
                         break;
            }
-       sleep(1)    ;
+       sleep(1) ;
        }
     return 0;
 }

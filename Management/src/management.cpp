@@ -59,14 +59,18 @@ int main()
     //path = getenv("HOME");
     sprintf(path1,"control");
     sprintf(path2,"decision");
-sprintf(path3,"communication");
+    sprintf(path3,"communication");
+    sprintf(path4,"vision");
+    sprintf(path5,"localization");
+    sprintf(path6,"planning");
+
     //sprintf(path2,"%s/RoboFEI-HT/Decision/bin/Debug/decision",path);
     //sprintf(path3,"%s/RoboFEI-HT/Planning/bin/Debug/planning",path);
     //sprintf(path4,"%s/RoboFEI-HT/Control/bin/Debug/Control",path);
     //sprintf(path5,"%s/RoboFEI-HT/Localization/bin/Debug/localization",path);
     //sprintf(path6,"%s/RoboFEI-HT/Communication/bin/Debug/communication",path);
 
-  //  using_shared_memory(); //Função que cria e acopla a memória compartilhada
+    using_shared_memory(); //Função que cria e acopla a memória compartilhada
 
     char* arg_list[] = {
     NULL
@@ -77,14 +81,15 @@ sprintf(path3,"communication");
     //spawn (path1,arg_list);
     spawn (path1,arg_list);
     spawn (path2,arg_list);
-spawn (path3,arg_list);
-    //  sleep(3);
+    spawn (path3,arg_list);
+    spawn (path4,arg_list);
+    spawn (path5,arg_list);
+    spawn (path6,arg_list);
+
     //spawn (path3,arg_list);
     //spawn (path4,arg_list);
     //spawn (path5,arg_list);
     //spawn (path6,arg_list);
-
-
 
     return 0;
 }

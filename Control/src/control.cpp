@@ -28,6 +28,12 @@ while(1)
     usleep(300000);
 
     cout<< "CONTROL_ACTION = "<<CONTROL_ACTION<<endl<<endl;
+
+usleep(50);
+CONTROL_HEIGHT_A = 100;
+CONTROL_HEIGHT_B = 200;
+CONTROL_HEIGHT_C = 300;
+
 }
     return 0;
 }

@@ -34,7 +34,7 @@ while(1)
 {
 
 
-for (int ctrl=0; ctrl<10000000; ctrl++)
+for (int ctrl=0; ctrl<10000; ctrl++)
 {
 //RECEIVED VARIABLES
 a = COM_ACTION_ROBOT1;
@@ -72,9 +72,10 @@ ah = VISION_DIST_OPP2;
 ai = VISION_DIST_OPP3;
 aj = CONTROL_ACTION;
 
+usleep(50);
 //SENT VARIABLES
-DECISION_ACTION_A = 1+inc; //PLANNING
-DECISION_ACTION_B = 2+inc; //PLANNING
+DECISION_ACTION_A = 15; //PLANNING
+DECISION_ACTION_B = 16+inc; //PLANNING
 DECISION_STATE = 1+inc; //COMMUNICATION
 DECISION_POSITION_A = 10+inc; //COMMUNICATION
 DECISION_POSITION_B = 11+inc; //COMMUNICATION
@@ -83,12 +84,12 @@ DECISION_BALL_POS = 20+inc; //COMMUNICATION
 DECISION_OPP1_POS = 30+inc; //COMMUNICATION
 DECISION_OPP2_POS = 31+inc; //COMMUNICATION
 DECISION_OPP3_POS = 32+inc; //COMMUNICATION
-
-
 }
+
 inc++;
+
 #ifdef DEBUG
-cout << a <<" "<< b <<" "<< c <<" "<< d <<" "<< e <<" "<< f <<" "<< g <<" "<< h <<" "<< i <<" "<< j <<" "<< k <<" "<< l <<" "<< m <<" "<< n <<" "<< o <<" "<< p <<" "<< q <<" "<< r <<" "<< s <<" "<< t <<" "<< u <<" "<< v <<" "<< x <<" "<< z << endl;
+cout << "decision received " << a <<" "<< b <<" "<< c <<" "<< d <<" "<< e <<" "<< f <<" "<< g <<" "<< h <<" "<< i <<" "<< j <<" "<< k <<" "<< l <<" "<< m <<" "<< n <<" "<< o <<" "<< p <<" "<< q <<" "<< r <<" "<< s <<" "<< t <<" "<< u <<" "<< v <<" "<< x <<" "<< z << " " << ab << " " << ac <<" " << ad << " "<< ae << " " << af <<" "<< ag << " " << ah << " " << ai << endl;
 #endif
 }
 }

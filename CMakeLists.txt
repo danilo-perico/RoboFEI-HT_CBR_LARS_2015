@@ -5,5 +5,8 @@ add_subdirectory(Blackboard)
 add_subdirectory(Communication)
 add_subdirectory(Control)
 add_subdirectory(Decision)
+add_subdirectory(Planning)
+add_subdirectory(Vision)
+add_subdirectory(Localization)
 add_subdirectory(Management)
 

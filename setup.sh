@@ -42,7 +42,7 @@ make all
 
 make install
 
-echo -e "${red} Terminal will now shutdown in order to apply changes ${NC}" 
-sleep 5
-kill -TERM `pidof gnome-terminal`
+echo -e "${red} Please close terminal in order to apply changes ${NC}" 
+#sleep 5
+#kill -TERM `pidof gnome-terminal`
 
