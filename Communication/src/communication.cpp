@@ -5,7 +5,7 @@
   * @author     Danilo Hernnai Perico - ROBOFEI-HT - FEI
   * @version    V0.0.1
   * @created    08/04/2014
-  * @Modified   10/04/2014
+  * @Modified   30/04/2014
   * @e-mail     danilo.perico@gmail.com
   * @brief      Communication
   ****************************************************************************

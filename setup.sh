@@ -3,7 +3,7 @@ NC='\e[0m' # No Color
 red='\e[0;31m'
 
 echo
-echo  "This script will configure bashrc file and install RoboFEI-HT software"
+sudo echo  "This script will configure bashrc file and install RoboFEI-HT software"
 echo
 read -p "Continue? (y/n) " -n 1 -r
 echo 
@@ -11,7 +11,6 @@ if [[  $REPLY =~ ^[Nn]$ ]]
 then
     exit 1
 fi
-
 
 if grep "LD_LIBRARY" ~/.bashrc; then
 	echo -e "${blue}  LD_LIBRARY_PATH has already been set up... canceling process ${NC}"
@@ -32,6 +31,22 @@ else
 	sleep 1
 fi
 
+echo -e "${blue} Installing serial ${NC}"
+cd IMU/serial
+
+mkdir build
+
+cd build
+
+cmake ../
+
+make all
+
+sudo make install
+
+cd ../../..
+
+echo -e "${blue} Installing whole software ${NC}"
 mkdir build
 
 cd build
@@ -41,6 +56,8 @@ cmake ../
 make all
 
 make install
+
+
 
 echo -e "${red} Please close terminal in order to apply changes ${NC}" 
 #sleep 5

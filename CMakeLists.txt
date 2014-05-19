@@ -9,4 +9,5 @@ add_subdirectory(Planning)
 add_subdirectory(Vision)
 add_subdirectory(Localization)
 add_subdirectory(Management)
+add_subdirectory(IMU)
 

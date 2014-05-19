@@ -1,16 +1,16 @@
 /*--------------------------------------------------------------------
 
 ******************************************************************************
-  * @file       blackboard.h
-  * @author     Isaac Jesus da Silva - ROBOFEI-HT - FEI
-  * @version    V0.0.2
-  * @created    07/04/2014
-  * @Modified   11/04/2014
-  * @e-mail     isaac25silva@yahoo.com.br
-  * @brief      black board
-  ****************************************************************************
+* @file blackboard.h
+* @author Isaac Jesus da Silva - ROBOFEI-HT - FEI
+* @version V0.0.2
+* @created 07/04/2014
+* @Modified 11/04/2014
+* @e-mail isaac25silva@yahoo.com.br
+* @brief black board
+****************************************************************************
 
-  Arquivo fonte contendo as funções que criam ou acopla a memória compartilhada
+Arquivo fonte contendo as funções que criam ou acopla a memória compartilhada
 
 /--------------------------------------------------------------------*/
 
@@ -31,12 +31,13 @@ float *memf ; //Variável que manipula memória compartilhada
 
 //Depois de criado a memória compartilhada, para verificar se ela realmente foi criada
 // e quantos processos estão utilizando, digite no terminal o comando $ipcs -m
+// será a memoria criada ->   key = 0x0000007b    bytes = 2048
 // nattch = number of attached processes
 
 int using_shared_memory()
 {
     // --- Variaveis usada para memoria compartilhada -----
-    int shmid ;  // identificador da memoria comum //
+    int shmid ; // identificador da memoria comum //
     const unsigned short int size = 2048; // tamanho da memória em Bytes
     int flag = 0;
     //-----------------------------------------------------
@@ -77,8 +78,8 @@ int using_shared_memory()
 
             /* destruicao do segmento */
             //if ((shmctl(shmid, IPC_RMID, NULL)) == -1){
-            //    perror("Erro shmctl()");
-             //   return(1) ;
+            // perror("Erro shmctl()");
+             // return(1) ;
             //}
     return(0);
 }

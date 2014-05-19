@@ -1,16 +1,16 @@
 /*--------------------------------------------------------------------
 
 ******************************************************************************
-  * @file       blackboard.h
-  * @author     Isaac Jesus da Silva - ROBOFEI-HT - FEI
-  * @version    V0.0.0
-  * @created    07/04/2014
-  * @Modified   07/04/2014
-  * @e-mail     isaac25silva@yahoo.com.br
-  * @brief      Main header black board
-  ****************************************************************************
+* @file blackboard.h
+* @author Isaac Jesus da Silva - ROBOFEI-HT - FEI
+* @version V0.0.0
+* @created 07/04/2014
+* @Modified 15/05/2014
+* @e-mail isaac25silva@yahoo.com.br
+* @brief Main header black board
+****************************************************************************
 
-  Arquivo de cabeçalho contendo as funções e definições do black board
+Arquivo de cabeçalho contendo as funções e definições do black board
 
 /--------------------------------------------------------------------*/
 
@@ -19,15 +19,8 @@
 #define PLANNING_PARAMETER_VEL *(mem+1)
 #define PLANNING_PARAMETER_ANGLE *(mem+2)
 #define IMU_STATE *(mem+3)
-#define IMU_GYRO_X *(mem+4)
-#define IMU_GYRO_Y *(mem+5)
-#define IMU_GYRO_Z *(mem+6)
-#define IMU_ACCEL_X *(mem+7)
-#define IMU_ACCEL_Y *(mem+8)
-#define IMU_ACCEL_Z *(mem+9)
-#define IMU_COMPASS_A *(mem+10)
-#define IMU_COMPASS_B *(mem+11)
-#define IMU_COMPASS_C *(mem+12)
+
+
 #define CONTROL_ACTION *(mem+13)
 #define CONTROL_HEIGHT_A *(mem+14)
 #define CONTROL_HEIGHT_B *(mem+15)
@@ -70,11 +63,27 @@
 #define LOCALIZATION_X *(mem+52)
 #define LOCALIZATION_Y *(mem+53)
 #define LOCALIZATION_THETA *(mem+54)
+
 #define VISION_DIST_BALL *(memf+1)
 #define VISION_DIST_GOAL *(memf+2)
 #define VISION_DIST_OPP1 *(memf+3)
 #define VISION_DIST_OPP2 *(memf+4)
 #define VISION_DIST_OPP3 *(memf+5)
+#define IMU_GYRO_X *(memf+6)
+#define IMU_GYRO_Y *(memf+7)
+#define IMU_GYRO_Z *(memf+8)
+#define IMU_ACCEL_X *(memf+9)
+#define IMU_ACCEL_Y *(memf+10)
+#define IMU_ACCEL_Z *(memf+11)
+#define IMU_COMPASS_X *(memf+12)
+#define IMU_COMPASS_Y *(memf+13)
+#define IMU_COMPASS_Z *(memf+14)
+#define IMU_EULER_X *(memf+15)
+#define IMU_EULER_Y *(memf+16)
+#define IMU_EULER_Z *(memf+17)
+#define IMU_QUAT_X *(memf+18)
+#define IMU_QUAT_Y *(memf+19)
+#define IMU_QUAT_Z *(memf+20)
 
 //----global variables------------------------------------------------
 extern int *mem ; //Variável que manipula memória compartilhada

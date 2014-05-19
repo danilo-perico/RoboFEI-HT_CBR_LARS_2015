@@ -6,7 +6,7 @@ class communication
 {
     public:
         communication();
-        virtual ~communication();
+        ~communication();
     protected:
     private:
 };
