@@ -25,7 +25,7 @@ add_dependencies(imu
 blackboard serial comms registers ${Boost_LIBRARIES})
 
 target_link_libraries(imu 
-blackboard serial comms registers ${Boost_LIBRARIES})
+blackboard serial comms registers rt pthread ${Boost_LIBRARIES})
 
 install(TARGETS imu DESTINATION ${RoboFEI-HT_BINARY_DIR}/bin)
 #install(TARGETS control DESTINATION /usr/local/bin)
