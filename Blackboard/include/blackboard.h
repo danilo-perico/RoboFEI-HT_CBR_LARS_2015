@@ -63,6 +63,9 @@ Arquivo de cabeçalho contendo as funções e definições do black board
 #define LOCALIZATION_X *(mem+52)
 #define LOCALIZATION_Y *(mem+53)
 #define LOCALIZATION_THETA *(mem+54)
+#define VISION_MOTOR_ANGLE *(mem+55)
+#define VISION_LOST_BALL *(mem+56)
+#define VISION_SEARCH_BALL *(mem+57)
 
 #define VISION_DIST_BALL *(memf+1)
 #define VISION_DIST_GOAL *(memf+2)
@@ -84,6 +87,7 @@ Arquivo de cabeçalho contendo as funções e definições do black board
 #define IMU_QUAT_X *(memf+18)
 #define IMU_QUAT_Y *(memf+19)
 #define IMU_QUAT_Z *(memf+20)
+
 
 //----global variables------------------------------------------------
 extern int *mem ; //Variável que manipula memória compartilhada

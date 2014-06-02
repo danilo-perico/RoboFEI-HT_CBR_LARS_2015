@@ -4,6 +4,7 @@ find_package(OpenCV REQUIRED)
 include_directories(
   include
   ${RoboFEI-HT_SOURCE_DIR}/Blackboard/include
+  ${RoboFEI-HT_SOURCE_DIR}/Dynamixel/include
   ${OpenCV_INCLUDE_DIRS}
 )
 
@@ -18,12 +19,14 @@ include_directories(
 add_executable(vision src/vision.cpp)
 
 #adiciona as dependências = e.g. communication depende do blackboard
-add_dependencies(vision blackboard
+add_dependencies(vision dynamixel dxl_hal blackboard
 		${OpenCV_LIBRARIES}
 )
 
 #adiciona o link para a biblioteca criada para o blackboard
-target_link_libraries(vision
+target_link_libraries(vision 
+  dynamixel 
+  dxl_hal
   blackboard
   ${OpenCV_LIBRARIES}
 )

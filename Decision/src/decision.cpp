@@ -13,30 +13,59 @@
 
 #include <iostream>
 #include <blackboard.h>
-//#include<pthread.h>
 #include<unistd.h>
 
 #define DEBUG
 
 int main(void)
 {
-using namespace std;
-int a = 0, b = 0, c = 0;
-int d, e, f, g, h, i, j, k, l , m, n, o, p, q, r, s, t, u, v, x, z, aa, ab, ac, ad, ae, af, ag, ah, ai, aj, inc = 0;
+
+float dist_ball;
 
 using_shared_memory();
 
-#ifdef DEBUG
-cout << "Decision" << endl;
-#endif
+
+std::cout<<"Decision"<<std::endl;
 
 while(1)
 {
 
-
-for (int ctrl=0; ctrl<10000; ctrl++)
+dist_ball = VISION_DIST_BALL;
+//head_motor_angle = VISION_MOTOR_ANGLE;
+if (VISION_SEARCH_BALL == 1)
 {
-//RECEIVED VARIABLES
+	DECISION_ACTION_A = 0;
+	if (VISION_LOST_BALL == 1)
+		DECISION_ACTION_A = 1;
+}
+
+else
+{
+	{
+	if (dist_ball > 0.05)
+        {
+            //virar((594-dxl_read_word( 2, P_PRESENT_POSITION_L))/100);//100
+
+            if(dist_ball > 0.20)
+               DECISION_ACTION_A = 2;
+
+            if(dist_ball <= 0.20)
+                DECISION_ACTION_A = 3;
+
+        }
+        else
+           if(dist_ball > 0.05)
+              DECISION_ACTION_A = 1;
+
+	}
+}
+sleep(1);
+std::cout << "Action " << DECISION_ACTION_A << std::endl;
+std::cout<< "Lost Ball " << VISION_LOST_BALL << std::endl;
+std::cout<< "Search ball " << VISION_SEARCH_BALL <<std::endl;
+
+
+/*
 a = COM_ACTION_ROBOT1;
 b = COM_ACTION_ROBOT2;
 c = COM_ACTION_ROBOT3;
@@ -91,5 +120,7 @@ inc++;
 #ifdef DEBUG
 cout << "decision received " << a <<" "<< b <<" "<< c <<" "<< d <<" "<< e <<" "<< f <<" "<< g <<" "<< h <<" "<< i <<" "<< j <<" "<< k <<" "<< l <<" "<< m <<" "<< n <<" "<< o <<" "<< p <<" "<< q <<" "<< r <<" "<< s <<" "<< t <<" "<< u <<" "<< v <<" "<< x <<" "<< z << " " << ab << " " << ac <<" " << ad << " "<< ae << " " << af <<" "<< ag << " " << ah << " " << ai << endl;
 #endif
+*/
 }
 }
+
