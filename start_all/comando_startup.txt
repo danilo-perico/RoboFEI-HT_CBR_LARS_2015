@@ -1,0 +1,4 @@
+#inserir este comando no "Startup Applications"
+gnome-terminal -x sh -c './home/fei/RoboFEI-HT/start_all/start_all.sh'
+
+#a ideia básica do script é a cada X segundos verificar o ProcessID de cada processo. Se retornar NULL, então chamar o script do processo.

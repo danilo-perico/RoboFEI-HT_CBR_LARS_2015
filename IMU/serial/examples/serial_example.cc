@@ -27,7 +27,7 @@
 #include <unistd.h>
 #endif
 
-#include "serial/serial.h"
+#include "../include/serial.h"
 
 using std::string;
 using std::exception;

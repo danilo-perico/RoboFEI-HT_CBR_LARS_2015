@@ -1,25 +1,42 @@
+# @author Isaac Jesus da Silva - ROBOFEI-HT - FEI
+# @version V0.0.1
+# @created 04/07/2014
+# @Modified 15/06/2015 
+#
+# 
+# Para Help acesse http://www.cmake.org/cmake/help/v2.8.0/cmake.html#command:link_directories
+
+find_package(Boost REQUIRED COMPONENTS program_options)
+
 include_directories(
   include
   ${RoboFEI-HT_SOURCE_DIR}/Blackboard/include
-  ${RoboFEI-HT_SOURCE_DIR}/Dynamixel/include
+  ${RoboFEI-HT_SOURCE_DIR}/Control/Linux/include
+  ${RoboFEI-HT_SOURCE_DIR}/Control/Framework/include
 )
 
-link_directories(
-  ${RoboFEI-HT_BINARY_DIR}/Blackboard}
-  ${RoboFEI-HT_BINARY_DIR}/Dynamixel}
-)
+include_directories(include)
+add_library(libcontrol SHARED ./Linux/project/tutorial/action_script/main.cpp ./Linux/project/tutorial/action_script/kbhit.cpp)
+install(TARGETS libcontrol DESTINATION ${RoboFEI-HT_BINARY_DIR}/lib)
+
+#link_directories(
+#  ${RoboFEI-HT_BINARY_DIR}/Blackboard}
+#  ${RoboFEI-HT_BINARY_DIR}/Dynamixel}
+#)
 
 #MESSAGE(STATUS "CMAKE_SOURCE_DIR:         " ${RoboFEI-HT_SOURCE_DIR})
 #MESSAGE(STATUS "CMAKE_BINARY_DIR:         " ${RoboFEI-HT_BINARY_DIR})
+#execute_process(COMMAND pwd)
 
-add_executable(control src/control.cpp)
-add_dependencies(control dynamixel dxl_hal blackboard)
+#cria executável
+add_executable(control ./Linux/project/tutorial/action_script/main.cpp)
 
-target_link_libraries(control
-dynamixel  
-dxl_hal 
-blackboard
- )
+#adiciona as dependências
+add_dependencies(control libcontrol dynamixel  dxl_hal blackboard)
+
+set(LIB_DARWIN ${RoboFEI-HT_SOURCE_DIR}/Control/Linux/lib/darwin.a)
+
+target_link_libraries(control libcontrol dynamixel dxl_hal blackboard ${LIB_DARWIN} -lpthread -ljpeg -lrt  ${Boost_LIBRARIES})
 
 install(TARGETS control DESTINATION ${RoboFEI-HT_BINARY_DIR}/bin)
 #install(TARGETS control DESTINATION /usr/local/bin)

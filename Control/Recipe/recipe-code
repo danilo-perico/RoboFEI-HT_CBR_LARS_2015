@@ -1,0 +1,22 @@
+
+# FIXME: It's uncool that we have to duplicate CXXFLAGS in the bitbake file.
+do_compile () {
+    main_CXXFLAGS="$CXXFLAGS -DLINUX -D_GNU_SOURCE"
+    export CXXFLAGS="$main_CXXFLAGS -I../include -I../../Framework/include -shared -g"
+    oe_runmake -C Linux/build
+    mkdir -p outbin
+    export CXXFLAGS="$main_CXXFLAGS -I../../include -I../../../Framework/include"
+    for i in action_editor demo demo_jimmy dxl_monitor firmware_installer offset_tuner rme walk_tuner ; do
+        oe_runmake -C Linux/project/$i
+        if [ "$i" = "demo_jimmy" ] ; then
+            cp Linux/project/$i/demo outbin/$i
+        else
+            cp Linux/project/$i/$i outbin/$i
+        fi
+    done
+}
+
+do_install () {
+    mkdir -p ${D}${bindir}
+    cp outbin/* ${D}${bindir}
+}

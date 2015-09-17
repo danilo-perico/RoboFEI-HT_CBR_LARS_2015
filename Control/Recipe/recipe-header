@@ -1,0 +1,7 @@
+SUMMARY = "Control software for 21st Century Robot Projects"
+DESCRIPTION = "21CRobotFramework is a suite of programs based on the DARwin framework \
+for controlling Jimmy the Robot."
+SECTION = "console/utils"
+LICENSE = "LICENSE"
+S = "${WORKDIR}"
+DEPENDS = "jpeg"

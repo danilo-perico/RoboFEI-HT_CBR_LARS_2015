@@ -1,0 +1,1424 @@
+[1mdiff --git a/Linux/build/Makefile b/Linux/build/Makefile[m
+[1mindex 809472f..9853c2d 100644[m
+[1m--- a/Linux/build/Makefile[m
+[1m+++ b/Linux/build/Makefile[m
+[36m@@ -46,6 +46,7 @@[m [mOBJS =  ../../Framework/src/CM730.o     	\[m
+         ../../Framework/src/vision/ImgProcess.o 	\[m
+         ../../Framework/src/minIni/minIni.o	\[m
+         ../../Framework/src/controller/PS3Controller.o	\[m
+[32m+[m[32m        ../../Framework/src/commander/SerialInputCommander.o	\[m
+         streamer/httpd.o           \[m
+         streamer/jpeg_utils.o      \[m
+         streamer/mjpg_streamer.o   \[m
+[36m@@ -56,7 +57,6 @@[m [mOBJS =  ../../Framework/src/CM730.o     	\[m
+         LinuxNetwork.o[m
+ [m
+ $(TARGET): $(OBJS)[m
+[31m-	mkdir -p ../lib/[m
+ 	$(AR) $(ARFLAGS) ../lib/$(TARGET) $(OBJS) [m
+ #	$(CC) -o $(TARGET) $(OBJS) $(LFLAGS)[m
+ [m
+[1mdiff --git a/Linux/project/walk_tuner1/Makefile b/Linux/project/walk_tuner1/Makefile[m
+[1mdeleted file mode 100644[m
+[1mindex 1b295ea..0000000[m
+[1m--- a/Linux/project/walk_tuner1/Makefile[m
+[1m+++ /dev/null[m
+[36m@@ -1,35 +0,0 @@[m
+[31m-###############################################################[m
+[31m-#[m
+[31m-# Purpose: Makefile for "walk_tuner"[m
+[31m-# Author.: robotis[m
+[31m-# Version: 0.1[m
+[31m-# License: GPL[m
+[31m-#[m
+[31m-###############################################################[m
+[31m-[m
+[31m-TARGET = walk_tuner[m
+[31m-[m
+[31m-CXX = g++[m
+[31m-INCLUDE_DIRS = -I../../include -I../../../Framework/include[m
+[31m-CXXFLAGS +=	-O2 -DLINUX -g -Wall -fmessage-length=0 $(INCLUDE_DIRS)[m
+[31m-LIBS += -lpthread -lncurses -lrt[m
+[31m-[m
+[31m-OBJS =	./cmd_process.o	\[m
+[31m-		./main.o[m
+[31m-[m
+[31m-[m
+[31m-all: darwin.a $(TARGET)[m
+[31m-[m
+[31m-darwin.a:[m
+[31m-	make -C ../../build[m
+[31m-[m
+[31m-$(TARGET): $(OBJS) ../../lib/darwin.a[m
+[31m-	$(CXX) -o $(TARGET) $(OBJS) ../../lib/darwin.a $(LIBS)[m
+[31m-	[m
+[31m-clean:[m
+[31m-	rm -f $(OBJS) $(TARGET)[m
+[31m-[m
+[31m-[m
+[31m-[m
+[31m-[m
+[31m-[m
+[1mdiff --git a/Linux/project/walk_tuner1/cmd_process.cpp b/Linux/project/walk_tuner1/cmd_process.cpp[m
+[1mdeleted file mode 100644[m
+[1mindex cdb3b54..0000000[m
+[1m--- a/Linux/project/walk_tuner1/cmd_process.cpp[m
+[1m+++ /dev/null[m
+[36m@@ -1,958 +0,0 @@[m
+[31m-#include <stdio.h>[m
+[31m-#include <string.h>[m
+[31m-#include <unistd.h>[m
+[31m-#include <fcntl.h>[m
+[31m-#include <termios.h>[m
+[31m-#include <term.h>[m
+[31m-#include <ncurses.h>[m
+[31m-#include "cmd_process.h"[m
+[31m-[m
+[31m-using namespace Robot;[m
+[31m-[m
+[31m-[m
+[31m-int Col = PARAM_COL;[m
+[31m-int Row = WALKING_MODE_ROW;[m
+[31m-int Old_Col;[m
+[31m-int Old_Row;[m
+[31m-bool bBeginCommandMode = false;[m
+[31m-bool bEdited = false;[m
+[31m-int indexPage = 1;[m
+[31m-Action::PAGE Page;[m
+[31m-Action::STEP Step;[m
+[31m-[m
+[31m-[m
+[31m-int _getch()[m
+[31m-{[m
+[31m-	struct termios oldt, newt;[m
+[31m-	int ch;[m
+[31m-	tcgetattr( STDIN_FILENO, &oldt );[m
+[31m-	newt = oldt;[m
+[31m-	newt.c_lflag &= ~(ICANON | ECHO);[m
+[31m-	tcsetattr( STDIN_FILENO, TCSANOW, &newt );[m
+[31m-	ch = getchar();[m
+[31m-	tcsetattr( STDIN_FILENO, TCSANOW, &oldt );[m
+[31m-	return ch;[m
+[31m-}[m
+[31m-[m
+[31m-int kbhit(void)[m
+[31m-{[m
+[31m-  struct termios oldt, newt;[m
+[31m-  int ch;[m
+[31m-  int oldf;[m
+[31m-[m
+[31m-  tcgetattr(STDIN_FILENO, &oldt);[m
+[31m-  newt = oldt;[m
+[31m-  newt.c_lflag &= ~(ICANON | ECHO);[m
+[31m-  tcsetattr(STDIN_FILENO, TCSANOW, &newt);[m
+[31m-  oldf = fcntl(STDIN_FILENO, F_GETFL, 0);[m
+[31m-  fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK);[m
+[31m-[m
+[31m-  ch = getchar();[m
+[31m-[m
+[31m-  tcsetattr(STDIN_FILENO, TCSANOW, &oldt);[m
+[31m-  fcntl(STDIN_FILENO, F_SETFL, oldf);[m
+[31m-[m
+[31m-  if(ch != EOF)[m
+[31m-  {[m
+[31m-    ungetc(ch, stdin);[m
+[31m-    return 1;[m
+[31m-  }[m
+[31m-[m
+[31m-  return 0;[m
+[31m-}[m
+[31m-[m
+[31m-struct termios oldterm, new_term;[m
+[31m-void set_stdin(void)[m
+[31m-{[m
+[31m-	tcgetattr(0,&oldterm);[m
+[31m-	new_term = oldterm;[m
+[31m-	new_term.c_lflag &= ~(ICANON | ECHO | ISIG); // ÀÇ¹Ì´Â struct termios¸¦ Ã£À¸¸é µÊ.[m
+[31m-	new_term.c_cc[VMIN] = 1;[m
+[31m-	new_term.c_cc[VTIME] = 0;[m
+[31m-	tcsetattr(0, TCSANOW, &new_term);[m
+[31m-}[m
+[31m-[m
+[31m-void reset_stdin(void)[m
+[31m-{[m
+[31m-	tcsetattr(0, TCSANOW, &oldterm);[m
+[31m-}[m
+[31m-[m
+[31m-bool AskSave()[m
+[31m-{[m
+[31m-	if(bEdited == true)[m
+[31m-	{[m
+[31m-		PrintCmd("Are you sure? (y/n)");[m
+[31m-		if(_getch() != 'y')[m
+[31m-		{[m
+[31m-			ClearCmd();[m
+[31m-			return true;[m
+[31m-		}[m
+[31m-	}[m
+[31m-[m
+[31m-	return false;[m
+[31m-}[m
+[31m-[m
+[31m-[m
+[31m-void GoToCursor(int col, int row)[m
+[31m-{[m
+[31m-	char *cursor;[m
+[31m-	char *esc_sequence;[m
+[31m-	cursor = tigetstr("cup");[m
+[31m-	esc_sequence = tparm(cursor, row, col);[m
+[31m-	putp(esc_sequence);[m
+[31m-[m
+[31m-	Col = col;[m
+[31m-	Row = row;[m
+[31m-}[m
+[31m-[m
+[31m-void MoveUpCursor()[m
+[31m-{[m
+[31m-	if(Col == PARAM_COL)[m
+[31m-	{[m
+[31m-		if(Row > 0)[m
+[31m-			GoToCursor(Col, Row-1);[m
+[31m-	}[m
+[31m-}[m
+[31m-[m
+[31m-void MoveDownCursor()[m
+[31m-{[m
+[31m-	if(Col == PARAM_COL)[m
+[31m-	{[m
+[31m-		if(Row < CMD_ROW - 1)[m
+[31m-			GoToCursor(Col, Row+1);[m
+[31m-	}[m
+[31m-}[m
+[31m-[m
+[31m-void MoveLeftCursor()[m
+[31m-{[m
+[31m-}[m
+[31m-[m
+[31m-void MoveRightCursor()[m
+[31m-{[m
+[31m-}[m
+[31m-[m
+[31m-void DrawIntro(CM730 *cm730)[m
+[31m-{	[m
+[31m-	int n = 0;[m
+[31m-	int param[JointData::NUMBER_OF_JOINTS * 5];[m
+[31m-	int wGoalPosition, wStartPosition, wDistance;[m
+[31m-[m
+[31m-	for(int id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++)[m
+[31m-	{[m
+[31m-		wStartPosition = MotionStatus::m_CurrentJoints.GetValue(id);[m
+[31m-		wGoalPosition = Walking::GetInstance()->m_Joint.GetValue(id);[m
+[31m-		if( wStartPosition > wGoalPosition )[m
+[31m-			wDistance = wStartPosition - wGoalPosition;[m
+[31m-		else[m
+[31m-			wDistance = wGoalPosition - wStartPosition;[m
+[31m-[m
+[31m-		wDistance >>= 2;[m
+[31m-		if( wDistance < 8 )[m
+[31m-			wDistance = 8;[m
+[31m-[m
+[31m-		param[n++] = id;[m
+[31m-		param[n++] = CM730::GetLowByte(wGoalPosition);[m
+[31m-		param[n++] = CM730::GetHighByte(wGoalPosition);[m
+[31m-		param[n++] = CM730::GetLowByte(wDistance);[m
+[31m-		param[n++] = CM730::GetHighByte(wDistance);[m
+[31m-	}[m
+[31m-[m
+[31m-	cm730->SyncWrite(MX28::P_GOAL_POSITION_L, 5, JointData::NUMBER_OF_JOINTS - 1, param);[m
+[31m-	[m
+[31m-	int nrows, ncolumns;[m
+[31m-    setupterm(NULL, fileno(stdout), (int *)0);[m
+[31m-    nrows = tigetnum("lines");[m
+[31m-    ncolumns = tigetnum("cols");[m
+[31m-[m
+[31m-	system("clear");[m
+[31m-	printf("\n");[m
+[31m-	printf("[Walking Tuner for DARwIn %s]\n", PROGRAM_VERSION);[m
+[31m-	printf("\n");[m
+[31m-	printf(" *Terminal screen size must be %d(col)x%d(row).\n", SCREEN_COL, SCREEN_ROW);[m
+[31m-    printf(" *Current terminal has %d columns and %d rows.\n", ncolumns, nrows);[m
+[31m-	printf("\n");[m
+[31m-	printf("\n");[m
+[31m-	printf("Press any key to start program...\n");[m
+[31m-	_getch();[m
+[31m-[m
+[31m-	MotionManager::GetInstance()->ResetGyroCalibration();[m
+[31m-[m
+[31m-	DrawScreen();[m
+[31m-}[m
+[31m-[m
+[31m-void DrawEnding()[m
+[31m-{[m
+[31m-	system("clear");[m
+[31m-	printf("\n");[m
+[31m-	printf("Terminate Walking Tuner");[m
+[31m-	printf("\n");[m
+[31m-}[m
+[31m-[m
+[31m-void DrawScreen()[m
+[31m-{[m
+[31m-	int old_col = Col;[m
+[31m-	int old_row = Row;[m
+[31m-[m
+[31m-	system("clear");[m
+[31m-	GoToCursor(0, 0);[m
+[31m-[m
+[31m-	// Display menu[m
+[31m-	//      01234567890123456789012345678901234  Total:35x29[m
+[31m-	printf("Walking Mode(on/off)      \n"); // 0[m
+[31m-	printf("X offset(mm)              \n"); // 1[m
+[31m-	printf("Y offset(mm)              \n"); // 2[m
+[31m-	printf("Z offset(mm)              \n"); // 3[m
+[31m-	printf("Roll(x) offset(degree)    \n"); // 4[m
+[31m-	printf("Pitch(y) offset(degree)   \n"); // 5[m
+[31m-	printf("Yaw(z) offset(degree)     \n"); // 6[m
+[31m-	printf("Hip pitch offset(degree)  \n"); // 7[m
+[31m-	printf("Auto balance(on/off)      \n"); // 8[m
+[31m-	printf("Period time(msec)         \n"); // 9[m
+[31m-	printf("DSP ratio                 \n"); // 0[m
+[31m-    printf("Step forward/back ratio   \n"); // 1[m
+[31m-	printf("Step forward/back(mm)     \n"); // 2[m
+[31m-	printf("Step right/left(mm)       \n"); // 3[m
+[31m-	printf("Step direction(degree)    \n"); // 4[m
+[31m-	printf("Turning aim(on/off)       \n"); // 5[m
+[31m-	printf("Foot height(mm)           \n"); // 6[m
+[31m-	printf("Swing right/left(mm)      \n"); // 7[m
+[31m-	printf("Swing top/down(mm)        \n"); // 8[m
+[31m-	printf("Pelvis offset(degree)     \n"); // 9[m
+[31m-	printf("Arm swing gain            \n"); // 0[m
+[31m-	printf("Balance knee gain         \n"); // 1[m
+[31m-	printf("Balance ankle pitch gain  \n"); // 2[m
+[31m-	printf("Balance hip roll gain     \n"); // 3[m
+[31m-	printf("Balance ankle roll gain   \n"); // 4[m
+[31m-    printf("P gain                    \n"); // 5[m
+[31m-    printf("I gain                    \n"); // 6[m
+[31m-    printf("D gain                    \n"); // 7[m
+[31m-    ClearCmd(); // 8[m
+[31m-[m
+[31m-	GoToCursor(PARAM_COL, WALKING_MODE_ROW);[m
+[31m-	if(Walking::GetInstance()->IsRunning() == true)[m
+[31m-		printf("ON     ");[m
+[31m-	else[m
+[31m-		printf("OFF    ");[m
+[31m-[m
+[31m-	GoToCursor(PARAM_COL, X_OFFSET_ROW);[m
+[31m-	printf("%d    ", (int)Walking::GetInstance()->X_OFFSET);[m
+[31m-[m
+[31m-	GoToCursor(PARAM_COL, Y_OFFSET_ROW);[m
+[31m-	printf("%d    ", (int)Walking::GetInstance()->Y_OFFSET);[m
+[31m-[m
+[31m-	GoToCursor(PARAM_COL, Z_OFFSET_ROW);[m
+[31m-	printf("%d    ", (int)Walking::GetInstance()->Z_OFFSET);[m
+[31m-[m
+[31m-	GoToCursor(PARAM_COL, ROLL_OFFSET_ROW);[m
+[31m-	printf("%.1f    ", Walking::GetInstance()->R_OFFSET);[m
+[31m-[m
+[31m-	GoToCursor(PARAM_COL, PITCH_OFFSET_ROW);[m
+[31m-	printf("%.1f    ", Walking::GetInstance()->P_OFFSET);[m
+[31m-[m
+[31m-	GoToCursor(PARAM_COL, YAW_OFFSET_ROW);[m
+[31m-	printf("%.1f    ", Walking::GetInstance()->A_OFFSET);[m
+[31m-[m
+[31m-	GoToCursor(PARAM_COL, HIP_PITCH_OFFSET_ROW);[m
+[31m-	printf("%.1f    ", Walking::GetInstance()->HIP_PITCH_OFFSET);[m
+[31m-[m
+[31m-	GoToCursor(PARAM_COL, AUTO_BALANCE_ROW);[m
+[31m-	if(Walking::GetInstance()->BALANCE_ENABLE == true)[m
+[31m-		printf("ON     ");[m
+[31m-	else[m
+[31m-		printf("OFF    ");[m
+[31m-[m
+[31m-	GoToCursor(PARAM_COL, PERIOD_TIME_ROW);[m
+[31m-	printf("%d    ", (int)Walking::GetInstance()->PERIOD_TIME);[m
+[31m-[m
+[31m-	GoToCursor(PARAM_COL, DSP_RATIO_ROW);[m
+[31m-	printf("%.2f    ", Walking::GetInstance()->DSP_RATIO);[m
+[31m-[m
+[31m-    GoToCursor(PARAM_COL, STEP_FORWARDBACK_RATIO_ROW);[m
+[31m-    printf("%.2f    ", Walking::GetInstance()->STEP_FB_RATIO);[m
+[31m-[m
+[31m-	GoToCursor(PARAM_COL, STEP_FORWARDBACK_ROW);[m
+[31m-	printf("%d    ", (int)Walking::GetInstance()->X_MOVE_AMPLITUDE);[m
+[31m-[m
+[31m-	GoToCursor(PARAM_COL, STEP_RIGHTLEFT_ROW);[m
+[31m-	printf("%d    ", (int)Walking::GetInstance()->Y_MOVE_AMPLITUDE);[m
+[31m-[m
+[31m-	GoToCursor(PARAM_COL, STEP_DIRECTION_ROW);[m
+[31m-	printf("%d    ", (int)Walking::GetInstance()->A_MOVE_AMPLITUDE);[m
+[31m-[m
+[31m-	GoToCursor(PARAM_COL, TURNING_AIM_ROW);[m
+[31m-	if(Walking::GetInstance()->A_MOVE_AIM_ON == true)[m
+[31m-		printf("ON     ");[m
+[31m-	else[m
+[31m-		printf("OFF    ");[m
+[31m-[m
+[31m-	GoToCursor(PARAM_COL, FOOT_HEIGHT_ROW);[m
+[31m-	printf("%d    ", (int)Walking::GetInstance()->Z_MOVE_AMPLITUDE);[m
+[31m-[m
+[31m-	GoToCursor(PARAM_COL, SWING_RIGHTLEFT_ROW);[m
+[31m-	printf("%.1f    ", Walking::GetInstance()->Y_SWAP_AMPLITUDE);[m
+[31m-[m
+[31m-	GoToCursor(PARAM_COL, SWING_TOPDOWN_ROW);[m
+[31m-	printf("%d    ", (int)Walking::GetInstance()->Z_SWAP_AMPLITUDE);[m
+[31m-[m
+[31m-	GoToCursor(PARAM_COL, PELVIS_OFFSET_ROW);[m
+[31m-	printf("%.1f    ", Walking::GetInstance()->PELVIS_OFFSET);[m
+[31m-[m
+[31m-	GoToCursor(PARAM_COL, ARM_SWING_GAIN_ROW);[m
+[31m-	printf("%.1f    ", Walking::GetInstance()->ARM_SWING_GAIN);[m
+[31m-[m
+[31m-	GoToCursor(PARAM_COL, BAL_KNEE_GAIN_ROW);[m
+[31m-	printf("%.2f    ", Walking::GetInstance()->BALANCE_KNEE_GAIN);[m
+[31m-[m
+[31m-	GoToCursor(PARAM_COL, BAL_ANKLE_PITCH_GAIN_ROW);[m
+[31m-	printf("%.2f    ", Walking::GetInstance()->BALANCE_ANKLE_PITCH_GAIN);[m
+[31m-[m
+[31m-	GoToCursor(PARAM_COL, BAL_HIP_ROLL_GAIN_ROW);[m
+[31m-	printf("%.2f    ", Walking::GetInstance()->BALANCE_HIP_ROLL_GAIN);[m
+[31m-[m
+[31m-	GoToCursor(PARAM_COL, BAL_ANKLE_ROLL_GAIN_ROW);[m
+[31m-	printf("%.2f    ", Walking::GetInstance()->BALANCE_ANKLE_ROLL_GAIN);[m
+[31m-[m
+[31m-    GoToCursor(PARAM_COL, P_GAIN_ROW);[m
+[31m-    printf("%d    ", Walking::GetInstance()->P_GAIN);[m
+[31m-[m
+[31m-    GoToCursor(PARAM_COL, I_GAIN_ROW);[m
+[31m-    printf("%d    ", Walking::GetInstance()->I_GAIN);[m
+[31m-[m
+[31m-    GoToCursor(PARAM_COL, D_GAIN_ROW);[m
+[31m-    printf("%d    ", Walking::GetInstance()->D_GAIN);[m
+[31m-[m
+[31m-	GoToCursor(old_col, old_row);[m
+[31m-}[m
+[31m-[m
+[31m-void ClearCmd()[m
+[31m-{[m
+[31m-	PrintCmd("");[m
+[31m-}[m
+[31m-[m
+[31m-void PrintCmd(const char *message)[m
+[31m-{[m
+[31m-	int len = strlen(message);[m
+[31m-	GoToCursor(0, CMD_ROW);[m
+[31m-[m
+[31m-	printf( "] %s", message);[m
+[31m-	for(int i=0; i<(SCREEN_COL - (len + 2)); i++)[m
+[31m-		printf(" ");[m
+[31m-[m
+[31m-	GoToCursor(len + 2, CMD_ROW);[m
+[31m-}[m
+[31m-[m
+[31m-void IncreaseValue(bool large)[m
+[31m-{[m
+[31m-	int col;[m
+[31m-	int row;[m
+[31m-	if(bBeginCommandMode == true)[m
+[31m-	{[m
+[31m-		col = Old_Col;[m
+[31m-		row = Old_Row;[m
+[31m-	}[m
+[31m-	else[m
+[31m-	{[m
+[31m-		col = Col;[m
+[31m-		row = Row;[m
+[31m-	}[m
+[31m-[m
+[31m-	if(col != PARAM_COL)[m
+[31m-		return;[m
+[31m-[m
+[31m-	GoToCursor(col, row);[m
+[31m-[m
+[31m-	switch(row)[m
+[31m-	{[m
+[31m-	case WALKING_MODE_ROW:[m
+[31m-	    MotionManager::GetInstance()->StartLogging();[m
+[31m-		Walking::GetInstance()->Start();[m
+[31m-		printf("ON    ");[m
+[31m-		break;[m
+[31m-[m
+[31m-	case X_OFFSET_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->X_OFFSET += 10;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->X_OFFSET += 1;[m
+[31m-		printf("%d    ", (int)Walking::GetInstance()->X_OFFSET);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case Y_OFFSET_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->Y_OFFSET += 10;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->Y_OFFSET += 1;[m
+[31m-		printf("%d    ", (int)Walking::GetInstance()->Y_OFFSET);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case Z_OFFSET_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->Z_OFFSET += 10;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->Z_OFFSET += 1;[m
+[31m-		printf("%d    ", (int)Walking::GetInstance()->Z_OFFSET);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case ROLL_OFFSET_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->R_OFFSET += 1.0;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->R_OFFSET += 0.1;[m
+[31m-		printf("%.1f    ", Walking::GetInstance()->R_OFFSET);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case PITCH_OFFSET_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->P_OFFSET += 1.0;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->P_OFFSET += 0.1;[m
+[31m-		printf("%.1f    ", Walking::GetInstance()->P_OFFSET);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case YAW_OFFSET_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->Y_OFFSET += 1.0;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->Y_OFFSET += 0.1;[m
+[31m-		printf("%.1f    ", Walking::GetInstance()->Y_OFFSET);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case HIP_PITCH_OFFSET_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->HIP_PITCH_OFFSET += 1.0;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->HIP_PITCH_OFFSET += 0.1;[m
+[31m-		printf("%.1f    ", Walking::GetInstance()->HIP_PITCH_OFFSET);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case AUTO_BALANCE_ROW:[m
+[31m-		Walking::GetInstance()->BALANCE_ENABLE = true;[m
+[31m-		printf("ON    ");[m
+[31m-		break;[m
+[31m-[m
+[31m-	case PERIOD_TIME_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->PERIOD_TIME += 10;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->PERIOD_TIME += 1;[m
+[31m-		printf("%d    ", (int)Walking::GetInstance()->PERIOD_TIME);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case DSP_RATIO_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->DSP_RATIO += 0.1;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->DSP_RATIO += 0.01;[m
+[31m-		printf("%.2f    ", Walking::GetInstance()->DSP_RATIO);[m
+[31m-		break;[m
+[31m-[m
+[31m-    case STEP_FORWARDBACK_RATIO_ROW:[m
+[31m-        if(large == true)[m
+[31m-            Walking::GetInstance()->STEP_FB_RATIO += 0.1;[m
+[31m-        else[m
+[31m-            Walking::GetInstance()->STEP_FB_RATIO += 0.01;[m
+[31m-        printf("%.2f    ", Walking::GetInstance()->STEP_FB_RATIO);[m
+[31m-        break;[m
+[31m-[m
+[31m-	case STEP_FORWARDBACK_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->X_MOVE_AMPLITUDE += 10;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->X_MOVE_AMPLITUDE += 1;[m
+[31m-		printf("%d    ", (int)Walking::GetInstance()->X_MOVE_AMPLITUDE);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case STEP_RIGHTLEFT_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->Y_MOVE_AMPLITUDE += 10;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->Y_MOVE_AMPLITUDE += 1;[m
+[31m-		printf("%d    ", (int)Walking::GetInstance()->Y_MOVE_AMPLITUDE);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case STEP_DIRECTION_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->A_MOVE_AMPLITUDE += 10;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->A_MOVE_AMPLITUDE += 1;[m
+[31m-		printf("%d    ", (int)Walking::GetInstance()->A_MOVE_AMPLITUDE);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case TURNING_AIM_ROW:[m
+[31m-		Walking::GetInstance()->A_MOVE_AIM_ON = true;[m
+[31m-		printf("ON   ");[m
+[31m-		break;[m
+[31m-[m
+[31m-	case FOOT_HEIGHT_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->Z_MOVE_AMPLITUDE += 10;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->Z_MOVE_AMPLITUDE += 1;[m
+[31m-		printf("%d    ", (int)Walking::GetInstance()->Z_MOVE_AMPLITUDE);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case SWING_RIGHTLEFT_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->Y_SWAP_AMPLITUDE += 0.10;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->Y_SWAP_AMPLITUDE += 0.1;[m
+[31m-		printf("%.1f    ", Walking::GetInstance()->Y_SWAP_AMPLITUDE);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case SWING_TOPDOWN_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->Z_SWAP_AMPLITUDE += 10;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->Z_SWAP_AMPLITUDE += 1;[m
+[31m-		printf("%d    ", (int)Walking::GetInstance()->Z_SWAP_AMPLITUDE);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case PELVIS_OFFSET_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->PELVIS_OFFSET += 1.0;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->PELVIS_OFFSET += 0.1;[m
+[31m-		printf("%.1f    ", Walking::GetInstance()->PELVIS_OFFSET);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case ARM_SWING_GAIN_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->ARM_SWING_GAIN += 0.10;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->ARM_SWING_GAIN += 0.1;[m
+[31m-		printf("%.1f    ", Walking::GetInstance()->ARM_SWING_GAIN);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case BAL_KNEE_GAIN_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->BALANCE_KNEE_GAIN += 0.1;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->BALANCE_KNEE_GAIN += 0.01;[m
+[31m-		printf("%.2f    ", Walking::GetInstance()->BALANCE_KNEE_GAIN);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case BAL_ANKLE_PITCH_GAIN_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->BALANCE_ANKLE_PITCH_GAIN += 0.1;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->BALANCE_ANKLE_PITCH_GAIN += 0.01;[m
+[31m-		printf("%.2f    ", Walking::GetInstance()->BALANCE_ANKLE_PITCH_GAIN);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case BAL_HIP_ROLL_GAIN_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->BALANCE_HIP_ROLL_GAIN += 0.1;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->BALANCE_HIP_ROLL_GAIN += 0.01;[m
+[31m-		printf("%.2f    ", Walking::GetInstance()->BALANCE_HIP_ROLL_GAIN);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case BAL_ANKLE_ROLL_GAIN_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->BALANCE_ANKLE_ROLL_GAIN += 0.1;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->BALANCE_ANKLE_ROLL_GAIN += 0.01;[m
+[31m-		printf("%.2f    ", Walking::GetInstance()->BALANCE_ANKLE_ROLL_GAIN);[m
+[31m-		break;[m
+[31m-[m
+[31m-    case P_GAIN_ROW:[m
+[31m-        if(large == true)[m
+[31m-            Walking::GetInstance()->P_GAIN += 10;[m
+[31m-        else[m
+[31m-            Walking::GetInstance()->P_GAIN += 1;[m
+[31m-        printf("%d    ", Walking::GetInstance()->P_GAIN);[m
+[31m-        break;[m
+[31m-[m
+[31m-    case I_GAIN_ROW:[m
+[31m-        if(large == true)[m
+[31m-            Walking::GetInstance()->I_GAIN += 10;[m
+[31m-        else[m
+[31m-            Walking::GetInstance()->I_GAIN += 1;[m
+[31m-        printf("%d    ", Walking::GetInstance()->I_GAIN);[m
+[31m-        break;[m
+[31m-[m
+[31m-    case D_GAIN_ROW:[m
+[31m-        if(large == true)[m
+[31m-            Walking::GetInstance()->D_GAIN += 10;[m
+[31m-        else[m
+[31m-            Walking::GetInstance()->D_GAIN += 1;[m
+[31m-        printf("%d    ", Walking::GetInstance()->D_GAIN);[m
+[31m-        break;[m
+[31m-	}[m
+[31m-[m
+[31m-	GoToCursor(col, row);[m
+[31m-}[m
+[31m-[m
+[31m-void DecreaseValue(bool large)[m
+[31m-{[m
+[31m-	int col;[m
+[31m-	int row;[m
+[31m-	if(bBeginCommandMode == true)[m
+[31m-	{[m
+[31m-		col = Old_Col;[m
+[31m-		row = Old_Row;[m
+[31m-	}[m
+[31m-	else[m
+[31m-	{[m
+[31m-		col = Col;[m
+[31m-		row = Row;[m
+[31m-	}[m
+[31m-[m
+[31m-	if(col != PARAM_COL)[m
+[31m-		return;[m
+[31m-[m
+[31m-	GoToCursor(col, row);[m
+[31m-[m
+[31m-	switch(row)[m
+[31m-	{[m
+[31m-	case WALKING_MODE_ROW:[m
+[31m-		Walking::GetInstance()->Stop();[m
+[31m-		MotionManager::GetInstance()->StopLogging();[m
+[31m-		printf("OFF");[m
+[31m-		GoToCursor(PARAM_COL, STEP_FORWARDBACK_ROW);[m
+[31m-		Walking::GetInstance()->X_MOVE_AMPLITUDE = 0;[m
+[31m-		printf("%d    ", (int)Walking::GetInstance()->X_MOVE_AMPLITUDE);[m
+[31m-		GoToCursor(PARAM_COL, STEP_RIGHTLEFT_ROW);[m
+[31m-		Walking::GetInstance()->Y_MOVE_AMPLITUDE = 0;[m
+[31m-		printf("%d    ", (int)Walking::GetInstance()->Y_MOVE_AMPLITUDE);[m
+[31m-		GoToCursor(PARAM_COL, STEP_DIRECTION_ROW);[m
+[31m-		Walking::GetInstance()->A_MOVE_AMPLITUDE = 0;[m
+[31m-		printf("%.1f    ", Walking::GetInstance()->A_MOVE_AMPLITUDE);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case X_OFFSET_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->X_OFFSET -= 10;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->X_OFFSET -= 1;[m
+[31m-		printf("%d    ", (int)Walking::GetInstance()->X_OFFSET);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case Y_OFFSET_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->Y_OFFSET -= 10;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->Y_OFFSET -= 1;[m
+[31m-		printf("%d    ", (int)Walking::GetInstance()->Y_OFFSET);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case Z_OFFSET_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->Z_OFFSET -= 10;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->Z_OFFSET -= 1;[m
+[31m-		printf("%d    ", (int)Walking::GetInstance()->Z_OFFSET);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case ROLL_OFFSET_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->R_OFFSET -= 1.0;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->R_OFFSET -= 0.1;[m
+[31m-		printf("%.1f    ", Walking::GetInstance()->R_OFFSET);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case PITCH_OFFSET_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->P_OFFSET -= 1.0;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->P_OFFSET -= 0.1;[m
+[31m-		printf("%.1f    ", Walking::GetInstance()->P_OFFSET);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case YAW_OFFSET_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->Y_OFFSET -= 1.0;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->Y_OFFSET -= 0.1;[m
+[31m-		printf("%.1f    ", Walking::GetInstance()->Y_OFFSET);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case HIP_PITCH_OFFSET_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->HIP_PITCH_OFFSET -= 1.0;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->HIP_PITCH_OFFSET -= 0.1;[m
+[31m-		printf("%.1f    ", Walking::GetInstance()->HIP_PITCH_OFFSET);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case AUTO_BALANCE_ROW:[m
+[31m-		Walking::GetInstance()->BALANCE_ENABLE = false;[m
+[31m-		printf("OFF   ");[m
+[31m-		break;[m
+[31m-[m
+[31m-	case PERIOD_TIME_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->PERIOD_TIME -= 10;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->PERIOD_TIME -= 1;[m
+[31m-		printf("%d    ", (int)Walking::GetInstance()->PERIOD_TIME);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case DSP_RATIO_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->DSP_RATIO -= 0.1;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->DSP_RATIO -= 0.01;[m
+[31m-		printf("%.2f    ", Walking::GetInstance()->DSP_RATIO);[m
+[31m-		break;[m
+[31m-[m
+[31m-    case STEP_FORWARDBACK_RATIO_ROW:[m
+[31m-        if(large == true)[m
+[31m-            Walking::GetInstance()->STEP_FB_RATIO -= 0.1;[m
+[31m-        else[m
+[31m-            Walking::GetInstance()->STEP_FB_RATIO -= 0.01;[m
+[31m-        printf("%.2f    ", Walking::GetInstance()->STEP_FB_RATIO);[m
+[31m-        break;[m
+[31m-[m
+[31m-	case STEP_FORWARDBACK_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->X_MOVE_AMPLITUDE -= 10;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->X_MOVE_AMPLITUDE -= 1;[m
+[31m-		printf("%d    ", (int)Walking::GetInstance()->X_MOVE_AMPLITUDE);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case STEP_RIGHTLEFT_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->Y_MOVE_AMPLITUDE -= 10;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->Y_MOVE_AMPLITUDE -= 1;[m
+[31m-		printf("%d    ", (int)Walking::GetInstance()->Y_MOVE_AMPLITUDE);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case STEP_DIRECTION_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->A_MOVE_AMPLITUDE -= 10;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->A_MOVE_AMPLITUDE -= 1;[m
+[31m-		printf("%d    ", (int)Walking::GetInstance()->A_MOVE_AMPLITUDE);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case TURNING_AIM_ROW:[m
+[31m-		Walking::GetInstance()->A_MOVE_AIM_ON = false;[m
+[31m-		printf("OFF   ");[m
+[31m-		break;[m
+[31m-[m
+[31m-	case FOOT_HEIGHT_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->Z_MOVE_AMPLITUDE -= 10;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->Z_MOVE_AMPLITUDE -= 1;[m
+[31m-		printf("%d    ", (int)Walking::GetInstance()->Z_MOVE_AMPLITUDE);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case SWING_RIGHTLEFT_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->Y_SWAP_AMPLITUDE -= 1.0;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->Y_SWAP_AMPLITUDE -= 0.1;[m
+[31m-		printf("%.1f    ", Walking::GetInstance()->Y_SWAP_AMPLITUDE);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case SWING_TOPDOWN_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->Z_SWAP_AMPLITUDE -= 10;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->Z_SWAP_AMPLITUDE -= 1;[m
+[31m-		printf("%d    ", (int)Walking::GetInstance()->Z_SWAP_AMPLITUDE);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case PELVIS_OFFSET_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->PELVIS_OFFSET -= 1.0;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->PELVIS_OFFSET -= 0.1;[m
+[31m-		printf("%.1f    ", Walking::GetInstance()->PELVIS_OFFSET);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case ARM_SWING_GAIN_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->ARM_SWING_GAIN -= 1.0;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->ARM_SWING_GAIN -= 0.1;[m
+[31m-		printf("%.1f    ", Walking::GetInstance()->ARM_SWING_GAIN);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case BAL_KNEE_GAIN_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->BALANCE_KNEE_GAIN -= 0.1;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->BALANCE_KNEE_GAIN -= 0.01;[m
+[31m-		printf("%.2f    ", Walking::GetInstance()->BALANCE_KNEE_GAIN);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case BAL_ANKLE_PITCH_GAIN_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->BALANCE_ANKLE_PITCH_GAIN -= 0.1;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->BALANCE_ANKLE_PITCH_GAIN -= 0.01;[m
+[31m-		printf("%.2f    ", Walking::GetInstance()->BALANCE_ANKLE_PITCH_GAIN);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case BAL_HIP_ROLL_GAIN_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->BALANCE_HIP_ROLL_GAIN -= 0.1;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->BALANCE_HIP_ROLL_GAIN -= 0.01;[m
+[31m-		printf("%.2f    ", Walking::GetInstance()->BALANCE_HIP_ROLL_GAIN);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case BAL_ANKLE_ROLL_GAIN_ROW:[m
+[31m-		if(large == true)[m
+[31m-			Walking::GetInstance()->BALANCE_ANKLE_ROLL_GAIN -= 0.1;[m
+[31m-		else[m
+[31m-			Walking::GetInstance()->BALANCE_ANKLE_ROLL_GAIN -= 0.01;[m
+[31m-		printf("%.2f    ", Walking::GetInstance()->BALANCE_ANKLE_ROLL_GAIN);[m
+[31m-		break;[m
+[31m-[m
+[31m-	case P_GAIN_ROW:[m
+[31m-	    if(large == true)[m
+[31m-	        Walking::GetInstance()->P_GAIN -= 10;[m
+[31m-	    else[m
+[31m-	        Walking::GetInstance()->P_GAIN -= 1;[m
+[31m-	    printf("%d    ", Walking::GetInstance()->P_GAIN);[m
+[31m-	    break;[m
+[31m-[m
+[31m-    case I_GAIN_ROW:[m
+[31m-        if(large == true)[m
+[31m-            Walking::GetInstance()->I_GAIN -= 10;[m
+[31m-        else[m
+[31m-            Walking::GetInstance()->I_GAIN -= 1;[m
+[31m-        printf("%d    ", Walking::GetInstance()->I_GAIN);[m
+[31m-        break;[m
+[31m-[m
+[31m-    case D_GAIN_ROW:[m
+[31m-        if(large == true)[m
+[31m-            Walking::GetInstance()->D_GAIN -= 10;[m
+[31m-        else[m
+[31m-            Walking::GetInstance()->D_GAIN -= 1;[m
+[31m-        printf("%d    ", Walking::GetInstance()->D_GAIN);[m
+[31m-        break;[m
+[31m-	}[m
+[31m-	[m
+[31m-	GoToCursor(col, row);[m
+[31m-}[m
+[31m-[m
+[31m-void BeginCommandMode()[m
+[31m-{[m
+[31m-	Old_Col = Col;[m
+[31m-	Old_Row = Row;[m
+[31m-	ClearCmd();[m
+[31m-	GoToCursor(CMD_COL, CMD_ROW);[m
+[31m-	bBeginCommandMode = true;[m
+[31m-}[m
+[31m-[m
+[31m-void EndCommandMode()[m
+[31m-{[m
+[31m-	GoToCursor(Old_Col, Old_Row);[m
+[31m-	bBeginCommandMode = false;[m
+[31m-}[m
+[31m-[m
+[31m-void HelpCmd()[m
+[31m-{[m
+[31m-	system("clear");[m
+[31m-	printf("\n");[m
+[31m-	printf(" exit: Exits the program\n");[m
+[31m-	printf(" re: Refreshes the screen\n");[m
+[31m-	printf(" save: Saves any changes made\n");[m
+[31m-	printf(" mon: Monitoring sensor\n");[m
+[31m-	printf("\n");[m
+[31m-	printf("       Copyright ROBOTIS CO.,LTD.\n");[m
+[31m-	printf("\n");[m
+[31m-	printf(" Press any key to continue...");[m
+[31m-	_getch();[m
+[31m-[m
+[31m-	DrawScreen();[m
+[31m-}[m
+[31m-[m
+[31m-void SaveCmd()[m
+[31m-{[m
+[31m-	bEdited = false;[m
+[31m-}[m
+[31m-[m
+[31m-void MonitorCmd()[m
+[31m-{[m
+[31m-	int col;[m
+[31m-	int row;[m
+[31m-	int ch;[m
+[31m-	int value;[m
+[31m-	int GyroFB_min = 1000, GyroFB_max = -1000;[m
+[31m-	int GyroRL_min = 1000, GyroRL_max = -1000;[m
+[31m-	int AccelFB_min = 1000, AccelFB_max = -1000;[m
+[31m-	int AccelRL_min = 1000, AccelRL_max = -1000;[m
+[31m-[m
+[31m-	if(bBeginCommandMode == true)[m
+[31m-	{[m
+[31m-		col = Old_Col;[m
+[31m-		row = Old_Row;[m
+[31m-	}[m
+[31m-	else[m
+[31m-	{[m
+[31m-		col = Col;[m
+[31m-		row = Row;[m
+[31m-	}[m
+[31m-[m
+[31m-	system("clear");[m
+[31m-	printf("\n");	[m
+[31m-	printf("Gyro F/B                  \n"); // 0[m
+[31m-	printf("Gyro R/L                  \n"); // 1[m
+[31m-	printf("Accel F/B                 \n"); // 2[m
+[31m-	printf("Accel R/L                 \n"); // 3[m
+[31m-	printf("ESC (quit), SPACE (reset)   \n");[m
+[31m-[m
+[31m-	set_stdin();[m
+[31m-	while(1)[m
+[31m-	{[m
+[31m-		value = MotionStatus::FB_GYRO; //MotionStatus::FB_GYRO;[m
+[31m-		if(GyroFB_min > value)[m
+[31m-			GyroFB_min = value;[m
+[31m-		if(GyroFB_max < value)[m
+[31m-			GyroFB_max = value;[m
+[31m-		GoToCursor(PARAM_COL, X_OFFSET_ROW);[m
+[31m-		printf("%d (%d~%d)   ", value, GyroFB_min, GyroFB_max);[m
+[31m-[m
+[31m-		value = MotionStatus::RL_GYRO; //MotionStatus::RL_GYRO;[m
+[31m-		if(GyroRL_min > value)[m
+[31m-			GyroRL_min = value;[m
+[31m-		if(GyroRL_max < value)[m
+[31m-			GyroRL_max = value;[m
+[31m-		GoToCursor(PARAM_COL, Y_OFFSET_ROW);[m
+[31m-		printf("%d (%d~%d)   ", value, GyroRL_min, GyroRL_max);[m
+[31m-[m
+[31m-		value = MotionStatus::FB_ACCEL;[m
+[31m-		if(AccelFB_min > value)[m
+[31m-			AccelFB_min = value;[m
+[31m-		if(AccelFB_max < value)[m
+[31m-			AccelFB_max = value;[m
+[31m-		GoToCursor(PARAM_COL, Z_OFFSET_ROW);[m
+[31m-		printf("%d (%d~%d)   ", value, AccelFB_min, AccelFB_max);[m
+[31m-[m
+[31m-		value = MotionStatus::RL_ACCEL;[m
+[31m-		if(AccelRL_min > value)[m
+[31m-			AccelRL_min = value;[m
+[31m-		if(AccelRL_max < value)[m
+[31m-			AccelRL_max = value;[m
+[31m-		GoToCursor(PARAM_COL, ROLL_OFFSET_ROW);[m
+[31m-		printf("%d (%d~%d)   ", value, AccelRL_min, AccelRL_max);[m
+[31m-[m
+[31m-		if(kbhit())[m
+[31m-		{[m
+[31m-			ch = _getch();[m
+[31m-			if(ch == 0x1b) // ESC[m
+[31m-				break;[m
+[31m-			else if(ch == 0x20) // Space[m
+[31m-			{[m
+[31m-				GyroFB_min = 1000; GyroFB_max = -1000;[m
+[31m-				GyroRL_min = 1000; GyroRL_max = -1000;[m
+[31m-				AccelFB_min = 1000; AccelFB_max = -1000;[m
+[31m-				AccelRL_min = 1000; AccelRL_max = -1000;[m
+[31m-			}[m
+[31m-		}[m
+[31m-[m
+[31m-		usleep(50000);[m
+[31m-	}[m
+[31m-	reset_stdin();[m
+[31m-	GoToCursor(col, row);[m
+[31m-	DrawScreen();[m
+[31m-}[m
+[1mdiff --git a/Linux/project/walk_tuner1/cmd_process.h b/Linux/project/walk_tuner1/cmd_process.h[m
+[1mdeleted file mode 100644[m
+[1mindex 7cb540c..0000000[m
+[1m--- a/Linux/project/walk_tuner1/cmd_process.h[m
+[1m+++ /dev/null[m
+[36m@@ -1,79 +0,0 @@[m
+[31m-#ifndef _DXL_MANAGER_CMD_PROCESS_H_[m
+[31m-#define _DXL_MANAGER_CMD_PROCESS_H_[m
+[31m-[m
+[31m-[m
+[31m-#include "LinuxDARwIn.h"[m
+[31m-[m
+[31m-[m
+[31m-#define PROGRAM_VERSION	"v1.00"[m
+[31m-#define SCREEN_COL		35[m
+[31m-[m
+[31m-// Position of Column[m
+[31m-#define CMD_COL			2[m
+[31m-#define PARAM_COL		27[m
+[31m-[m
+[31m-// Position of Row[m
+[31m-enum {[m
+[31m-    WALKING_MODE_ROW,[m
+[31m-    X_OFFSET_ROW,[m
+[31m-    Y_OFFSET_ROW,[m
+[31m-    Z_OFFSET_ROW,[m
+[31m-    ROLL_OFFSET_ROW,[m
+[31m-    PITCH_OFFSET_ROW,[m
+[31m-    YAW_OFFSET_ROW,[m
+[31m-    HIP_PITCH_OFFSET_ROW,[m
+[31m-    AUTO_BALANCE_ROW,[m
+[31m-    PERIOD_TIME_ROW,[m
+[31m-    DSP_RATIO_ROW,[m
+[31m-    STEP_FORWARDBACK_RATIO_ROW,[m
+[31m-    STEP_FORWARDBACK_ROW,[m
+[31m-    STEP_RIGHTLEFT_ROW,[m
+[31m-    STEP_DIRECTION_ROW,[m
+[31m-    TURNING_AIM_ROW,[m
+[31m-    FOOT_HEIGHT_ROW,[m
+[31m-    SWING_RIGHTLEFT_ROW,[m
+[31m-    SWING_TOPDOWN_ROW,[m
+[31m-    PELVIS_OFFSET_ROW,[m
+[31m-    ARM_SWING_GAIN_ROW,[m
+[31m-    BAL_KNEE_GAIN_ROW,[m
+[31m-    BAL_ANKLE_PITCH_GAIN_ROW,[m
+[31m-    BAL_HIP_ROLL_GAIN_ROW,[m
+[31m-    BAL_ANKLE_ROLL_GAIN_ROW,[m
+[31m-    P_GAIN_ROW,[m
+[31m-    I_GAIN_ROW,[m
+[31m-    D_GAIN_ROW,[m
+[31m-    CMD_ROW,[m
+[31m-    SCREEN_ROW[m
+[31m-};[m
+[31m-[m
+[31m-int _getch();[m
+[31m-bool AskSave();[m
+[31m-[m
+[31m-[m
+[31m-// Move cursor[m
+[31m-void GoToCursor(int col, int row);[m
+[31m-void MoveUpCursor();[m
+[31m-void MoveDownCursor();[m
+[31m-void MoveLeftCursor();[m
+[31m-void MoveRightCursor();[m
+[31m-[m
+[31m-// Disp & Drawing[m
+[31m-void DrawIntro(Robot::CM730 *cm730);[m
+[31m-void DrawEnding();[m
+[31m-void DrawScreen();[m
+[31m-void ClearCmd();[m
+[31m-void PrintCmd(const char *message);[m
+[31m-[m
+[31m-// Edit value[m
+[31m-void IncreaseValue(bool large);[m
+[31m-void DecreaseValue(bool large);[m
+[31m-[m
+[31m-// Command process[m
+[31m-void BeginCommandMode();[m
+[31m-void EndCommandMode();[m
+[31m-void HelpCmd();[m
+[31m-void SaveCmd();[m
+[31m-void MonitorCmd();[m
+[31m-[m
+[31m-[m
+[31m-#endif[m
+[1mdiff --git a/Linux/project/walk_tuner1/main.cpp b/Linux/project/walk_tuner1/main.cpp[m
+[1mdeleted file mode 100644[m
+[1mindex 804e7ae..0000000[m
+[1m--- a/Linux/project/walk_tuner1/main.cpp[m
+[1m+++ /dev/null[m
+[36m@@ -1,177 +0,0 @@[m
+[31m-#include <stdio.h>[m
+[31m-#include <stdlib.h>[m
+[31m-#include <string.h>[m
+[31m-#include <unistd.h>[m
+[31m-#include <termios.h>[m
+[31m-#include <term.h>[m
+[31m-#include <ncurses.h>[m
+[31m-#include <signal.h>[m
+[31m-#include <libgen.h>[m
+[31m-#include "cmd_process.h"[m
+[31m-[m
+[31m-#define INI_FILE_PATH       "../../../Data/config.ini"[m
+[31m-[m
+[31m-using namespace Robot;[m
+[31m-[m
+[31m-LinuxCM730 linux_cm730("/dev/ttyUSB0");[m
+[31m-CM730 cm730(&linux_cm730);[m
+[31m-[m
+[31m-void change_current_dir()[m
+[31m-{[m
+[31m-    char exepath[1024] = {0};[m
+[31m-    if(readlink("/proc/self/exe", exepath, sizeof(exepath)) != -1)[m
+[31m-        chdir(dirname(exepath));[m
+[31m-}[m
+[31m-[m
+[31m-void sighandler(int sig)[m
+[31m-{[m
+[31m-    struct termios term;[m
+[31m-    tcgetattr( STDIN_FILENO, &term );[m
+[31m-    term.c_lflag |= ICANON | ECHO;[m
+[31m-    tcsetattr( STDIN_FILENO, TCSANOW, &term );[m
+[31m-[m
+[31m-    exit(0);[m
+[31m-}[m
+[31m-[m
+[31m-int main(int argc, char *argv[])[m
+[31m-{[m
+[31m-    signal(SIGABRT, &sighandler);[m
+[31m-    signal(SIGTERM, &sighandler);[m
+[31m-    signal(SIGQUIT, &sighandler);[m
+[31m-    signal(SIGINT, &sighandler);[m
+[31m-[m
+[31m-    change_current_dir();[m
+[31m-[m
+[31m-    minIni* ini = new minIni(INI_FILE_PATH);[m
+[31m-[m
+[31m-    //////////////////// Framework Initialize ////////////////////////////[m
+[31m-    if(MotionManager::GetInstance()->Initialize(&cm730) == false)[m
+[31m-    {[m
+[31m-        printf("Fail to initialize Motion Manager!\n");[m
+[31m-        return 0;[m
+[31m-    }[m
+[31m-    Walking::GetInstance()->LoadINISettings(ini);[m
+[31m-    MotionManager::GetInstance()->AddModule((MotionModule*)Walking::GetInstance());[m
+[31m-    LinuxMotionTimer::Initialize(MotionManager::GetInstance());[m
+[31m-    /////////////////////////////////////////////////////////////////////[m
+[31m-[m
+[31m-    DrawIntro(&cm730);[m
+[31m-    MotionManager::GetInstance()->SetEnable(true);[m
+[31m-[m
+[31m-    while(1)[m
+[31m-    {[m
+[31m-        int ch = _getch();[m
+[31m-        if(ch == 0x1b)[m
+[31m-        {[m
+[31m-            ch = _getch();[m
+[31m-            if(ch == 0x5b)[m
+[31m-            {[m
+[31m-                ch = _getch();[m
+[31m-                if(ch == 0x41) // Up arrow key[m
+[31m-                    MoveUpCursor();[m
+[31m-                else if(ch == 0x42) // Down arrow key[m
+[31m-                    MoveDownCursor();[m
+[31m-                else if(ch == 0x44) // Left arrow key[m
+[31m-                    MoveLeftCursor();[m
+[31m-                else if(ch == 0x43)[m
+[31m-                    MoveRightCursor();[m
+[31m-            }[m
+[31m-        }[m
+[31m-        else if( ch == '[' )[m
+[31m-            DecreaseValue(false);[m
+[31m-        else if( ch == ']' )[m
+[31m-            IncreaseValue(false);[m
+[31m-        else if( ch == '{' )[m
+[31m-            DecreaseValue(true);[m
+[31m-        else if( ch == '}' )[m
+[31m-            IncreaseValue(true);[m
+[31m-        else if( ch >= 'A' && ch <= 'z' )[m
+[31m-        {[m
+[31m-            char input[128] = {0,};[m
+[31m-            char *token;[m
+[31m-            int input_len;[m
+[31m-            char cmd[80];[m
+[31m-            char strParam[20][30];[m
+[31m-            int num_param;[m
+[31m-[m
+[31m-            int idx = 0;[m
+[31m-[m
+[31m-            BeginCommandMode();[m
+[31m-[m
+[31m-            printf("%c", ch);[m
+[31m-            input[idx++] = (char)ch;[m
+[31m-[m
+[31m-            while(1)[m
+[31m-            {[m
+[31m-                ch = _getch();[m
+[31m-                if( ch == 0x0A )[m
+[31m-                    break;[m
+[31m-                else if( ch == 0x7F )[m
+[31m-                {[m
+[31m-                    if(idx > 0)[m
+[31m-                    {[m
+[31m-                        ch = 0x08;[m
+[31m-                        printf("%c", ch);[m
+[31m-                        ch = ' ';[m
+[31m-                        printf("%c", ch);[m
+[31m-                        ch = 0x08;[m
+[31m-                        printf("%c", ch);[m
+[31m-                        input[--idx] = 0;[m
+[31m-                    }[m
+[31m-                }[m
+[31m-                else if( ch >= 'A' && ch <= 'z' )[m
+[31m-                {[m
+[31m-                    if(idx < 127)[m
+[31m-                    {[m
+[31m-                        printf("%c", ch);[m
+[31m-                        input[idx++] = (char)ch;[m
+[31m-                    }[m
+[31m-                }[m
+[31m-            }[m
+[31m-[m
+[31m-            fflush(stdin);[m
+[31m-            input_len = strlen(input);[m
+[31m-            if(input_len > 0)[m
+[31m-            {[m
+[31m-                token = strtok( input, " " );[m
+[31m-                if(token != 0)[m
+[31m-                {[m
+[31m-                    strcpy( cmd, token );[m
+[31m-                    token = strtok( 0, " " );[m
+[31m-                    num_param = 0;[m
+[31m-                    while(token != 0)[m
+[31m-                    {[m
+[31m-                        strcpy(strParam[num_param++], token);[m
+[31m-                        token = strtok( 0, " " );[m
+[31m-                    }[m
+[31m-[m
+[31m-                    if(strcmp(cmd, "exit") == 0)[m
+[31m-                    {[m
+[31m-                        if(AskSave() == false)[m
+[31m-                            break;[m
+[31m-                    }[m
+[31m-                    if(strcmp(cmd, "re") == 0)[m
+[31m-                        DrawScreen();[m
+[31m-                    else if(strcmp(cmd, "save") == 0)[m
+[31m-                    {[m
+[31m-                        Walking::GetInstance()->SaveINISettings(ini);[m
+[31m-                        SaveCmd();[m
+[31m-                    }[m
+[31m-                    else if(strcmp(cmd, "mon") == 0)[m
+[31m-                    {[m
+[31m-                        MonitorCmd();[m
+[31m-                    }[m
+[31m-                    else if(strcmp(cmd, "help") == 0)[m
+[31m-                        HelpCmd();[m
+[31m-                    else[m
+[31m-                        PrintCmd("Bad command! please input 'help'");[m
+[31m-                }[m
+[31m-            }[m
+[31m-[m
+[31m-            EndCommandMode();[m
+[31m-        }[m
+[31m-    }[m
+[31m-[m
+[31m-    DrawEnding();[m
+[31m-    return 0;[m
+[31m-}[m
+[1mdiff --git a/Linux/project/walk_tuner_old/Logs/Log0.csv b/Linux/project/walk_tuner_old/Logs/Log0.csv[m
+[1mdeleted file mode 100644[m
+[1mindex c90e23d..0000000[m
+[1m--- a/Linux/project/walk_tuner_old/Logs/Log0.csv[m
+[1m+++ /dev/null[m
+[36m@@ -1,452 +0,0 @@[m
+[31m-ID_1_GP, ID_1_PP, ID_2_GP, ID_2_PP, ID_3_GP, ID_3_PP, ID_4_GP, ID_4_PP, ID_5_GP, ID_5_PP, ID_6_GP, ID_6_PP, ID_7_GP, ID_7_PP, ID_8_GP, ID_8_PP, ID_9_GP, ID_9_PP, ID_10_GP, ID_10_PP, ID_11_GP, ID_11_PP, ID_12_GP, ID_12_PP, ID_13_GP, ID_13_PP, ID_14_GP, ID_14_PP, ID_15_GP, ID_15_PP, ID_16_GP, ID_16_PP, ID_17_GP, ID_17_PP, ID_18_GP, ID_18_PP, ID_19_GP, ID_19_PP, ID_20_GP, ID_20_PP, GyroFB, GyroRL, AccelFB, AccelRL, L_FSR_X, L_FSR_Y, R_FSR_X, R_FSR_Y, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2052, 0, 2044, 0, 1621, 0, 2475, 0, 2686, 0, 1410, 0, 2394, 0, 1702, 0, 2057, 0, 2039, 0, 2048, 0, 2503, 0, 512, 512, 476, 514, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2049, 0, 2040, 0, 1621, 0, 2474, 0, 2685, 0, 1412, 0, 2394, 0, 1703, 0, 2051, 0, 2032, 0, 2048, 0, 2503, 0, 512, 512, 477, 515, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2047, 0, 2037, 0, 1623, 0, 2472, 0, 2681, 0, 1417, 0, 2392, 0, 1705, 0, 2046, 0, 2026, 0, 2048, 0, 2503, 0, 512, 512, 476, 515, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2044, 0, 2034, 0, 1626, 0, 2469, 0, 2674, 0, 1424, 0, 2389, 0, 1708, 0, 2040, 0, 2020, 0, 2048, 0, 2503, 0, 512, 512, 476, 516, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2041, 0, 2031, 0, 1631, 0, 2465, 0, 2666, 0, 1431, 0, 2384, 0, 1712, 0, 2034, 0, 2014, 0, 2048, 0, 2503, 0, 512, 512, 476, 516, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2039, 0, 2028, 0, 1636, 0, 2466, 0, 2654, 0, 1428, 0, 2378, 0, 1711, 0, 2028, 0, 2008, 0, 2048, 0, 2503, 0, 512, 512, 476, 517, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2038, 0, 2024, 0, 1643, 0, 2473, 0, 2641, 0, 1416, 0, 2372, 0, 1704, 0, 2023, 0, 2002, 0, 2048, 0, 2503, 0, 512, 512, 476, 515, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2038, 0, 2021, 0, 1650, 0, 2483, 0, 2626, 0, 1395, 0, 2364, 0, 1694, 0, 2017, 0, 1996, 0, 2048, 0, 2503, 0, 512, 512, 474, 515, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2038, 0, 2017, 0, 1658, 0, 2497, 0, 2609, 0, 1367, 0, 2355, 0, 1679, 0, 2013, 0, 1991, 0, 2048, 0, 2503, 0, 513, 512, 472, 517, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2039, 0, 2013, 0, 1667, 0, 2513, 0, 2591, 0, 1333, 0, 2349, 0, 1659, 0, 2008, 0, 1985, 0, 2048, 0, 2503, 0, 513, 513, 474, 512, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2040, 0, 2008, 0, 1677, 0, 2530, 0, 2572, 0, 1297, 0, 2339, 0, 1641, 0, 2001, 0, 1976, 0, 2048, 0, 2503, 0, 513, 517, 475, 511, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2035, 0, 1996, 0, 1686, 0, 2548, 0, 2553, 0, 1260, 0, 2330, 0, 1622, 0, 1985, 0, 1957, 0, 2048, 0, 2503, 0, 515, 522, 477, 503, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2029, 0, 1984, 0, 1695, 0, 2566, 0, 2532, 0, 1226, 0, 2326, 0, 1597, 0, 1964, 0, 1935, 0, 2048, 0, 2503, 0, 518, 527, 477, 500, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2022, 0, 1972, 0, 1704, 0, 2582, 0, 2510, 0, 1195, 0, 2326, 0, 1570, 0, 1945, 0, 1912, 0, 2048, 0, 2503, 0, 515, 529, 482, 498, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2020, 0, 1965, 0, 1713, 0, 2597, 0, 2496, 0, 1162, 0, 2308, 0, 1564, 0, 1936, 0, 1902, 0, 2048, 0, 2503, 0, 515, 529, 467, 500, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2022, 0, 1962, 0, 1720, 0, 2609, 0, 2482, 0, 1136, 0, 2301, 0, 1550, 0, 1935, 0, 1898, 0, 2048, 0, 2503, 0, 517, 529, 484, 485, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2024, 0, 1959, 0, 1726, 0, 2619, 0, 2468, 0, 1118, 0, 2301, 0, 1533, 0, 1933, 0, 1894, 0, 2048, 0, 2503, 0, 515, 530, 484, 522, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2023, 0, 1956, 0, 1730, 0, 2626, 0, 2461, 0, 1101, 0, 2290, 0, 1532, 0, 1928, 0, 1888, 0, 2048, 0, 2503, 0, 515, 533, 480, 515, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2019, 0, 1950, 0, 1733, 0, 2630, 0, 2456, 0, 1093, 0, 2288, 0, 1528, 0, 1918, 0, 1877, 0, 2048, 0, 2503, 0, 517, 532, 472, 500, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2021, 0, 1951, 0, 1733, 0, 2630, 0, 2453, 0, 1093, 0, 2293, 0, 1521, 0, 1922, 0, 1880, 0, 2048, 0, 2503, 0, 515, 529, 486, 512, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2026, 0, 1957, 0, 1732, 0, 2628, 0, 2458, 0, 1096, 0, 2289, 0, 1529, 0, 1932, 0, 1891, 0, 2048, 0, 2503, 0, 515, 525, 480, 512, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2032, 0, 1966, 0, 1728, 0, 2623, 0, 2465, 0, 1108, 0, 2292, 0, 1535, 0, 1946, 0, 1906, 0, 2048, 0, 2503, 0, 517, 522, 486, 522, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2035, 0, 1973, 0, 1723, 0, 2614, 0, 2473, 0, 1127, 0, 2303, 0, 1538, 0, 1957, 0, 1919, 0, 2048, 0, 2503, 0, 515, 522, 497, 519, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2033, 0, 1975, 0, 1716, 0, 2603, 0, 2489, 0, 1149, 0, 2304, 0, 1557, 0, 1958, 0, 1923, 0, 2048, 0, 2503, 0, 517, 520, 487, 531, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2035, 0, 1982, 0, 1709, 0, 2590, 0, 2503, 0, 1179, 0, 2318, 0, 1565, 0, 1968, 0, 1934, 0, 2048, 0, 2503, 0, 522, 515, 496, 521, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2041, 0, 1993, 0, 1700, 0, 2574, 0, 2515, 0, 1216, 0, 2342, 0, 1567, 0, 1986, 0, 1955, 0, 2048, 0, 2503, 0, 518, 513, 503, 525, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2043, 0, 2001, 0, 1691, 0, 2557, 0, 2538, 0, 1247, 0, 2340, 0, 1597, 0, 1996, 0, 1967, 0, 2048, 0, 2503, 0, 513, 512, 489, 530, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2042, 0, 2007, 0, 1681, 0, 2539, 0, 2562, 0, 1279, 0, 2334, 0, 1631, 0, 2002, 0, 1976, 0, 2048, 0, 2503, 0, 512, 512, 490, 535, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2040, 0, 2011, 0, 1672, 0, 2521, 0, 2581, 0, 1316, 0, 2341, 0, 1653, 0, 2006, 0, 1982, 0, 2048, 0, 2503, 0, 510, 512, 493, 537, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2039, 0, 2015, 0, 1663, 0, 2504, 0, 2601, 0, 1349, 0, 2345, 0, 1677, 0, 2010, 0, 1988, 0, 2048, 0, 2503, 0, 506, 513, 491, 503, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2037, 0, 2018, 0, 1654, 0, 2489, 0, 2622, 0, 1376, 0, 2342, 0, 1705, 0, 2012, 0, 1990, 0, 2048, 0, 2503, 0, 507, 513, 493, 511, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2037, 0, 2022, 0, 1646, 0, 2477, 0, 2638, 0, 1402, 0, 2353, 0, 1715, 0, 2017, 0, 1996, 0, 2048, 0, 2503, 0, 511, 512, 472, 521, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2039, 0, 2026, 0, 1639, 0, 2469, 0, 2648, 0, 1423, 0, 2372, 0, 1711, 0, 2025, 0, 2005, 0, 2048, 0, 2503, 0, 509, 512, 486, 505, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2040, 0, 2030, 0, 1633, 0, 2465, 0, 2662, 0, 1429, 0, 2372, 0, 1721, 0, 2031, 0, 2011, 0, 2048, 0, 2503, 0, 510, 513, 468, 572, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2042, 0, 2032, 0, 1628, 0, 2467, 0, 2671, 0, 1427, 0, 2381, 0, 1717, 0, 2034, 0, 2014, 0, 2048, 0, 2503, 0, 511, 513, 437, 591, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2045, 0, 2035, 0, 1624, 0, 2471, 0, 2678, 0, 1420, 0, 2387, 0, 1709, 0, 2040, 0, 2020, 0, 2048, 0, 2503, 0, 518, 510, 452, 587, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2051, 0, 2042, 0, 1622, 0, 2473, 0, 2678, 0, 1419, 0, 2411, 0, 1686, 0, 2054, 0, 2035, 0, 2048, 0, 2503, 0, 513, 501, 508, 570, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2070, 0, 2062, 0, 1621, 0, 2475, 0, 2686, 0, 1410, 0, 2397, 0, 1699, 0, 2093, 0, 2075, 0, 2048, 0, 2503, 0, 512, 496, 469, 547, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2082, 0, 2073, 0, 1622, 0, 2475, 0, 2684, 0, 1411, 0, 2393, 0, 1702, 0, 2117, 0, 2098, 0, 2048, 0, 2503, 0, 512, 495, 493, 531, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2087, 0, 2077, 0, 1624, 0, 2473, 0, 2679, 0, 1415, 0, 2391, 0, 1704, 0, 2126, 0, 2106, 0, 2048, 0, 2503, 0, 512, 496, 514, 539, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2088, 0, 2078, 0, 1627, 0, 2470, 0, 2672, 0, 1422, 0, 2388, 0, 1707, 0, 2129, 0, 2109, 0, 2048, 0, 2503, 0, 511, 499, 495, 543, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2086, 0, 2076, 0, 1631, 0, 2465, 0, 2665, 0, 1430, 0, 2381, 0, 1715, 0, 2125, 0, 2105, 0, 2048, 0, 2503, 0, 510, 499, 492, 534, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2089, 0, 2078, 0, 1630, 0, 2460, 0, 2669, 0, 1441, 0, 2379, 0, 1724, 0, 2131, 0, 2111, 0, 2048, 0, 2503, 0, 511, 499, 482, 540, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2093, 0, 2079, 0, 1623, 0, 2453, 0, 2680, 0, 1455, 0, 2389, 0, 1727, 0, 2137, 0, 2116, 0, 2048, 0, 2503, 0, 512, 496, 481, 530, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2101, 0, 2084, 0, 1613, 0, 2446, 0, 2701, 0, 1470, 0, 2402, 0, 1732, 0, 2153, 0, 2132, 0, 2048, 0, 2503, 0, 512, 496, 468, 531, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2105, 0, 2084, 0, 1599, 0, 2438, 0, 2729, 0, 1487, 0, 2417, 0, 1741, 0, 2158, 0, 2136, 0, 2048, 0, 2503, 0, 513, 495, 464, 557, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2111, 0, 2085, 0, 1583, 0, 2429, 0, 2763, 0, 1505, 0, 2437, 0, 1747, 0, 2167, 0, 2144, 0, 2048, 0, 2503, 0, 513, 500, 472, 518, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2107, 0, 2075, 0, 1566, 0, 2419, 0, 2799, 0, 1524, 0, 2455, 0, 1757, 0, 2157, 0, 2132, 0, 2048, 0, 2503, 0, 512, 504, 463, 539, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2105, 0, 2066, 0, 1548, 0, 2410, 0, 2836, 0, 1543, 0, 2471, 0, 1769, 0, 2149, 0, 2121, 0, 2048, 0, 2503, 0, 511, 506, 478, 526, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2106, 0, 2061, 0, 1530, 0, 2401, 0, 2872, 0, 1562, 0, 2487, 0, 1782, 0, 2148, 0, 2119, 0, 2048, 0, 2503, 0, 510, 505, 464, 542, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2110, 0, 2060, 0, 1514, 0, 2392, 0, 2907, 0, 1580, 0, 2502, 0, 1794, 0, 2157, 0, 2124, 0, 2048, 0, 2503, 0, 510, 505, 481, 525, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2114, 0, 2059, 0, 1499, 0, 2383, 0, 2937, 0, 1597, 0, 2517, 0, 1803, 0, 2161, 0, 2127, 0, 2048, 0, 2503, 0, 511, 506, 465, 536, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2116, 0, 2056, 0, 1487, 0, 2376, 0, 2962, 0, 1612, 0, 2534, 0, 1807, 0, 2162, 0, 2125, 0, 2048, 0, 2503, 0, 511, 507, 469, 539, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2117, 0, 2052, 0, 1477, 0, 2370, 0, 2982, 0, 1624, 0, 2545, 0, 1813, 0, 2162, 0, 2123, 0, 2048, 0, 2503, 0, 511, 510, 471, 520, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2113, 0, 2046, 0, 1470, 0, 2366, 0, 2997, 0, 1633, 0, 2552, 0, 1818, 0, 2154, 0, 2114, 0, 2048, 0, 2503, 0, 511, 511, 470, 506, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2112, 0, 2043, 0, 1466, 0, 2363, 0, 3005, 0, 1638, 0, 2556, 0, 1820, 0, 2152, 0, 2111, 0, 2048, 0, 2503, 0, 510, 510, 478, 507, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2115, 0, 2045, 0, 1466, 0, 2363, 0, 3008, 0, 1638, 0, 2554, 0, 1824, 0, 2156, 0, 2114, 0, 2048, 0, 2503, 0, 510, 507, 481, 519, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2119, 0, 2050, 0, 1468, 0, 2364, 0, 3003, 0, 1635, 0, 2552, 0, 1822, 0, 2165, 0, 2124, 0, 2048, 0, 2503, 0, 510, 509, 486, 531, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2114, 0, 2048, 0, 1473, 0, 2368, 0, 2991, 0, 1628, 0, 2546, 0, 1819, 0, 2157, 0, 2117, 0, 2048, 0, 2503, 0, 511, 511, 484, 518, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2108, 0, 2046, 0, 1482, 0, 2373, 0, 2973, 0, 1619, 0, 2540, 0, 1811, 0, 2147, 0, 2109, 0, 2048, 0, 2503, 0, 511, 512, 477, 521, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2105, 0, 2047, 0, 1493, 0, 2380, 0, 2949, 0, 1605, 0, 2527, 0, 1804, 0, 2140, 0, 2105, 0, 2048, 0, 2503, 0, 515, 513, 490, 510, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2100, 0, 2047, 0, 1506, 0, 2387, 0, 2919, 0, 1591, 0, 2525, 0, 1784, 0, 2133, 0, 2099, 0, 2048, 0, 2503, 0, 518, 514, 494, 518, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2095, 0, 2047, 0, 1522, 0, 2396, 0, 2884, 0, 1577, 0, 2517, 0, 1766, 0, 2125, 0, 2094, 0, 2048, 0, 2503, 0, 517, 515, 490, 524, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2089, 0, 2047, 0, 1539, 0, 2405, 0, 2850, 0, 1557, 0, 2496, 0, 1759, 0, 2116, 0, 2087, 0, 2048, 0, 2503, 0, 513, 515, 487, 516, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2084, 0, 2049, 0, 1557, 0, 2415, 0, 2817, 0, 1534, 0, 2465, 0, 1762, 0, 2110, 0, 2084, 0, 2048, 0, 2503, 0, 513, 515, 487, 516, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2080, 0, 2051, 0, 1575, 0, 2424, 0, 2780, 0, 1515, 0, 2446, 0, 1752, 0, 2104, 0, 2080, 0, 2048, 0, 2503, 0, 512, 515, 480, 529, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2076, 0, 2052, 0, 1592, 0, 2433, 0, 2746, 0, 1496, 0, 2425, 0, 1745, 0, 2098, 0, 2076, 0, 2048, 0, 2503, 0, 510, 514, 482, 523, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2074, 0, 2055, 0, 1607, 0, 2442, 0, 2716, 0, 1478, 0, 2403, 0, 1742, 0, 2097, 0, 2075, 0, 2048, 0, 2503, 0, 509, 512, 483, 532, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2073, 0, 2058, 0, 1619, 0, 2450, 0, 2692, 0, 1460, 0, 2387, 0, 1737, 0, 2097, 0, 2076, 0, 2048, 0, 2503, 0, 510, 512, 472, 536, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2070, 0, 2057, 0, 1627, 0, 2457, 0, 2674, 0, 1447, 0, 2382, 0, 1727, 0, 2091, 0, 2071, 0, 2048, 0, 2503, 0, 509, 511, 481, 535, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2067, 0, 2057, 0, 1631, 0, 2463, 0, 2667, 0, 1434, 0, 2375, 0, 1724, 0, 2088, 0, 2068, 0, 2048, 0, 2503, 0, 510, 509, 477, 528, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2068, 0, 2058, 0, 1629, 0, 2468, 0, 2669, 0, 1425, 0, 2379, 0, 1715, 0, 2089, 0, 2069, 0, 2048, 0, 2503, 0, 511, 509, 476, 534, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2065, 0, 2055, 0, 1625, 0, 2472, 0, 2676, 0, 1418, 0, 2387, 0, 1709, 0, 2083, 0, 2063, 0, 2048, 0, 2503, 0, 507, 505, 474, 533, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2068, 0, 2059, 0, 1623, 0, 2474, 0, 2686, 0, 1409, 0, 2377, 0, 1718, 0, 2090, 0, 2071, 0, 2048, 0, 2503, 0, 505, 501, 460, 534, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2072, 0, 2063, 0, 1621, 0, 2475, 0, 2691, 0, 1405, 0, 2373, 0, 1723, 0, 2097, 0, 2078, 0, 2048, 0, 2503, 0, 509, 499, 459, 527, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2073, 0, 2065, 0, 1621, 0, 2475, 0, 2688, 0, 1408, 0, 2385, 0, 1711, 0, 2100, 0, 2082, 0, 2048, 0, 2503, 0, 512, 502, 442, 555, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2065, 0, 2056, 0, 1621, 0, 2474, 0, 2685, 0, 1412, 0, 2394, 0, 1703, 0, 2084, 0, 2065, 0, 2048, 0, 2503, 0, 519, 504, 426, 477, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2060, 0, 2050, 0, 1623, 0, 2472, 0, 2675, 0, 1423, 0, 2413, 0, 1684, 0, 2072, 0, 2052, 0, 2048, 0, 2503, 0, 528, 511, 436, 489, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2045, 0, 2035, 0, 1626, 0, 2469, 0, 2659, 0, 1439, 0, 2437, 0, 1660, 0, 2043, 0, 2023, 0, 2048, 0, 2503, 0, 527, 513, 509, 521, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2040, 0, 2030, 0, 1631, 0, 2465, 0, 2652, 0, 1445, 0, 2429, 0, 1667, 0, 2031, 0, 2011, 0, 2048, 0, 2503, 0, 523, 513, 486, 490, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2038, 0, 2027, 0, 1636, 0, 2466, 0, 2644, 0, 1438, 0, 2411, 0, 1678, 0, 2025, 0, 2005, 0, 2048, 0, 2503, 0, 515, 513, 500, 492, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2037, 0, 2023, 0, 1643, 0, 2473, 0, 2639, 0, 1418, 0, 2381, 0, 1695, 0, 2020, 0, 1999, 0, 2048, 0, 2503, 0, 510, 515, 490, 498, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2033, 0, 2016, 0, 1650, 0, 2483, 0, 2627, 0, 1394, 0, 2358, 0, 1700, 0, 2007, 0, 1986, 0, 2048, 0, 2503, 0, 507, 518, 486, 491, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2028, 0, 2007, 0, 1658, 0, 2497, 0, 2613, 0, 1363, 0, 2340, 0, 1694, 0, 1993, 0, 1971, 0, 2048, 0, 2503, 0, 511, 520, 476, 497, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2026, 0, 2000, 0, 1667, 0, 2513, 0, 2591, 0, 1333, 0, 2343, 0, 1665, 0, 1982, 0, 1959, 0, 2048, 0, 2503, 0, 515, 524, 483, 518, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2021, 0, 1989, 0, 1677, 0, 2530, 0, 2570, 0, 1299, 0, 2345, 0, 1635, 0, 1964, 0, 1939, 0, 2048, 0, 2503, 0, 514, 525, 487, 490, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2022, 0, 1983, 0, 1686, 0, 2548, 0, 2552, 0, 1261, 0, 2333, 0, 1619, 0, 1958, 0, 1930, 0, 2048, 0, 2503, 0, 514, 525, 478, 502, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2024, 0, 1979, 0, 1695, 0, 2566, 0, 2533, 0, 1225, 0, 2323, 0, 1600, 0, 1954, 0, 1925, 0, 2048, 0, 2503, 0, 513, 527, 488, 490, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2022, 0, 1972, 0, 1704, 0, 2582, 0, 2515, 0, 1190, 0, 2311, 0, 1585, 0, 1945, 0, 1912, 0, 2048, 0, 2503, 0, 512, 525, 489, 494, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2027, 0, 1972, 0, 1713, 0, 2597, 0, 2498, 0, 1160, 0, 2299, 0, 1573, 0, 1949, 0, 1915, 0, 2048, 0, 2503, 0, 512, 527, 481, 494, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2025, 0, 1965, 0, 1720, 0, 2609, 0, 2484, 0, 1134, 0, 2292, 0, 1559, 0, 1941, 0, 1904, 0, 2048, 0, 2503, 0, 515, 528, 470, 499, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2026, 0, 1961, 0, 1726, 0, 2619, 0, 2470, 0, 1116, 0, 2295, 0, 1539, 0, 1936, 0, 1897, 0, 2048, 0, 2503, 0, 517, 528, 498, 495, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2027, 0, 1960, 0, 1730, 0, 2626, 0, 2459, 0, 1103, 0, 2296, 0, 1526, 0, 1935, 0, 1895, 0, 2048, 0, 2503, 0, 517, 525, 484, 507, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2033, 0, 1964, 0, 1733, 0, 2630, 0, 2454, 0, 1095, 0, 2294, 0, 1522, 0, 1945, 0, 1904, 0, 2048, 0, 2503, 0, 515, 523, 486, 490, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2036, 0, 1966, 0, 1733, 0, 2630, 0, 2455, 0, 1091, 0, 2287, 0, 1527, 0, 1952, 0, 1910, 0, 2048, 0, 2503, 0, 515, 519, 499, 506, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2043, 0, 1974, 0, 1732, 0, 2628, 0, 2458, 0, 1096, 0, 2289, 0, 1529, 0, 1965, 0, 1924, 0, 2048, 0, 2503, 0, 515, 518, 494, 516, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2043, 0, 1977, 0, 1728, 0, 2623, 0, 2465, 0, 1108, 0, 2292, 0, 1535, 0, 1969, 0, 1929, 0, 2048, 0, 2503, 0, 517, 517, 499, 525, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2043, 0, 1981, 0, 1723, 0, 2614, 0, 2473, 0, 1127, 0, 2303, 0, 1538, 0, 1974, 0, 1936, 0, 2048, 0, 2503, 0, 517, 514, 488, 512, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2046, 0, 1988, 0, 1716, 0, 2603, 0, 2487, 0, 1151, 0, 2310, 0, 1551, 0, 1985, 0, 1950, 0, 2048, 0, 2503, 0, 517, 512, 499, 529, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2048, 0, 1995, 0, 1709, 0, 2590, 0, 2503, 0, 1179, 0, 2318, 0, 1565, 0, 1994, 0, 1960, 0, 2048, 0, 2503, 0, 520, 510, 506, 516, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2049, 0, 2001, 0, 1700, 0, 2574, 0, 2517, 0, 1214, 0, 2336, 0, 1573, 0, 2002, 0, 1971, 0, 2048, 0, 2503, 0, 518, 509, 495, 509, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2049, 0, 2007, 0, 1691, 0, 2557, 0, 2538, 0, 1247, 0, 2340, 0, 1597, 0, 2009, 0, 1980, 0, 2048, 0, 2503, 0, 514, 509, 495, 514, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2047, 0, 2012, 0, 1681, 0, 2539, 0, 2561, 0, 1280, 0, 2337, 0, 1628, 0, 2012, 0, 1986, 0, 2048, 0, 2503, 0, 512, 510, 506, 512, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2043, 0, 2014, 0, 1672, 0, 2521, 0, 2581, 0, 1316, 0, 2341, 0, 1653, 0, 2012, 0, 1988, 0, 2048, 0, 2503, 0, 512, 511, 495, 512, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2040, 0, 2016, 0, 1663, 0, 2504, 0, 2600, 0, 1350, 0, 2351, 0, 1671, 0, 2013, 0, 1991, 0, 2048, 0, 2503, 0, 510, 511, 494, 511, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2039, 0, 2020, 0, 1654, 0, 2489, 0, 2618, 0, 1380, 0, 2354, 0, 1693, 0, 2018, 0, 1996, 0, 2048, 0, 2503, 0, 507, 511, 485, 496, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2039, 0, 2024, 0, 1646, 0, 2477, 0, 2638, 0, 1402, 0, 2353, 0, 1715, 0, 2023, 0, 2002, 0, 2048, 0, 2503, 0, 509, 511, 492, 505, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2040, 0, 2027, 0, 1639, 0, 2469, 0, 2650, 0, 1421, 0, 2366, 0, 1717, 0, 2028, 0, 2008, 0, 2048, 0, 2503, 0, 510, 512, 484, 506, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2040, 0, 2030, 0, 1633, 0, 2465, 0, 2661, 0, 1430, 0, 2375, 0, 1718, 0, 2031, 0, 2011, 0, 2048, 0, 2503, 0, 509, 513, 490, 513, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2042, 0, 2032, 0, 1628, 0, 2467, 0, 2672, 0, 1426, 0, 2378, 0, 1720, 0, 2034, 0, 2014, 0, 2048, 0, 2503, 0, 509, 515, 475, 493, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2041, 0, 2031, 0, 1624, 0, 2471, 0, 2680, 0, 1418, 0, 2381, 0, 1715, 0, 2033, 0, 2013, 0, 2048, 0, 2503, 0, 505, 517, 428, 560, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2040, 0, 2031, 0, 1622, 0, 2473, 0, 2689, 0, 1408, 0, 2372, 0, 1725, 0, 2032, 0, 2013, 0, 2048, 0, 2503, 0, 514, 514, 480, 602, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2049, 0, 2041, 0, 1621, 0, 2475, 0, 2685, 0, 1411, 0, 2400, 0, 1696, 0, 2051, 0, 2033, 0, 2048, 0, 2503, 0, 517, 509, 422, 598, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2061, 0, 2052, 0, 1622, 0, 2475, 0, 2680, 0, 1415, 0, 2408, 0, 1687, 0, 2074, 0, 2055, 0, 2048, 0, 2503, 0, 514, 504, 540, 545, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2072, 0, 2062, 0, 1624, 0, 2473, 0, 2678, 0, 1416, 0, 2397, 0, 1698, 0, 2096, 0, 2076, 0, 2048, 0, 2503, 0, 512, 500, 477, 530, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2082, 0, 2072, 0, 1627, 0, 2470, 0, 2672, 0, 1422, 0, 2388, 0, 1707, 0, 2116, 0, 2096, 0, 2048, 0, 2503, 0, 510, 499, 511, 516, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2086, 0, 2076, 0, 1631, 0, 2465, 0, 2666, 0, 1429, 0, 2378, 0, 1718, 0, 2125, 0, 2105, 0, 2048, 0, 2503, 0, 511, 499, 500, 531, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2089, 0, 2078, 0, 1630, 0, 2460, 0, 2668, 0, 1442, 0, 2382, 0, 1721, 0, 2131, 0, 2111, 0, 2048, 0, 2503, 0, 509, 500, 512, 514, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2092, 0, 2078, 0, 1623, 0, 2453, 0, 2682, 0, 1453, 0, 2383, 0, 1733, 0, 2134, 0, 2113, 0, 2048, 0, 2503, 0, 509, 499, 478, 538, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2096, 0, 2079, 0, 1613, 0, 2446, 0, 2703, 0, 1468, 0, 2393, 0, 1741, 0, 2143, 0, 2122, 0, 2048, 0, 2503, 0, 509, 500, 472, 521, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2099, 0, 2078, 0, 1599, 0, 2438, 0, 2731, 0, 1485, 0, 2408, 0, 1750, 0, 2145, 0, 2123, 0, 2048, 0, 2503, 0, 510, 500, 482, 526, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2103, 0, 2077, 0, 1583, 0, 2429, 0, 2764, 0, 1504, 0, 2428, 0, 1756, 0, 2151, 0, 2128, 0, 2048, 0, 2503, 0, 507, 501, 481, 522, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2105, 0, 2073, 0, 1566, 0, 2419, 0, 2803, 0, 1520, 0, 2437, 0, 1775, 0, 2153, 0, 2128, 0, 2048, 0, 2503, 0, 506, 505, 486, 526, 0, 0, 0, 0, [m
+[31m-1498, 0, 2518, 0, 1845, 0, 2248, 0, 2381, 0, 1712, 0, 2048, 0, 2048, 0, 2103, 0, 2064, 0, 1548, 0, 2410, 0, 2841, 0, 1538, 0, 2453, 0, 1787, 0, 2146, 0, 2118, 0, 2048, 0, 2503,

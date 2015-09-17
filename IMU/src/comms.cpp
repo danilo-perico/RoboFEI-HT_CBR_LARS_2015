@@ -40,7 +40,7 @@
 #include <string>
 
 //#include "ros/console.h"
-#include "serial.h"
+#include "../serial/include/serial.h"
 #include "registers.h"
 
 //using namespace serial;

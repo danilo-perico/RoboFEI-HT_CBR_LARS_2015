@@ -12,7 +12,10 @@ extern "C" {
 #define P_PRESENT_POSITION_L	36
 #define P_PRESENT_POSITION_H	37
 #define P_MOVING		46
-#define MOVING_SPEED            32
+#define MOVING_SPEED    32
+#define DEFAULT_BAUDNUM    1
+#define TORQUE_ENABLE 24
+
 
 
 ///////////// device control methods ////////////////////////
@@ -81,9 +84,61 @@ void dxl_write_byte(int id, int address, int value);
 int dxl_read_word(int id, int address);
 void dxl_write_word(int id, int address, int value);
 
-void roboereto();
-void chuteretodireita();
-void espera_mov();
+#include <stdio.h>
+
+#define KEEP_WALKING *(mem+2)
+#define LEG_RIGHT 0
+#define LEG_LEFT 1
+//////////// extra functions ///////////////////////
+//int visao();
+//float distancia_bola();
+//float angle_bola();
+//void andar_lateral_direita(int passos);
+//void andar_lateral_esquerda(int passos);
+//void andar_curto(int passos);
+//void andar_rapido(int passos);
+
+void robo_ereto();
+void inverse_kinematic_right_leg(float x, float y_e, int inclin, int VEL);
+void inverse_kinematic_left_leg(float x, float y_e, int inclin, int VEL);
+void espera_mov_ID(int id);
+int espera_mov();
+void inclina_plano(int select_leg, int angle, int vel, int offset_pe);
+void avoid_swing_left();
+void avoid_swing_right();
+int andar();
+int andar_rapido(int passo);
+int andar_veloz(int passo);
+int chute_direito();
+int chute_esquerdo();
+int andar_lateral_direita();
+int andar_lateral_esquerda();
+void levantar_de_costas();
+void desligar_servos();
+void levantar_de_frente();
+int espera_mov_legs();
+int virar_esquerda(unsigned short int valor);
+int virar_direita(unsigned short int valor);
+int andar_lento();
+void espera_mov_levantar();
+int call_standup();
+
+//int visao();
+//int kbhit();
+//int main(int argc, char* argv[]);
+//void keyboard(int key);
+//float distancia_bola();
+//float angle_bola();
+void calling();
+void greetings();
+void andar_marchando();
+
+////global variables/////////////////////////
+extern int inclina;
+extern unsigned int StandupPos[22];
+extern unsigned int StandupPos_corrigido[22];
+//extern int *mem;
+
 
 
 #ifdef __cplusplus

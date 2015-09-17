@@ -1,6 +1,7 @@
 blue='\e[0;34m'
 NC='\e[0m' # No Color
 red='\e[0;31m'
+green='\e[0;32m' 
 
 echo
 sudo echo  "This script will configure bashrc file and install RoboFEI-HT software"
@@ -30,7 +31,6 @@ else
 	echo 'export PATH=$PATH:~/RoboFEI-HT/build/bin' >> ~/.bashrc   
 	sleep 1
 fi
-
 echo -e "${blue} Installing serial ${NC}"
 cd IMU/serial
 
@@ -57,9 +57,54 @@ make all
 
 make install
 
+sudo echo  -e "Criando as regras para reconhecer o dispositivo${red} IMU${NC}"
+cat <<EOF > 41-ftdi-imu.rules
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403",  ATTRS{idProduct}=="6001", ATTRS{serial}=="A501VM7A", MODE="0666", SYMLINK+="robot/imu"
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403",  ATTRS{idProduct}=="6001", ATTRS{serial}=="A501VROG", MODE="0666", SYMLINK+="robot/imu"
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403",  ATTRS{idProduct}=="6001", ATTRS{serial}=="A501VRKI", MODE="0666", SYMLINK+="robot/imu"
+EOF
+chmod +x 41-ftdi-imu.rules
+sudo echo  -e "Copiando arquivo${blue} 41-ftdi-imu.rules${NC} para ${green}/etc/udev/rules.d${NC}"
+sudo cp ~/RoboFEI-HT/build/41-ftdi-imu.rules /etc/udev/rules.d
 
+sudo echo  -e "Criando as regras para reconhecer o dispositivo${red} Servo${NC}"
+cat <<EOF > 41-ftdi-servo.rules
+KERNEL=="ttyUSB?", SUBSYSTEM=="tty", ATTRS{idVendor}=="0403",  ATTRS{idProduct}=="6001", ATTRS{serial}!="A501VRKI", ATTRS{serial}!="A501VROG", ATTRS{serial}!="A501VM7A", ATTRS{product}=="FT232R USB UART", MODE="0666", SYMLINK+="robot/servo%n"
+EOF
+chmod +x 41-ftdi-servo.rules
+sudo echo  -e "Copiando arquivo${blue} 41-ftdi-servo.rules${NC} para ${green}/etc/udev/rules.d${NC}"
+sudo cp ~/RoboFEI-HT/build/41-ftdi-servo.rules /etc/udev/rules.d
+
+sudo echo  "Realizando um restart no udev"
+sudo service udev restart
+
+
+sudo echo "**********************************************************************"
+sudo echo "Preparando para copiar arquivos de configuração do robô" 
+sudo echo "Informe o numero do robô: "
+read NUM
+case $NUM in
+  1) echo "Robô 1 selecionado..."
+     sudo cp ~/RoboFEI-HT/conf_robos/01/* ~/RoboFEI-HT/Control/Data/
+     echo "Arquivos copiados!"
+     ;;
+
+  2) sudo echo "Robô 2 selecionado..."
+     sudo cp ~/RoboFEI-HT/conf_robos/02/* ~/RoboFEI-HT/Control/Data/
+     echo "Arquivos copiados!"     ;;
+
+  3) sudo echo "Robô 3 selecionado..."
+     sudo cp ~/RoboFEI-HT/conf_robos/03/* ~/RoboFEI-HT/Control/Data/
+     echo "Arquivos copiados!"     ;;
+
+  4) sudo echo "Robô 4 selecionado..."
+     sudo cp ~/RoboFEI-HT/conf_robos/04/* ~/RoboFEI-HT/Control/Data/
+     echo "Arquivos copiados!"     ;;
+  *) sudo echo "Numero inválido!" ;;
+esac
 
 echo -e "${red} Please close terminal in order to apply changes ${NC}" 
+# reboot
 #sleep 5
 #kill -TERM `pidof gnome-terminal`
 

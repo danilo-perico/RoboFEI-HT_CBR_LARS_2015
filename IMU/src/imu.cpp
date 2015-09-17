@@ -324,7 +324,7 @@ int main(int argc, char **argv)
     using_shared_memory();
 
   // Load parameters from private node handle.
-  std::string port("/dev/ttyUSB0");
+  std::string port("/dev/robot/imu");
   int32_t baud = 115200;;
   //ros::param::param<std::string>("~port", port, "/dev/ttyUSB0");
   //ros::param::param<int32_t>("~baud", baud, 115200);
@@ -375,12 +375,17 @@ int main(int argc, char **argv)
                 contador = 0;
                 ac_med_accel_z = 0;
             }
-            ac_med_accel_z = ac_med_accel_z + IMU_ACCEL_Y;
+            ac_med_accel_z = ac_med_accel_z + IMU_ACCEL_Z;
             contador++;
             //--------------------------------------------------------------------
 
-            if(med_accel_z<0.5) // Identifica se o robô esta caido ou em pé
-                IMU_STATE = 1; // Robo caido
+            if(med_accel_z<0.50) // Identifica se o robô esta caido ou em pé
+		if(IMU_ACCEL_Y>0){
+	                IMU_STATE = 1; // Robo caido frente
+		}
+		else{
+			IMU_STATE = -1; // Robo caido tras
+		}
             else
                 IMU_STATE = 0; // Robo em pé
 
