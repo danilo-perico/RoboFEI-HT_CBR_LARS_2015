@@ -30,12 +30,12 @@ Arquivo fonte contendo o programa que controla os servos do corpo do robô
 #include <sys/shm.h>
 
 
-#include "Camera.h"
-#include "Point.h"
-#include "mjpg_streamer.h"
+//#include "Camera.h"
+//#include "Point.h"
+//#include "mjpg_streamer.h"
 #include "minIni.h"
-#include "LinuxCamera.h"
-#include "ColorFinder.h"
+//#include "LinuxCamera.h"
+//#include "ColorFinder.h"
 #include <string>
 
 #include "Action.h"
