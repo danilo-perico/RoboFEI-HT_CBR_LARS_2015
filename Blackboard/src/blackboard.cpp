@@ -3,14 +3,14 @@
 ******************************************************************************
 * @file blackboard.h
 * @author Isaac Jesus da Silva - ROBOFEI-HT - FEI
-* @version V0.0.2
+* @version V0.0.3
 * @created 07/04/2014
-* @Modified 11/04/2014
+* @Modified 10/09/2015
 * @e-mail isaac25silva@yahoo.com.br
 * @brief black board
 ****************************************************************************
 
-Arquivo fonte contendo as funções que criam ou acopla a memória compartilhada
+Arquivo fonte contendo as funções que cria ou acopla a memória compartilhada
 
 /--------------------------------------------------------------------*/
 
@@ -23,7 +23,6 @@ Arquivo fonte contendo as funções que criam ou acopla a memória compartilhada
 
 //#define DEBUG
 
-
 #define KEY 123
 
 int *mem ; //Variável que manipula memória compartilhada
@@ -33,6 +32,26 @@ float *memf ; //Variável que manipula memória compartilhada
 // e quantos processos estão utilizando, digite no terminal o comando $ipcs -m
 // será a memoria criada ->   key = 0x0000007b    bytes = 2048
 // nattch = number of attached processes
+
+void escreve_int(int index, int valor)
+{
+    *(mem+index) = valor;
+}
+
+void escreve_float(int index, float valor)
+{
+    *(memf+index) = valor;
+}
+
+int leitura_int(int index)
+{
+    return *(mem + index);
+}
+
+float leitura_float(int index)
+{
+    return *(memf + index);
+}
 
 int using_shared_memory()
 {
