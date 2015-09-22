@@ -67,12 +67,16 @@ using namespace std;
 
 int kbhit(); //funcao do kbhit.cpp
 
+char Initialize_servo();
+
 void change_current_dir()
 {
     char exepath[1024] = {0};
     if(readlink("/proc/self/exe", exepath, sizeof(exepath)) != -1)
         chdir(dirname(exepath));
 }
+
+char string1[50]; //String usada durante o programa
 
 int main(int argc, char **argv)
 {
@@ -82,9 +86,9 @@ int main(int argc, char **argv)
     using_shared_memory();
 
     bool stop_gait = 1;
-    char string[50]; //String usada para definir prioridade do programa
-    sprintf(string,"echo fei 123456| sudo -S renice -20 -p %d", getpid()); // prioridade maxima do codigo
-    system(string);//prioridade
+	char *Servoport;
+    sprintf(string1,"echo fei 123456| sudo -S renice -20 -p %d", getpid()); // prioridade maxima do codigo
+    system(string1);//prioridade
 
     printf( "\n===== ROBOFEI-HT Control Process | based on Jimmy Control=====\n\n");
 
@@ -125,9 +129,9 @@ int main(int argc, char **argv)
 	*deviceIndex = 0; 		//endereça o Servo
 	while(*deviceIndex<3)// laço que percorre o servo 0, 1 e 2.
 	{
-		sprintf(string,"/dev/robot/servo%d", *deviceIndex);
+		sprintf(string1,"/dev/robot/servo%d", *deviceIndex);
 		LinuxCM730* linux_cm730;
-    	linux_cm730 = new LinuxCM730(string);
+    	linux_cm730 = new LinuxCM730(string1);
 		CM730* cm730;
     	cm730 = new CM730(linux_cm730);
 		if( MotionManager::GetInstance()->Initialize(cm730) == 0)
@@ -172,7 +176,7 @@ int main(int argc, char **argv)
 	delete deviceIndex; //desalocando da memória
 	//-----------------------------------------------------------------------------}
     //////////////////// Framework Initialize ////////////////////////////
-    LinuxCM730 linux_cm730(string);
+    LinuxCM730 linux_cm730(string1);
     CM730 cm730(&linux_cm730);
     if(MotionManager::GetInstance()->Initialize(&cm730) == false)
     {
@@ -725,3 +729,62 @@ int erro;
 
     return 0;
 }
+
+//////////////////// Framework Initialize ////////////////////////////
+// ---- Open USBDynamixel -----------------------------------------------{
+char Initialize_servo()
+{
+	bool servoComunica = false;
+	bool servoConectado = false;
+	int * deviceIndex = new int;
+	int idServo;
+	*deviceIndex = 0; 		//endereça o Servo
+	while(*deviceIndex<3)// laço que percorre o servo 0, 1 e 2.
+	{
+		sprintf(string1,"/dev/robot/servo%d", *deviceIndex);
+		LinuxCM730* linux_cm730;
+    	linux_cm730 = new LinuxCM730(string1);
+		CM730* cm730;
+    	cm730 = new CM730(linux_cm730);
+		if( MotionManager::GetInstance()->Initialize(cm730) == 0)
+		{
+			printf( "Failed to open servo%d!\n", *deviceIndex );
+			if(*deviceIndex==2)  // Não encontrou nenhum
+			{
+				if(servoComunica)
+				    printf("Conectou-se a uma placa mas não conseguiu se comunicar com o servo\n");
+				else
+				    printf("Não encontrou nenhuma placa do servo conectada a porta USB\n");
+			        return 0;
+			}
+			*deviceIndex = *deviceIndex + 1;      // Não conecta na placa do servo e tenta a proxima porta.
+		}
+		else
+		{
+			servoComunica = true;
+			printf( "Succeed to open Servo%d!\n", *deviceIndex );
+			cm730->ReadByte(1, 3, &idServo, 0);
+			servoConectado = idServo == 1;
+			usleep(1000);
+			cm730->ReadByte(1, 3, &idServo, 0);//Tenta novamente caso falhe a comunicação
+			servoConectado = idServo == 1;
+    		if(servoConectado)
+			{
+       			 	printf("Servo%d okay - Connected and communicated!\n", *deviceIndex);
+			 	break;
+			}
+    		else
+    		{
+			printf("Servo wrong or not communicated!\n");
+				if(*deviceIndex==2)
+				{
+				    printf("Conectou-se a uma placa mas não conseguiu se comunicar com o servo\n");
+				    return 0;
+				}
+				*deviceIndex = *deviceIndex + 1;
+			}
+		}
+	}
+	delete deviceIndex; //desalocando da memória
+}
+
