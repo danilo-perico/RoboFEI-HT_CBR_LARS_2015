@@ -159,6 +159,7 @@ int main(int argc, char **argv)
 	std::cout<<"Start Action 1"<<std::endl;
     Action::GetInstance()->Start(1);    /* Init(stand up) pose */
     while(Action::GetInstance()->IsRunning()) usleep(8*1000); 
+	Action* a=Action::GetInstance();
 
 //	getchar();	
 
@@ -177,7 +178,7 @@ int erro;
 		while(1)
 		{
 			int key = kbhit();
-			usleep(8*1000);
+			usleep(4*1000);
 			//Neste if está incluso todos os movimentos de gait - excluindo os actions----------------
 			if(key != 115 && key != 0 && key != 107 && key != 100 && key != 101 && key != 102&& key != 109 && key != 110 && key != 111)
 				stop_gait = 1; // executa o playpage 9 uma vez antes de iniciar o gait
@@ -186,6 +187,7 @@ int erro;
 			{
 		        case 97: //a
 				    cout << "Levantar quando as costas estão para cima" << endl;
+					while(Walking::GetInstance()->GetCurrentPhase()!=0 && Walking::GetInstance()->IsRunning()!=0)  usleep(8*1000);
 					Walking::GetInstance()->Stop();
 					Walking::GetInstance()->m_Joint.SetEnableBody(false);
 					Action::GetInstance()->m_Joint.SetEnableBody(true);
@@ -195,6 +197,7 @@ int erro;
 
 		        case 98: //b
 				    cout << "Levantar quando o peito está para cima" << endl;
+					while(Walking::GetInstance()->GetCurrentPhase()!=0 && Walking::GetInstance()->IsRunning()!=0)  usleep(8*1000);
 					Walking::GetInstance()->Stop();
 					Walking::GetInstance()->m_Joint.SetEnableBody(false);
 					Action::GetInstance()->m_Joint.SetEnableBody(true);
@@ -204,6 +207,7 @@ int erro;
 
 		        case 99: //c
 				    cout << "Chutar direito" << endl;
+					while(Walking::GetInstance()->GetCurrentPhase()!=0 && Walking::GetInstance()->IsRunning()!=0)  usleep(8*1000);
 					Walking::GetInstance()->Stop();
 					Walking::GetInstance()->m_Joint.SetEnableBody(false);
 					Action::GetInstance()->m_Joint.SetEnableBody(true);
@@ -223,10 +227,12 @@ int erro;
 					Action::GetInstance()->m_Joint.SetEnableBody(true);
 					MotionManager::GetInstance()->SetEnable(true);
 					Action::GetInstance()->Start(78);
+					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
 		        break;
 
 		        case 103: //g
 				    cout << "Chutar esquerdo" << endl;
+					while(Walking::GetInstance()->GetCurrentPhase()!=0 && Walking::GetInstance()->IsRunning()!=0)  usleep(8*1000);
 					Walking::GetInstance()->Stop();
 					Walking::GetInstance()->m_Joint.SetEnableBody(false);
 		   			Action::GetInstance()->m_Joint.SetEnableBody(true);
@@ -246,6 +252,7 @@ int erro;
 					Action::GetInstance()->m_Joint.SetEnableBody(true);
 					MotionManager::GetInstance()->SetEnable(true);
 					Action::GetInstance()->Start(79);
+					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
    
 		        break;
 
@@ -275,11 +282,13 @@ int erro;
 
 		        case 105: //i
 				    cout << "Passe Direita" << endl;
+					while(Walking::GetInstance()->GetCurrentPhase()!=0 && Walking::GetInstance()->IsRunning()!=0)  usleep(8*1000);
 					Walking::GetInstance()->Stop();
 					Walking::GetInstance()->m_Joint.SetEnableBody(false);
 					Action::GetInstance()->m_Joint.SetEnableBody(true);
 					MotionManager::GetInstance()->SetEnable(true);
-					Action::GetInstance()->Start(70);  
+					Action::GetInstance()->Start(70); 
+					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
 		        break;
 
 		        case 101: //e
@@ -296,11 +305,13 @@ int erro;
 
 		        case 106: //j
 				    cout << "Passe Esquerda" << endl;
+					while(Walking::GetInstance()->GetCurrentPhase()!=0 && Walking::GetInstance()->IsRunning()!=0)  usleep(8*1000);
 					Walking::GetInstance()->Stop();
 					Walking::GetInstance()->m_Joint.SetEnableBody(false);
 					Action::GetInstance()->m_Joint.SetEnableBody(true);
 					MotionManager::GetInstance()->SetEnable(true);
-					Action::GetInstance()->Start(71);   
+					Action::GetInstance()->Start(71); 
+					while(Action::GetInstance()->IsRunning()) usleep(8*1000);  
 		        break;
 
 		        case 109: //m
@@ -399,27 +410,27 @@ int erro;
 
 		        case 116: //t
 				    cout << "Stop" << endl;
+					while(Walking::GetInstance()->GetCurrentPhase()!=0 && Walking::GetInstance()->IsRunning()!=0)  usleep(8*1000);
 					Walking::GetInstance()->Stop();
 					Walking::GetInstance()->m_Joint.SetEnableBody(false);
-					usleep(8*100000);
 					Action::GetInstance()->m_Joint.SetEnableBody(true);
 					MotionManager::GetInstance()->SetEnable(true);
-					Action::GetInstance()->Start(1);    /* Init(stand up) pose */
-					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
-					Action::GetInstance()->Stop();
-					Walking::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(false);
-			   		Action::GetInstance()->m_Joint.SetEnableBody(false);
-					MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
+					if(a!=Action::GetInstance())
+					{
+						Action::GetInstance()->Start(1);    /* Init(stand up) pose */
+						while(Action::GetInstance()->IsRunning()) usleep(8*1000);
+					}
 		        break;
 
 		        case 104: //h
 				    cout << "Greetings" << endl;
+					while(Walking::GetInstance()->GetCurrentPhase()!=0 && Walking::GetInstance()->IsRunning()!=0)  usleep(8*1000);
 					Walking::GetInstance()->Stop();
 					Walking::GetInstance()->m_Joint.SetEnableBody(false);
 					Action::GetInstance()->m_Joint.SetEnableBody(true);
 					MotionManager::GetInstance()->SetEnable(true);
-					Action::GetInstance()->Start(24);  
+					Action::GetInstance()->Start(24); 
+					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
 		        break;
 
 		        case 27: //ESC (stop)
@@ -730,7 +741,7 @@ int Initialize_servo()
 		printf("\e[0;31mConectou-se a placa USB/RS-485 mas não conseguiu se comunicar com o servo.\e[0m\n");
 		cout<<"Endereços encontrado:"<<endl;
 		cout<<string_buffer<<endl;
-		cout<<"\e[0;36mVerifique se a chave que liga os servos motores esta na posição ligada.\n\n\e[0m"<<endl;
+		cout<<"\e[0;36mVerifique se a chave que liga os servos motores está na posição ligada.\n\n\e[0m"<<endl;
 	}
 	else
 	{
