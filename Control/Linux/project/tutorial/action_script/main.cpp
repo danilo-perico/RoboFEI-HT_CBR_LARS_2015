@@ -186,7 +186,7 @@ int erro;
 		    switch(key)
 			{
 		        case 97: //a
-				    cout << "Levantar quando as costas estão para cima" << endl;
+				    cout << "Levantar quando as costas está para cima" << endl;
 					while(Walking::GetInstance()->GetCurrentPhase()!=0 && Walking::GetInstance()->IsRunning()!=0)  usleep(8*1000);
 					Walking::GetInstance()->Stop();
 					Walking::GetInstance()->m_Joint.SetEnableBody(false);
