@@ -72,6 +72,8 @@ int Initialize_servo();
 
 void move_action(int move_number, bool interrupt); // realiza o movimento de ações
 
+void move_gait(float X_amplitude, float Y_amplitude, float A_amplitude); // realiza o gait
+
 void change_current_dir()
 {
     char exepath[1024] = {0};
@@ -671,6 +673,11 @@ void move_action(int move_number, bool interrupt)
 	while(Action::GetInstance()->IsRunning() && ~interrupt) usleep(8*1000); // Aguarda finalizar a ação ou para por interrupção
 }
 
+//Execute the gait generation-----------------------------------------
+void move_gait(float X_amplitude, float Y_amplitude, float A_amplitude)
+{
+
+}
 
 //////////////////// Framework Initialize ////////////////////////////
 // ---- Open USBDynamixel -----------------------------------------------{
