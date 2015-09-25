@@ -202,12 +202,7 @@ int erro;
 
 		        case 99: //c
 				    cout << "Chutar direito" << endl;
-					while(Walking::GetInstance()->GetCurrentPhase()!=0 && Walking::GetInstance()->IsRunning()!=0)  usleep(8*1000);
-					Walking::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(false);
-					Action::GetInstance()->m_Joint.SetEnableBody(true);
-					MotionManager::GetInstance()->SetEnable(true);
-					Action::GetInstance()->Start(1);    /* Init(stand up) pose */
+					move_action(1, 0);
 					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
 					Action::GetInstance()->Start(12);
 					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
@@ -227,13 +222,7 @@ int erro;
 
 		        case 103: //g
 				    cout << "Chutar esquerdo" << endl;
-					while(Walking::GetInstance()->GetCurrentPhase()!=0 && Walking::GetInstance()->IsRunning()!=0)  usleep(8*1000);
-					Walking::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(false);
-		   			Action::GetInstance()->m_Joint.SetEnableBody(true);
-					MotionManager::GetInstance()->SetEnable(true);
-					Action::GetInstance()->Start(1);    /* Init(stand up) pose */
-					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
+					move_action(1, 0);
 					Action::GetInstance()->Start(13);
 					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
 					Action::GetInstance()->Stop();
@@ -248,31 +237,16 @@ int erro;
 					MotionManager::GetInstance()->SetEnable(true);
 					Action::GetInstance()->Start(79);
 					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
-   
 		        break;
 
 		        case 102: //f
 				    cout << "Andar para frente" << endl;
-					Action::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   			Action::GetInstance()->m_Joint.SetEnableBody(false);
-					MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-					Walking::GetInstance()->X_MOVE_AMPLITUDE = 20.0;
-					Walking::GetInstance()->Y_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Start();
+					move_gait(20.0, 0.0, 0.0);
 		        break;
 
 		        case 100: //d
 				    cout << "Vira para direita" << endl;
-					Action::GetInstance()->Stop();
-					Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Y_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->A_MOVE_AMPLITUDE = -20.0;
-					Walking::GetInstance()->Start();
-					Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   			Action::GetInstance()->m_Joint.SetEnableBody(false);
-					MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
+					move_gait(0.0, 0.0, -20.0);
 		        break;
 
 		        case 105: //i
@@ -282,14 +256,7 @@ int erro;
 
 		        case 101: //e
 				    cout << "Vira para esquerda" << endl;
-					Action::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   			Action::GetInstance()->m_Joint.SetEnableBody(false);
-					MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-					Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Y_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->A_MOVE_AMPLITUDE = 20.0;
-					Walking::GetInstance()->Start();
+					move_gait(0.0, 0.0, 20.0);
 		        break;
 
 		        case 106: //j
@@ -299,74 +266,32 @@ int erro;
 
 		        case 109: //m
 				    cout << "Andar de lado esquerda" << endl;
-					Action::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   			Action::GetInstance()->m_Joint.SetEnableBody(false);
-					MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-					Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Y_MOVE_AMPLITUDE = 10.0;
-					Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Start();
+					move_gait(0.0, 10.0, 0.0);
 		        break;
 
 		        case 110: //n
 				    cout << "Andar de lado direita" << endl;
-					Action::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   			Action::GetInstance()->m_Joint.SetEnableBody(false);
-					MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-					Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Y_MOVE_AMPLITUDE = -10.0;
-					Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Start();
+					move_gait(0.0, -10.0, 0.0);
 		        break;
 
 		        case 111: //o
 				    cout << "Rotacionar a esquerda em volta da bola" << endl;
-					Action::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   			Action::GetInstance()->m_Joint.SetEnableBody(false);
-					MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-					Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Y_MOVE_AMPLITUDE = 23.0;
-					Walking::GetInstance()->A_MOVE_AMPLITUDE = -10.0;
-					Walking::GetInstance()->Start();
+					move_gait(0.0, 23.0, -10.0);
 		        break;
 
 		        case 107: //k
 				    cout << "Andar curto para frente" << endl;
-					Action::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   			Action::GetInstance()->m_Joint.SetEnableBody(false);
-					MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-					Walking::GetInstance()->X_MOVE_AMPLITUDE = 10.0;
-					Walking::GetInstance()->Y_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Start();
+					move_gait(10.0, 0.0, 0.0);
 		        break;
 
 		        case 114: //r
 				    cout << "Andar curto para traz" << endl;
-					Action::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   			Action::GetInstance()->m_Joint.SetEnableBody(false);
-					MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-					Walking::GetInstance()->X_MOVE_AMPLITUDE = -10.0;
-					Walking::GetInstance()->Y_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Start();
+					move_gait(-10.0, 0.0, 0.0);
 		        break;
 
 		        case 118: //v
 				    cout << "Andar rapido para traz" << endl;
-					Action::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   			Action::GetInstance()->m_Joint.SetEnableBody(false);
-					MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-					Walking::GetInstance()->X_MOVE_AMPLITUDE = -20.0;
-					Walking::GetInstance()->Y_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Start();
+					move_gait(-20.0, 0.0, 0.0);
 		        break;
 
 		        case 115: //s
@@ -376,14 +301,7 @@ int erro;
 						move_action(9, 0);
 						stop_gait = 0;
 					}
-					Action::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   			Action::GetInstance()->m_Joint.SetEnableBody(false);
-					MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-					Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Y_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Start();
+					move_gait(0.0, 0.0, 0.0);
 		        break;
 
 		        case 116: //t
@@ -673,10 +591,18 @@ void move_action(int move_number, bool interrupt)
 	while(Action::GetInstance()->IsRunning() && ~interrupt) usleep(8*1000); // Aguarda finalizar a ação ou para por interrupção
 }
 
-//Execute the gait generation-----------------------------------------
+//========================================================================
+//Execute the gait generation---------------------------------------------
 void move_gait(float X_amplitude, float Y_amplitude, float A_amplitude)
 {
-
+	Action::GetInstance()->Stop();
+	Walking::GetInstance()->m_Joint.SetEnableBody(true);
+	Action::GetInstance()->m_Joint.SetEnableBody(false);
+	MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
+	Walking::GetInstance()->X_MOVE_AMPLITUDE = X_amplitude;
+	Walking::GetInstance()->Y_MOVE_AMPLITUDE = Y_amplitude;
+	Walking::GetInstance()->A_MOVE_AMPLITUDE = A_amplitude;
+	Walking::GetInstance()->Start();
 }
 
 //////////////////// Framework Initialize ////////////////////////////
