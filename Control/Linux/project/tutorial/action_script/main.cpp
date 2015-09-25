@@ -190,22 +190,12 @@ int erro;
 			{
 		        case 97: //a
 				    cout << "Levantar quando as costas está para cima" << endl;
-					while(Walking::GetInstance()->GetCurrentPhase()!=0 && Walking::GetInstance()->IsRunning()!=0)  usleep(8*1000);
-					Walking::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(false);
-					Action::GetInstance()->m_Joint.SetEnableBody(true);
-					MotionManager::GetInstance()->SetEnable(true);
-					Action::GetInstance()->Start(11);
+					move_action(11, 0);
 		        break;
 
 		        case 98: //b
 				    cout << "Levantar quando o peito está para cima" << endl;
-					while(Walking::GetInstance()->GetCurrentPhase()!=0 && Walking::GetInstance()->IsRunning()!=0)  usleep(8*1000);
-					Walking::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(false);
-					Action::GetInstance()->m_Joint.SetEnableBody(true);
-					MotionManager::GetInstance()->SetEnable(true);
-					Action::GetInstance()->Start(10);  
+					move_action(10, 0);
 		        break;
 
 		        case 99: //c
@@ -285,13 +275,7 @@ int erro;
 
 		        case 105: //i
 				    cout << "Passe Direita" << endl;
-					while(Walking::GetInstance()->GetCurrentPhase()!=0 && Walking::GetInstance()->IsRunning()!=0)  usleep(8*1000);
-					Walking::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(false);
-					Action::GetInstance()->m_Joint.SetEnableBody(true);
-					MotionManager::GetInstance()->SetEnable(true);
-					Action::GetInstance()->Start(70); 
-					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
+					move_action(70, 0);
 		        break;
 
 		        case 101: //e
@@ -308,13 +292,7 @@ int erro;
 
 		        case 106: //j
 				    cout << "Passe Esquerda" << endl;
-					while(Walking::GetInstance()->GetCurrentPhase()!=0 && Walking::GetInstance()->IsRunning()!=0)  usleep(8*1000);
-					Walking::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(false);
-					Action::GetInstance()->m_Joint.SetEnableBody(true);
-					MotionManager::GetInstance()->SetEnable(true);
-					Action::GetInstance()->Start(71); 
-					while(Action::GetInstance()->IsRunning()) usleep(8*1000);  
+					move_action(71, 0);
 		        break;
 
 		        case 109: //m
@@ -393,12 +371,7 @@ int erro;
 					if(stop_gait == 1)
 					{
 						cout << "Stop com gait" << endl;
-						Walking::GetInstance()->Stop();
-						Walking::GetInstance()->m_Joint.SetEnableBody(false);
-						Action::GetInstance()->m_Joint.SetEnableBody(true);
-						MotionManager::GetInstance()->SetEnable(true);
-						Action::GetInstance()->Start(9);
-						while(Action::GetInstance()->IsRunning()) usleep(8*1000);
+						move_action(9, 0);
 						stop_gait = 0;
 					}
 					Action::GetInstance()->Stop();
@@ -427,13 +400,7 @@ int erro;
 
 		        case 104: //h
 				    cout << "Greetings" << endl;
-					while(Walking::GetInstance()->GetCurrentPhase()!=0 && Walking::GetInstance()->IsRunning()!=0)  usleep(8*1000);
-					Walking::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(false);
-					Action::GetInstance()->m_Joint.SetEnableBody(true);
-					MotionManager::GetInstance()->SetEnable(true);
-					Action::GetInstance()->Start(24); 
-					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
+					move_action(24, 0);
 		        break;
 
 		        case 27: //ESC (stop)
@@ -695,15 +662,15 @@ int erro;
 
 void move_action(int move_number, bool interrupt)
 {
-	cout << "Levantar quando as costas está para cima" << endl;
 	while(Walking::GetInstance()->GetCurrentPhase()!=0 && Walking::GetInstance()->IsRunning()!=0)  usleep(8*1000);
 	Walking::GetInstance()->Stop();
 	Walking::GetInstance()->m_Joint.SetEnableBody(false);
 	Action::GetInstance()->m_Joint.SetEnableBody(true);
 	MotionManager::GetInstance()->SetEnable(true);
 	Action::GetInstance()->Start(move_number); // Realiza a ação do numero contido no move_number
-	while(Action::GetInstance()->IsRunning() && interrupt) usleep(8*1000); // Aguarda finalizar a ação
+	while(Action::GetInstance()->IsRunning() && ~interrupt) usleep(8*1000); // Aguarda finalizar a ação ou para por interrupção
 }
+
 
 //////////////////// Framework Initialize ////////////////////////////
 // ---- Open USBDynamixel -----------------------------------------------{
