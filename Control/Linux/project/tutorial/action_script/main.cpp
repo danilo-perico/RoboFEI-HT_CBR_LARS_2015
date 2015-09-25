@@ -48,6 +48,7 @@ Arquivo fonte contendo o programa que controla os servos do corpo do robô
 #include "LinuxActionScript.h"
 #include <blackboard.h>
 #include <boost/program_options.hpp> //tratamento de argumentos linha de comando
+#include "mov.hpp"
 
 #ifdef MX28_1024
 #define MOTION_FILE_PATH    "../../Control/Data/motion_1024.bin"
@@ -68,6 +69,8 @@ using namespace std;
 int kbhit(); //funcao do kbhit.cpp
 
 int Initialize_servo();
+
+void move_action(int move_number, bool interrupt); // realiza o movimento de ações
 
 void change_current_dir()
 {
@@ -192,7 +195,7 @@ int erro;
 					Walking::GetInstance()->m_Joint.SetEnableBody(false);
 					Action::GetInstance()->m_Joint.SetEnableBody(true);
 					MotionManager::GetInstance()->SetEnable(true);
-					Action::GetInstance()->Start(11);  
+					Action::GetInstance()->Start(11);
 		        break;
 
 		        case 98: //b
@@ -687,6 +690,19 @@ int erro;
 //    while(LinuxActionScript::m_is_running == 1) sleep(10);
 
     return 0;
+}
+
+
+void move_action(int move_number, bool interrupt)
+{
+	cout << "Levantar quando as costas está para cima" << endl;
+	while(Walking::GetInstance()->GetCurrentPhase()!=0 && Walking::GetInstance()->IsRunning()!=0)  usleep(8*1000);
+	Walking::GetInstance()->Stop();
+	Walking::GetInstance()->m_Joint.SetEnableBody(false);
+	Action::GetInstance()->m_Joint.SetEnableBody(true);
+	MotionManager::GetInstance()->SetEnable(true);
+	Action::GetInstance()->Start(move_number); // Realiza a ação do numero contido no move_number
+	while(Action::GetInstance()->IsRunning() && interrupt) usleep(8*1000); // Aguarda finalizar a ação
 }
 
 //////////////////// Framework Initialize ////////////////////////////
