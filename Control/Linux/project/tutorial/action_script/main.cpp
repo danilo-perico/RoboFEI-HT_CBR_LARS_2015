@@ -3,9 +3,9 @@
 ******************************************************************************
 * @file control.cpp
 * @author Isaac Jesus da Silva - ROBOFEI-HT - FEI 😛
-* @version V1.0.5
+* @version V1.1.0
 * @created 20/01/2015
-* @Modified 22/09/2015
+* @Modified 25/09/2015
 * @e-mail isaac25silva@yahoo.com.br
 * @brief control 😛
 ****************************************************************************
@@ -176,7 +176,7 @@ int main(int argc, char **argv)
 int erro;
 
 	//***********************************************************************************************
-	if (variables.count("keyboard")) //verifica se foi chadao o argumento de controle pelo teclado
+	if (variables.count("keyboard")) //verifica se foi chamado o argumento de controle pelo teclado
 	{
 	//-------------iniciando o modulo de andar pelo teclado------------------------------------------
 
@@ -579,7 +579,8 @@ int erro;
     return 0;
 }
 
-
+//========================================================================
+//Execute the move action-------------------------------------------------
 void move_action(int move_number, bool interrupt)
 {
 	while(Walking::GetInstance()->GetCurrentPhase()!=0 && Walking::GetInstance()->IsRunning()!=0)  usleep(8*1000);
