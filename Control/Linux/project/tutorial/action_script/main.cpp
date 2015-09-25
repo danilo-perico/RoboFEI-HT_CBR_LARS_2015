@@ -3,7 +3,7 @@
 ******************************************************************************
 * @file control.cpp
 * @author Isaac Jesus da Silva - ROBOFEI-HT - FEI 😛
-* @version V1.1.0
+* @version V1.1.2
 * @created 20/01/2015
 * @Modified 25/09/2015
 * @e-mail isaac25silva@yahoo.com.br
@@ -74,7 +74,7 @@ void Gait_in_place(bool stop_gait);
 
 void move_action(int move_number, bool interrupt); // realiza o movimento de ações
 
-void move_gait(float X_amplitude, float Y_amplitude, float A_amplitude); // realiza o gait
+void move_gait(float X_amplitude, float Y_amplitude, float A_amplitude, bool stop_gait); // realiza o gait
 
 void change_current_dir()
 {
@@ -243,12 +243,12 @@ int erro;
 
 		        case 102: //f
 				    cout << "Andar para frente" << endl;
-					move_gait(20.0, 0.0, 0.0);
+					move_gait(20.0, 0.0, 0.0, stop_gait);
 		        break;
 
 		        case 100: //d
 				    cout << "Vira para direita" << endl;
-					move_gait(0.0, 0.0, -20.0);
+					move_gait(0.0, 0.0, -20.0, stop_gait);
 		        break;
 
 		        case 105: //i
@@ -258,7 +258,7 @@ int erro;
 
 		        case 101: //e
 				    cout << "Vira para esquerda" << endl;
-					move_gait(0.0, 0.0, 20.0);
+					move_gait(0.0, 0.0, 20.0, stop_gait);
 		        break;
 
 		        case 106: //j
@@ -268,32 +268,32 @@ int erro;
 
 		        case 109: //m
 				    cout << "Andar de lado esquerda" << endl;
-					move_gait(0.0, 10.0, 0.0);
+					move_gait(0.0, 10.0, 0.0, stop_gait);
 		        break;
 
 		        case 110: //n
 				    cout << "Andar de lado direita" << endl;
-					move_gait(0.0, -10.0, 0.0);
+					move_gait(0.0, -10.0, 0.0, stop_gait);
 		        break;
 
 		        case 111: //o
 				    cout << "Rotacionar a esquerda em volta da bola" << endl;
-					move_gait(0.0, 23.0, -10.0);
+					move_gait(0.0, 23.0, -10.0, stop_gait);
 		        break;
 
 		        case 107: //k
 				    cout << "Andar curto para frente" << endl;
-					move_gait(10.0, 0.0, 0.0);
+					move_gait(10.0, 0.0, 0.0, stop_gait);
 		        break;
 
 		        case 114: //r
 				    cout << "Andar curto para traz" << endl;
-					move_gait(-10.0, 0.0, 0.0);
+					move_gait(-10.0, 0.0, 0.0, stop_gait);
 		        break;
 
 		        case 118: //v
 				    cout << "Andar rapido para traz" << endl;
-					move_gait(-20.0, 0.0, 0.0);
+					move_gait(-20.0, 0.0, 0.0, stop_gait);
 		        break;
 
 		        case 115: //s
@@ -360,25 +360,25 @@ int erro;
 			if(DECISION_ACTION_A == 0)
 			{
 				std::cout<<" | Nada a fazer"<<std::endl;
-					Gait_in_place(stop_gait);
+				Gait_in_place(stop_gait);
 			}
 
 			if(DECISION_ACTION_A == 1)
 			{
 				std::cout<<" | Andar para frente"<<std::endl;
-				move_gait(20.0, 0.0, 20.0);
+				move_gait(20.0, 0.0, 20.0, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 2)
 			{
 				std::cout<<" | Virar a esquerda"<<std::endl;
-				move_gait(0.0, 0.0, 20.0);
+				move_gait(0.0, 0.0, 20.0, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 3)
 			{
 				std::cout<<" | Virar a direita"<<std::endl;
-				move_gait(0.0, 0.0, -20.0);
+				move_gait(0.0, 0.0, -20.0, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 4)
@@ -422,25 +422,25 @@ int erro;
 			if(DECISION_ACTION_A == 6)
 			{
 				std::cout<<" | Andar de Lado esquerda"<<std::endl;
-				move_gait(0.0, 10.0, 0.0);
+				move_gait(0.0, 10.0, 0.0, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 7)
 			{
 				std::cout<<" | Andar de Lado direita"<<std::endl;
-				move_gait(0.0, -10.0, 0.0);
+				move_gait(0.0, -10.0, 0.0, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 8)
 			{
 				std::cout<<" | Andar lento para frente"<<std::endl;
-				move_gait(10.0, 0.0, 0.0);
+				move_gait(10.0, 0.0, 0.0, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 9)
 			{
 				std::cout<<" | Girar em torno da bola"<<std::endl;
-				move_gait(0.0, 23.0, -10.0);
+				move_gait(0.0, 23.0, -10.0, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 10)
@@ -485,8 +485,13 @@ void move_action(int move_number, bool interrupt)
 
 //========================================================================
 //Execute the gait generation---------------------------------------------
-void move_gait(float X_amplitude, float Y_amplitude, float A_amplitude)
+void move_gait(float X_amplitude, float Y_amplitude, float A_amplitude, bool stop_gait)
 {
+	if(Walking::GetInstance()->IsRunning()==0)
+	{
+		Gait_in_place(stop_gait); // Necessita realizar o Gait antes de qualquer outra
+		sleep(1);
+	}
 	Action::GetInstance()->Stop();
 	Walking::GetInstance()->m_Joint.SetEnableBody(true);
 	Action::GetInstance()->m_Joint.SetEnableBody(false);
@@ -507,7 +512,7 @@ void Gait_in_place(bool stop_gait)
 		move_action(9, 0);
 		stop_gait = 0;
 	}
-	move_gait(0.0, 0.0, 0.0);
+	move_gait(0.0, 0.0, 0.0, stop_gait);
 }
 
 //////////////////// Framework Initialize ////////////////////////////
