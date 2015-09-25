@@ -345,40 +345,25 @@ int erro;
 			if (IMU_STATE){ // Ve se esta caido
 				if(IMU_STATE==1){  //Levanta se caido de frente
 					std::cout<<" | Levantar de frente";
-					Walking::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(false);
-					Action::GetInstance()->m_Joint.SetEnableBody(true);
-					MotionManager::GetInstance()->SetEnable(true);
-					Action::GetInstance()->Start(11);
+					move_action(11, 0);
 				}
 				else{  //Levanta se caido de costa
 					std::cout<<" | Levantar de costa";
+					move_action(10, 0);
+				}
+				stop_gait = 1;
+				if(stop_gait == 1)
+				{
+					//cout << "Stop com gait" << endl;
 					Walking::GetInstance()->Stop();
 					Walking::GetInstance()->m_Joint.SetEnableBody(false);
 					Action::GetInstance()->m_Joint.SetEnableBody(true);
 					MotionManager::GetInstance()->SetEnable(true);
-					Action::GetInstance()->Start(10);
+					Action::GetInstance()->Start(9);
+					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
+					stop_gait = 0;
 				}
-				stop_gait = 1;
-				if(stop_gait == 1)
-					{
-						//cout << "Stop com gait" << endl;
-						Walking::GetInstance()->Stop();
-						Walking::GetInstance()->m_Joint.SetEnableBody(false);
-						Action::GetInstance()->m_Joint.SetEnableBody(true);
-						MotionManager::GetInstance()->SetEnable(true);
-						Action::GetInstance()->Start(9);
-						while(Action::GetInstance()->IsRunning()) usleep(8*1000);
-						stop_gait = 0;
-					}
-					Action::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   			Action::GetInstance()->m_Joint.SetEnableBody(false);
-					MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-					Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Y_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Start();
+				move_gait(0.0, 0.0, 0.0);
 				sleep(5);
 			}
 
@@ -403,64 +388,31 @@ int erro;
 						while(Action::GetInstance()->IsRunning()) usleep(8*1000);
 						stop_gait = 0;
 					}
-					Action::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   			Action::GetInstance()->m_Joint.SetEnableBody(false);
-					MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-					Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Y_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Start();
+					move_gait(0.0, 0.0, 0.0);
 			}
 
 			if(DECISION_ACTION_A == 1)
 			{
 				std::cout<<" | Andar para frente"<<std::endl;
-				Action::GetInstance()->Stop();
-				Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   		Action::GetInstance()->m_Joint.SetEnableBody(false);
-				MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-				Walking::GetInstance()->X_MOVE_AMPLITUDE = 20.0;
-				Walking::GetInstance()->Y_MOVE_AMPLITUDE = 0.0;
-				Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
-				Walking::GetInstance()->Start();
+				move_gait(20.0, 0.0, 20.0);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 2)
 			{
 				std::cout<<" | Virar a esquerda"<<std::endl;
-				Action::GetInstance()->Stop();
-				Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   		Action::GetInstance()->m_Joint.SetEnableBody(false);
-				MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-				Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-				Walking::GetInstance()->Y_MOVE_AMPLITUDE = 0.0;
-				Walking::GetInstance()->A_MOVE_AMPLITUDE = 20.0;
-				Walking::GetInstance()->Start();
+				move_gait(0.0, 0.0, 20.0);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 3)
 			{
 				std::cout<<" | Virar a direita"<<std::endl;
-				Action::GetInstance()->Stop();
-				Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-				Walking::GetInstance()->Y_MOVE_AMPLITUDE = 0.0;
-				Walking::GetInstance()->A_MOVE_AMPLITUDE = -20.0;
-				Walking::GetInstance()->Start();
-				Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   		Action::GetInstance()->m_Joint.SetEnableBody(false);
-				MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
+				move_gait(0.0, 0.0, -20.0);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 4)
 			{
 				std::cout<<"| Chutar com pe direito"<<std::endl;
-				Walking::GetInstance()->Stop();
-				Walking::GetInstance()->m_Joint.SetEnableBody(false);
-				Action::GetInstance()->m_Joint.SetEnableBody(true);
-				MotionManager::GetInstance()->SetEnable(true);
-				Action::GetInstance()->Start(1);    /* Init(stand up) pose */
-				while(Action::GetInstance()->IsRunning()) usleep(8*1000);
+				move_action(1, 0);
 				Action::GetInstance()->Start(12);
 				while(Action::GetInstance()->IsRunning()) usleep(8*1000);
 				Action::GetInstance()->Stop();
@@ -479,12 +431,7 @@ int erro;
 			if(DECISION_ACTION_A == 5)
 			{
 				std::cout<<" | Chutar com pe esquerdo"<<std::endl;
-				Walking::GetInstance()->Stop();
-				Walking::GetInstance()->m_Joint.SetEnableBody(false);
-		   		Action::GetInstance()->m_Joint.SetEnableBody(true);
-				MotionManager::GetInstance()->SetEnable(true);
-				Action::GetInstance()->Start(1);    /* Init(stand up) pose */
-				while(Action::GetInstance()->IsRunning()) usleep(8*1000);
+				move_action(1, 0);
 				Action::GetInstance()->Start(13);
 				while(Action::GetInstance()->IsRunning()) usleep(8*1000);
 				Action::GetInstance()->Stop();
@@ -503,53 +450,25 @@ int erro;
 			if(DECISION_ACTION_A == 6)
 			{
 				std::cout<<" | Andar de Lado esquerda"<<std::endl;
-				Action::GetInstance()->Stop();
-				Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   		Action::GetInstance()->m_Joint.SetEnableBody(false);
-				MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-				Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-				Walking::GetInstance()->Y_MOVE_AMPLITUDE = 10.0;
-				Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
-				Walking::GetInstance()->Start();
+				move_gait(0.0, 10.0, 0.0);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 7)
 			{
 				std::cout<<" | Andar de Lado direita"<<std::endl;
-				Action::GetInstance()->Stop();
-				Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   		Action::GetInstance()->m_Joint.SetEnableBody(false);
-				MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-				Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-				Walking::GetInstance()->Y_MOVE_AMPLITUDE = -10.0;
-				Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
-				Walking::GetInstance()->Start();
+				move_gait(0.0, -10.0, 0.0);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 8)
 			{
 				std::cout<<" | Andar lento para frente"<<std::endl;
-				Action::GetInstance()->Stop();
-				Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   		Action::GetInstance()->m_Joint.SetEnableBody(false);
-				MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-				Walking::GetInstance()->X_MOVE_AMPLITUDE = 10.0;
-				Walking::GetInstance()->Y_MOVE_AMPLITUDE = 0.0;
-				Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
-				Walking::GetInstance()->Start();
+				move_gait(10.0, 0.0, 0.0);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 9)
 			{
 				std::cout<<" | Girar em torno da bola"<<std::endl;
-				Action::GetInstance()->Stop();
-				Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   		Action::GetInstance()->m_Joint.SetEnableBody(false);
-				MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-				Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-				Walking::GetInstance()->Y_MOVE_AMPLITUDE = 23.0;
-				Walking::GetInstance()->A_MOVE_AMPLITUDE = -10.0;
-				Walking::GetInstance()->Start();
+				move_gait(0.0, 23.0, -10.0);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 10)
