@@ -70,6 +70,8 @@ int kbhit(); //funcao do kbhit.cpp
 
 int Initialize_servo();
 
+void Gait_in_place(bool stop_gait);
+
 void move_action(int move_number, bool interrupt); // realiza o movimento de ações
 
 void move_gait(float X_amplitude, float Y_amplitude, float A_amplitude); // realiza o gait
@@ -295,13 +297,7 @@ int erro;
 		        break;
 
 		        case 115: //s
-					if(stop_gait == 1)
-					{
-						cout << "Stop com gait" << endl;
-						move_action(9, 0);
-						stop_gait = 0;
-					}
-					move_gait(0.0, 0.0, 0.0);
+					Gait_in_place(stop_gait);
 		        break;
 
 		        case 116: //t
@@ -523,6 +519,17 @@ void move_gait(float X_amplitude, float Y_amplitude, float A_amplitude)
 	Walking::GetInstance()->Y_MOVE_AMPLITUDE = Y_amplitude;
 	Walking::GetInstance()->A_MOVE_AMPLITUDE = A_amplitude;
 	Walking::GetInstance()->Start();
+}
+
+void Gait_in_place(bool stop_gait)
+{
+	if(stop_gait == 1)
+	{
+		cout << "Stop com gait" << endl;
+		move_action(9, 0);
+		stop_gait = 0;
+	}
+	move_gait(0.0, 0.0, 0.0);
 }
 
 //////////////////// Framework Initialize ////////////////////////////
