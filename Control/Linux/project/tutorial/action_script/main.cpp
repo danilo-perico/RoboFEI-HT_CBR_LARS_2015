@@ -348,22 +348,9 @@ int erro;
 					move_action(10, 0);
 				}
 				stop_gait = 1;
-				if(stop_gait == 1)
-				{
-					//cout << "Stop com gait" << endl;
-					Walking::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(false);
-					Action::GetInstance()->m_Joint.SetEnableBody(true);
-					MotionManager::GetInstance()->SetEnable(true);
-					Action::GetInstance()->Start(9);
-					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
-					stop_gait = 0;
-				}
-				move_gait(0.0, 0.0, 0.0);
+				Gait_in_place(stop_gait);
 				sleep(5);
 			}
-
-
 
 
 			//Neste if está incluso todos os movimentos de gait - excluindo os actions----------------
@@ -373,18 +360,7 @@ int erro;
 			if(DECISION_ACTION_A == 0)
 			{
 				std::cout<<" | Nada a fazer"<<std::endl;
-					if(stop_gait == 1)
-					{
-						//cout << "Stop com gait" << endl;
-						Walking::GetInstance()->Stop();
-						Walking::GetInstance()->m_Joint.SetEnableBody(false);
-						Action::GetInstance()->m_Joint.SetEnableBody(true);
-						MotionManager::GetInstance()->SetEnable(true);
-						Action::GetInstance()->Start(9);
-						while(Action::GetInstance()->IsRunning()) usleep(8*1000);
-						stop_gait = 0;
-					}
-					move_gait(0.0, 0.0, 0.0);
+					Gait_in_place(stop_gait);
 			}
 
 			if(DECISION_ACTION_A == 1)
@@ -485,7 +461,7 @@ int erro;
 	//==================================================================
 
 
-    std::cout<<"Press the ENTER key to begin!\n"<<std::endl;
+    std::cout<<"Press some key to end!\n"<<std::endl;
     getchar();
 
 //    LinuxActionScript::ScriptStart("script.asc");
@@ -521,6 +497,8 @@ void move_gait(float X_amplitude, float Y_amplitude, float A_amplitude)
 	Walking::GetInstance()->Start();
 }
 
+//========================================================================
+//Do the gait staing int the place----------------------------------------
 void Gait_in_place(bool stop_gait)
 {
 	if(stop_gait == 1)
