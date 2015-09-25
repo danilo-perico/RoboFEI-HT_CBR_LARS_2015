@@ -136,6 +136,11 @@ bool MotionManager::Reinitialize()
 	return true;
 }
 
+void MotionManager::Restartrobot()
+{
+	m_torque_count=0;
+}
+
 void MotionManager::StartLogging()
 {
     char szFile[32] = {0,};
