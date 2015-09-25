@@ -5,7 +5,7 @@
 * @author Isaac Jesus da Silva - ROBOFEI-HT - FEI 😛
 * @version V1.0.5
 * @created 20/01/2015
-* @Modified 03/07/2015
+* @Modified 22/09/2015
 * @e-mail isaac25silva@yahoo.com.br
 * @brief control 😛
 ****************************************************************************
@@ -48,6 +48,7 @@ Arquivo fonte contendo o programa que controla os servos do corpo do robô
 #include "LinuxActionScript.h"
 #include <blackboard.h>
 #include <boost/program_options.hpp> //tratamento de argumentos linha de comando
+#include "mov.hpp"
 
 #ifdef MX28_1024
 #define MOTION_FILE_PATH    "../../Control/Data/motion_1024.bin"
@@ -67,12 +68,20 @@ using namespace std;
 
 int kbhit(); //funcao do kbhit.cpp
 
+int Initialize_servo();
+
+void move_action(int move_number, bool interrupt); // realiza o movimento de ações
+
+void move_gait(float X_amplitude, float Y_amplitude, float A_amplitude); // realiza o gait
+
 void change_current_dir()
 {
     char exepath[1024] = {0};
     if(readlink("/proc/self/exe", exepath, sizeof(exepath)) != -1)
         chdir(dirname(exepath));
 }
+
+char string1[50]; //String usada durante o programa
 
 int main(int argc, char **argv)
 {
@@ -82,9 +91,9 @@ int main(int argc, char **argv)
     using_shared_memory();
 
     bool stop_gait = 1;
-    char string[50]; //String usada para definir prioridade do programa
-    sprintf(string,"echo fei 123456| sudo -S renice -20 -p %d", getpid()); // prioridade maxima do codigo
-    system(string);//prioridade
+	char *Servoport;
+    sprintf(string1,"echo fei 123456| sudo -S renice -20 -p %d", getpid()); // prioridade maxima do codigo
+    system(string1);//prioridade
 
     printf( "\n===== ROBOFEI-HT Control Process | based on Jimmy Control=====\n\n");
 
@@ -118,66 +127,14 @@ int main(int argc, char **argv)
 
 //////////////////// Framework Initialize ////////////////////////////
 // ---- Open USBDynamixel -----------------------------------------------{
-	bool servoComunica = false;
-	bool servoConectado = false;
-	int * deviceIndex = new int;
-	int idServo;
-	*deviceIndex = 0; 		//endereça o Servo
-	while(*deviceIndex<3)// laço que percorre o servo 0, 1 e 2.
-	{
-		sprintf(string,"/dev/robot/servo%d", *deviceIndex);
-		LinuxCM730* linux_cm730;
-    	linux_cm730 = new LinuxCM730(string);
-		CM730* cm730;
-    	cm730 = new CM730(linux_cm730);
-		if( MotionManager::GetInstance()->Initialize(cm730) == 0)
-		{
-			printf( "Failed to open servo%d!\n", *deviceIndex );
-			if(*deviceIndex==2)  // Não encontrou nenhum
-			{
-				if(servoComunica)
-				    printf("Conectou-se a uma placa mas não conseguiu se comunicar com o servo\n");
-				else
-				    printf("Não encontrou nenhuma placa do servo conectada a porta USB\n");
-			        return 0;
-			}
-			*deviceIndex = *deviceIndex + 1;      // Não conecta na placa do servo e tenta a proxima porta.
-		}
-		else
-		{
-			servoComunica = true;
-			printf( "Succeed to open Servo%d!\n", *deviceIndex );
-			cm730->ReadByte(1, 3, &idServo, 0);
-			servoConectado = idServo == 1;
-			usleep(1000);
-			cm730->ReadByte(1, 3, &idServo, 0);//Tenta novamente caso falhe a comunicação
-			servoConectado = idServo == 1;
-    		if(servoConectado)
-			{
-       			 	printf("Servo%d okay - Connected and communicated!\n", *deviceIndex);
-			 	break;
-			}
-    		else
-    		{
-			printf("Servo wrong or not communicated!\n");
-				if(*deviceIndex==2)
-				{
-				    printf("Conectou-se a uma placa mas não conseguiu se comunicar com o servo\n");
-				    return 0;
-				}
-				*deviceIndex = *deviceIndex + 1;
-			}
-		}
-	}
-	delete deviceIndex; //desalocando da memória
-	//-----------------------------------------------------------------------------}
-    //////////////////// Framework Initialize ////////////////////////////
-    LinuxCM730 linux_cm730(string);
+	if(Initialize_servo()==1) // chama a função que encontra o endereço de comunicação com o servo
+		return 0;
+    LinuxCM730 linux_cm730(string1);
     CM730 cm730(&linux_cm730);
     if(MotionManager::GetInstance()->Initialize(&cm730) == false)
     {
         printf("Fail to initialize Motion Manager!\n");
-            return 0;
+        return 0;
     }
 //================================================================================== 
 
@@ -207,6 +164,7 @@ int main(int argc, char **argv)
 	std::cout<<"Start Action 1"<<std::endl;
     Action::GetInstance()->Start(1);    /* Init(stand up) pose */
     while(Action::GetInstance()->IsRunning()) usleep(8*1000); 
+	Action* a=Action::GetInstance();
 
 //	getchar();	
 
@@ -225,7 +183,7 @@ int erro;
 		while(1)
 		{
 			int key = kbhit();
-			usleep(8*1000);
+			usleep(4*1000);
 			//Neste if está incluso todos os movimentos de gait - excluindo os actions----------------
 			if(key != 115 && key != 0 && key != 107 && key != 100 && key != 101 && key != 102&& key != 109 && key != 110 && key != 111)
 				stop_gait = 1; // executa o playpage 9 uma vez antes de iniciar o gait
@@ -233,30 +191,18 @@ int erro;
 		    switch(key)
 			{
 		        case 97: //a
-				    cout << "Levantar quando as costas estão para cima" << endl;
-					Walking::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(false);
-					Action::GetInstance()->m_Joint.SetEnableBody(true);
-					MotionManager::GetInstance()->SetEnable(true);
-					Action::GetInstance()->Start(11);  
+				    cout << "Levantar quando as costas está para cima" << endl;
+					move_action(11, 0);
 		        break;
 
 		        case 98: //b
 				    cout << "Levantar quando o peito está para cima" << endl;
-					Walking::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(false);
-					Action::GetInstance()->m_Joint.SetEnableBody(true);
-					MotionManager::GetInstance()->SetEnable(true);
-					Action::GetInstance()->Start(10);  
+					move_action(10, 0);
 		        break;
 
 		        case 99: //c
 				    cout << "Chutar direito" << endl;
-					Walking::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(false);
-					Action::GetInstance()->m_Joint.SetEnableBody(true);
-					MotionManager::GetInstance()->SetEnable(true);
-					Action::GetInstance()->Start(1);    /* Init(stand up) pose */
+					move_action(1, 0);
 					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
 					Action::GetInstance()->Start(12);
 					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
@@ -271,16 +217,12 @@ int erro;
 					Action::GetInstance()->m_Joint.SetEnableBody(true);
 					MotionManager::GetInstance()->SetEnable(true);
 					Action::GetInstance()->Start(78);
+					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
 		        break;
 
 		        case 103: //g
 				    cout << "Chutar esquerdo" << endl;
-					Walking::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(false);
-		   			Action::GetInstance()->m_Joint.SetEnableBody(true);
-					MotionManager::GetInstance()->SetEnable(true);
-					Action::GetInstance()->Start(1);    /* Init(stand up) pose */
-					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
+					move_action(1, 0);
 					Action::GetInstance()->Start(13);
 					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
 					Action::GetInstance()->Stop();
@@ -294,180 +236,91 @@ int erro;
 					Action::GetInstance()->m_Joint.SetEnableBody(true);
 					MotionManager::GetInstance()->SetEnable(true);
 					Action::GetInstance()->Start(79);
-   
+					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
 		        break;
 
 		        case 102: //f
 				    cout << "Andar para frente" << endl;
-					Action::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   			Action::GetInstance()->m_Joint.SetEnableBody(false);
-					MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-					Walking::GetInstance()->X_MOVE_AMPLITUDE = 20.0;
-					Walking::GetInstance()->Y_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Start();
+					move_gait(20.0, 0.0, 0.0);
 		        break;
 
 		        case 100: //d
 				    cout << "Vira para direita" << endl;
-					Action::GetInstance()->Stop();
-					Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Y_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->A_MOVE_AMPLITUDE = -20.0;
-					Walking::GetInstance()->Start();
-					Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   			Action::GetInstance()->m_Joint.SetEnableBody(false);
-					MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
+					move_gait(0.0, 0.0, -20.0);
 		        break;
 
 		        case 105: //i
 				    cout << "Passe Direita" << endl;
-					Walking::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(false);
-					Action::GetInstance()->m_Joint.SetEnableBody(true);
-					MotionManager::GetInstance()->SetEnable(true);
-					Action::GetInstance()->Start(70);  
+					move_action(70, 0);
 		        break;
 
 		        case 101: //e
 				    cout << "Vira para esquerda" << endl;
-					Action::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   			Action::GetInstance()->m_Joint.SetEnableBody(false);
-					MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-					Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Y_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->A_MOVE_AMPLITUDE = 20.0;
-					Walking::GetInstance()->Start();
+					move_gait(0.0, 0.0, 20.0);
 		        break;
 
 		        case 106: //j
 				    cout << "Passe Esquerda" << endl;
-					Walking::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(false);
-					Action::GetInstance()->m_Joint.SetEnableBody(true);
-					MotionManager::GetInstance()->SetEnable(true);
-					Action::GetInstance()->Start(71);   
+					move_action(71, 0);
 		        break;
 
 		        case 109: //m
 				    cout << "Andar de lado esquerda" << endl;
-					Action::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   			Action::GetInstance()->m_Joint.SetEnableBody(false);
-					MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-					Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Y_MOVE_AMPLITUDE = 10.0;
-					Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Start();
+					move_gait(0.0, 10.0, 0.0);
 		        break;
 
 		        case 110: //n
 				    cout << "Andar de lado direita" << endl;
-					Action::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   			Action::GetInstance()->m_Joint.SetEnableBody(false);
-					MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-					Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Y_MOVE_AMPLITUDE = -10.0;
-					Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Start();
+					move_gait(0.0, -10.0, 0.0);
 		        break;
 
 		        case 111: //o
 				    cout << "Rotacionar a esquerda em volta da bola" << endl;
-					Action::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   			Action::GetInstance()->m_Joint.SetEnableBody(false);
-					MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-					Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Y_MOVE_AMPLITUDE = 23.0;
-					Walking::GetInstance()->A_MOVE_AMPLITUDE = -10.0;
-					Walking::GetInstance()->Start();
+					move_gait(0.0, 23.0, -10.0);
 		        break;
 
 		        case 107: //k
 				    cout << "Andar curto para frente" << endl;
-					Action::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   			Action::GetInstance()->m_Joint.SetEnableBody(false);
-					MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-					Walking::GetInstance()->X_MOVE_AMPLITUDE = 10.0;
-					Walking::GetInstance()->Y_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Start();
+					move_gait(10.0, 0.0, 0.0);
 		        break;
 
 		        case 114: //r
 				    cout << "Andar curto para traz" << endl;
-					Action::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   			Action::GetInstance()->m_Joint.SetEnableBody(false);
-					MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-					Walking::GetInstance()->X_MOVE_AMPLITUDE = -10.0;
-					Walking::GetInstance()->Y_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Start();
+					move_gait(-10.0, 0.0, 0.0);
 		        break;
 
 		        case 118: //v
 				    cout << "Andar rapido para traz" << endl;
-					Action::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   			Action::GetInstance()->m_Joint.SetEnableBody(false);
-					MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-					Walking::GetInstance()->X_MOVE_AMPLITUDE = -20.0;
-					Walking::GetInstance()->Y_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Start();
+					move_gait(-20.0, 0.0, 0.0);
 		        break;
 
 		        case 115: //s
 					if(stop_gait == 1)
 					{
 						cout << "Stop com gait" << endl;
-						Walking::GetInstance()->Stop();
-						Walking::GetInstance()->m_Joint.SetEnableBody(false);
-						Action::GetInstance()->m_Joint.SetEnableBody(true);
-						MotionManager::GetInstance()->SetEnable(true);
-						Action::GetInstance()->Start(9);
-						while(Action::GetInstance()->IsRunning()) usleep(8*1000);
+						move_action(9, 0);
 						stop_gait = 0;
 					}
-					Action::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(true);
-		   			Action::GetInstance()->m_Joint.SetEnableBody(false);
-					MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
-					Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Y_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
-					Walking::GetInstance()->Start();
+					move_gait(0.0, 0.0, 0.0);
 		        break;
 
 		        case 116: //t
 				    cout << "Stop" << endl;
+					while(Walking::GetInstance()->GetCurrentPhase()!=0 && Walking::GetInstance()->IsRunning()!=0)  usleep(8*1000);
 					Walking::GetInstance()->Stop();
 					Walking::GetInstance()->m_Joint.SetEnableBody(false);
-					usleep(8*100000);
 					Action::GetInstance()->m_Joint.SetEnableBody(true);
 					MotionManager::GetInstance()->SetEnable(true);
-					Action::GetInstance()->Start(1);    /* Init(stand up) pose */
-					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
-					Action::GetInstance()->Stop();
-					Walking::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(false);
-			   		Action::GetInstance()->m_Joint.SetEnableBody(false);
-					MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
+					if(a!=Action::GetInstance())
+					{
+						Action::GetInstance()->Start(1);    /* Init(stand up) pose */
+						while(Action::GetInstance()->IsRunning()) usleep(8*1000);
+					}
 		        break;
 
 		        case 104: //h
 				    cout << "Greetings" << endl;
-					Walking::GetInstance()->Stop();
-					Walking::GetInstance()->m_Joint.SetEnableBody(false);
-					Action::GetInstance()->m_Joint.SetEnableBody(true);
-					MotionManager::GetInstance()->SetEnable(true);
-					Action::GetInstance()->Start(24);  
+					move_action(24, 0);
 		        break;
 
 		        case 27: //ESC (stop)
@@ -725,3 +578,92 @@ int erro;
 
     return 0;
 }
+
+
+void move_action(int move_number, bool interrupt)
+{
+	while(Walking::GetInstance()->GetCurrentPhase()!=0 && Walking::GetInstance()->IsRunning()!=0)  usleep(8*1000);
+	Walking::GetInstance()->Stop();
+	Walking::GetInstance()->m_Joint.SetEnableBody(false);
+	Action::GetInstance()->m_Joint.SetEnableBody(true);
+	MotionManager::GetInstance()->SetEnable(true);
+	Action::GetInstance()->Start(move_number); // Realiza a ação do numero contido no move_number
+	while(Action::GetInstance()->IsRunning() && ~interrupt) usleep(8*1000); // Aguarda finalizar a ação ou para por interrupção
+}
+
+//========================================================================
+//Execute the gait generation---------------------------------------------
+void move_gait(float X_amplitude, float Y_amplitude, float A_amplitude)
+{
+	Action::GetInstance()->Stop();
+	Walking::GetInstance()->m_Joint.SetEnableBody(true);
+	Action::GetInstance()->m_Joint.SetEnableBody(false);
+	MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
+	Walking::GetInstance()->X_MOVE_AMPLITUDE = X_amplitude;
+	Walking::GetInstance()->Y_MOVE_AMPLITUDE = Y_amplitude;
+	Walking::GetInstance()->A_MOVE_AMPLITUDE = A_amplitude;
+	Walking::GetInstance()->Start();
+}
+
+//////////////////// Framework Initialize ////////////////////////////
+// ---- Open USBDynamixel -----------------------------------------------{
+int Initialize_servo()
+{
+	bool servoComunica = false;
+	bool servoConectado = false;
+	bool connectedRS = false;
+	int * deviceIndex = new int;
+	int idServo;
+	char string_buffer[100]="";
+	*deviceIndex = 0; 		//endereça o Servo
+	while(*deviceIndex<3)// laço que percorre o servo 0, 1 e 2.
+	{
+		sprintf(string1,"/dev/robot/servo%d", *deviceIndex);
+		LinuxCM730* linux_cm730;
+    	linux_cm730 = new LinuxCM730(string1);
+		CM730* cm730;
+    	cm730 = new CM730(linux_cm730);
+
+		if( MotionManager::GetInstance()->Initialize(cm730) == 0)
+		{ // not connect with board rs485
+			
+		}
+		else
+		{
+			cm730->ReadByte(1, 3, &idServo, 0); // Read the servo id of servo 1
+			servoConectado = idServo == 1;
+			usleep(1000);
+			cm730->ReadByte(1, 3, &idServo, 0);//Try again because of fail
+			servoConectado = idServo == 1;
+    		if(servoConectado)
+			{
+       			cout<<"Connected and communicating with the body of the robot!\n";
+			 	return 0;
+			}
+    		else
+    		{// connected with board rs485 but it's not communicating
+				sprintf(string_buffer,"%s/dev/robot/servo%d\n", string_buffer, *deviceIndex);
+				connectedRS = true;
+			}			
+		}
+		*deviceIndex = *deviceIndex + 1;
+		delete cm730;
+		delete linux_cm730;
+	}
+	delete deviceIndex; //desalocando da memória
+	
+	if(connectedRS == true)
+	{
+		printf("\e[0;31mConectou-se a placa USB/RS-485 mas não conseguiu se comunicar com o servo.\e[0m\n");
+		cout<<"Endereços encontrado:"<<endl;
+		cout<<string_buffer<<endl;
+		cout<<"\e[0;36mVerifique se a chave que liga os servos motores está na posição ligada.\n\n\e[0m"<<endl;
+	}
+	else
+	{
+		cout<<"\e[1;31mNão há nenhuma placa USB/RS-485 conectada no computador.\n\n\e[0m"<<endl;
+	}
+	return 1;
+
+}
+
