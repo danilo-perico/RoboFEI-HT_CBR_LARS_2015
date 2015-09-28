@@ -3,9 +3,9 @@
 ******************************************************************************
 * @file control.cpp
 * @author Isaac Jesus da Silva - ROBOFEI-HT - FEI 😛
-* @version V1.1.2
+* @version V1.1.3
 * @created 20/01/2015
-* @Modified 25/09/2015
+* @Modified 28/09/2015
 * @e-mail isaac25silva@yahoo.com.br
 * @brief control 😛
 ****************************************************************************
@@ -72,7 +72,7 @@ int Initialize_servo();
 
 void Gait_in_place(bool &stop_gait);
 
-void move_action(int move_number, bool interrupt); // realiza o movimento de ações
+void move_action(int move_number, bool interrupt, bool &stop_gait); // realiza o movimento de ações
 
 void move_gait(float X_amplitude, float Y_amplitude, float A_amplitude, bool &stop_gait); // realiza o gait
 
@@ -186,25 +186,22 @@ int erro;
 		{
 			int key = kbhit();
 			usleep(4*1000);
-			//Neste if está incluso todos os movimentos de gait - excluindo os actions----------------
-			if(key != 115 && key != 0 && key != 107 && key != 100 && key != 101 && key != 102&& key != 109 && key != 110 && key != 111)
-				stop_gait = 1; // executa o playpage 9 uma vez antes de iniciar o gait
 
 		    switch(key)
 			{
 		        case 97: //a
 				    cout << "Levantar quando as costas está para cima" << endl;
-					move_action(11, 0);
+					move_action(11, 0, stop_gait);
 		        break;
 
 		        case 98: //b
 				    cout << "Levantar quando o peito está para cima" << endl;
-					move_action(10, 0);
+					move_action(10, 0, stop_gait);
 		        break;
 
 		        case 99: //c
 				    cout << "Chutar direito" << endl;
-					move_action(1, 0);
+					move_action(1, 0, stop_gait);
 					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
 					Action::GetInstance()->Start(12);
 					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
@@ -224,7 +221,7 @@ int erro;
 
 		        case 103: //g
 				    cout << "Chutar esquerdo" << endl;
-					move_action(1, 0);
+					move_action(1, 0, stop_gait);
 					Action::GetInstance()->Start(13);
 					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
 					Action::GetInstance()->Stop();
@@ -253,7 +250,7 @@ int erro;
 
 		        case 105: //i
 				    cout << "Passe Direita" << endl;
-					move_action(70, 0);
+					move_action(70, 0, stop_gait);
 		        break;
 
 		        case 101: //e
@@ -263,7 +260,7 @@ int erro;
 
 		        case 106: //j
 				    cout << "Passe Esquerda" << endl;
-					move_action(71, 0);
+					move_action(71, 0, stop_gait);
 		        break;
 
 		        case 109: //m
@@ -317,7 +314,7 @@ int erro;
 
 		        case 104: //h
 				    cout << "Greetings" << endl;
-					move_action(24, 0);
+					move_action(24, 0, stop_gait);
 		        break;
 
 		        case 27: //ESC (stop)
@@ -342,21 +339,17 @@ int erro;
 			if (IMU_STATE){ // Ve se esta caido
 				if(IMU_STATE==1){  //Levanta se caido de frente
 					std::cout<<" | Levantar de frente";
-					move_action(11, 0);
+					move_action(11, 0, stop_gait);
 				}
 				else{  //Levanta se caido de costa
 					std::cout<<" | Levantar de costa";
-					move_action(10, 0);
+					move_action(10, 0, stop_gait);
 				}
 				stop_gait = 1;
 				Gait_in_place(stop_gait);
 				sleep(5);
 			}
 
-
-			//Neste if está incluso todos os movimentos de gait - excluindo os actions----------------
-			if(DECISION_ACTION_A != 1 && DECISION_ACTION_A != 2 && DECISION_ACTION_A != 3 && DECISION_ACTION_A != 6 && DECISION_ACTION_A != 7 && DECISION_ACTION_A != 8 && DECISION_ACTION_A != 9 )
-				stop_gait = 1; // executa o playpage 9 uma vez antes de iniciar o gait
 
 			if(DECISION_ACTION_A == 0)
 			{
@@ -385,7 +378,7 @@ int erro;
 			if(DECISION_ACTION_A == 4)
 			{
 				std::cout<<"| Chutar com pe direito"<<std::endl;
-				move_action(1, 0);
+				move_action(1, 0, stop_gait);
 				Action::GetInstance()->Start(12);
 				while(Action::GetInstance()->IsRunning()) usleep(8*1000);
 				Action::GetInstance()->Stop();
@@ -404,7 +397,7 @@ int erro;
 			if(DECISION_ACTION_A == 5)
 			{
 				std::cout<<" | Chutar com pe esquerdo"<<std::endl;
-				move_action(1, 0);
+				move_action(1, 0, stop_gait);
 				Action::GetInstance()->Start(13);
 				while(Action::GetInstance()->IsRunning()) usleep(8*1000);
 				Action::GetInstance()->Stop();
@@ -473,7 +466,7 @@ int erro;
 
 //========================================================================
 //Execute the move action-------------------------------------------------
-void move_action(int move_number, bool interrupt)
+void move_action(int move_number, bool interrupt, bool &stop_gait )
 {
 	while(Walking::GetInstance()->GetCurrentPhase()!=0 && Walking::GetInstance()->IsRunning()!=0)  usleep(8*1000);
 	Walking::GetInstance()->Stop();
@@ -482,6 +475,7 @@ void move_action(int move_number, bool interrupt)
 	MotionManager::GetInstance()->SetEnable(true);
 	Action::GetInstance()->Start(move_number); // Realiza a ação do numero contido no move_number
 	while(Action::GetInstance()->IsRunning() && ~interrupt) usleep(8*1000); // Aguarda finalizar a ação ou para por interrupção
+	stop_gait = 1;
 }
 
 //========================================================================
@@ -493,7 +487,7 @@ void move_gait(float X_amplitude, float Y_amplitude, float A_amplitude, bool &st
 		//Gait_in_place(stop_gait); // Necessita realizar o Gait antes de qualquer outra
 		if(stop_gait == 1)
 		{
-			move_action(9, 0);
+			move_action(9, 0, stop_gait);
 			stop_gait = 0;
 		}
 		cout << "Stop com gait" << endl;
@@ -524,7 +518,7 @@ void Gait_in_place(bool &stop_gait)
 	if(stop_gait == 1)
 	{
 		cout << "Action 9" << endl;
-		move_action(9, 0);
+		move_action(9, 0, stop_gait);
 		stop_gait = 0;
 	}
 	move_gait(0.0, 0.0, 0.0, stop_gait);
