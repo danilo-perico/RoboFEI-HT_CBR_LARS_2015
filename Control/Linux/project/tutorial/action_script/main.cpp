@@ -70,11 +70,11 @@ int kbhit(); //funcao do kbhit.cpp
 
 int Initialize_servo();
 
-void Gait_in_place(bool stop_gait);
+void Gait_in_place(bool &stop_gait);
 
 void move_action(int move_number, bool interrupt); // realiza o movimento de ações
 
-void move_gait(float X_amplitude, float Y_amplitude, float A_amplitude, bool stop_gait); // realiza o gait
+void move_gait(float X_amplitude, float Y_amplitude, float A_amplitude, bool &stop_gait); // realiza o gait
 
 void change_current_dir()
 {
@@ -297,6 +297,7 @@ int erro;
 		        break;
 
 		        case 115: //s
+					cout << "Stop com gait" << endl;
 					Gait_in_place(stop_gait);
 		        break;
 
@@ -485,11 +486,25 @@ void move_action(int move_number, bool interrupt)
 
 //========================================================================
 //Execute the gait generation---------------------------------------------
-void move_gait(float X_amplitude, float Y_amplitude, float A_amplitude, bool stop_gait)
+void move_gait(float X_amplitude, float Y_amplitude, float A_amplitude, bool &stop_gait)
 {
 	if(Walking::GetInstance()->IsRunning()==0)
 	{
-		Gait_in_place(stop_gait); // Necessita realizar o Gait antes de qualquer outra
+		//Gait_in_place(stop_gait); // Necessita realizar o Gait antes de qualquer outra
+		if(stop_gait == 1)
+		{
+			move_action(9, 0);
+			stop_gait = 0;
+		}
+		cout << "Stop com gait" << endl;
+		Action::GetInstance()->Stop();
+		Walking::GetInstance()->m_Joint.SetEnableBody(true);
+		Action::GetInstance()->m_Joint.SetEnableBody(false);
+		MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(true);
+		Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
+		Walking::GetInstance()->Y_MOVE_AMPLITUDE = 0.0;
+		Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
+		Walking::GetInstance()->Start();
 		sleep(1);
 	}
 	Action::GetInstance()->Stop();
@@ -504,11 +519,11 @@ void move_gait(float X_amplitude, float Y_amplitude, float A_amplitude, bool sto
 
 //========================================================================
 //Do the gait staing int the place----------------------------------------
-void Gait_in_place(bool stop_gait)
+void Gait_in_place(bool &stop_gait)
 {
 	if(stop_gait == 1)
 	{
-		cout << "Stop com gait" << endl;
+		cout << "Action 9" << endl;
 		move_action(9, 0);
 		stop_gait = 0;
 	}
