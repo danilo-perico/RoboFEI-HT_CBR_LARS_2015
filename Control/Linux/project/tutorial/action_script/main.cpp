@@ -321,6 +321,11 @@ int main(int argc, char **argv)
 					return 0;
 		        break;
 
+				default:
+					if(key!=0)
+						cout<< "Tecla incorreta - verifique quais teclas controlam o robo"<<endl;
+				break;
+
 		    }
 		}
 
