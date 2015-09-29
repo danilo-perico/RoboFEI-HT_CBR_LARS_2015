@@ -15,7 +15,6 @@ CXXFLAGS +=	-O2 -DLINUX -g -Wall -fmessage-length=0 $(INCLUDE_DIRS)
 LIBS += -lpthread -lncurses -lrt
 
 OBJS =	./cmd_process.o	\
-		../../../../../Blackboard/src/blackboard.o \
 		./main.o
 
 
@@ -24,7 +23,7 @@ all: darwin.a $(TARGET)
 darwin.a:
 
 $(TARGET): $(OBJS) ../../../lib/darwin.a
-	$(CXX) -o $(TARGET) $(OBJS) ../../../lib/darwin.a $(LIBS)
+	$(CXX) -o $(TARGET) $(OBJS) ../../../lib/darwin.a ../../../../../build/Blackboard/libblackboard.so $(LIBS)
 	
 clean:
 	rm -f $(OBJS) $(TARGET)
