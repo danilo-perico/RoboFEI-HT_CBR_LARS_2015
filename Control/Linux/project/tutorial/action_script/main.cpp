@@ -175,7 +175,7 @@ int main(int argc, char **argv)
     while(Action::GetInstance()->IsRunning()) usleep(8*1000); 
 
 	Action::GetInstance()->Stop();
-int erro;
+	int erro;
 
 	//***********************************************************************************************
 	if (variables.count("keyboard")) //verifica se foi chamado o argumento de controle pelo teclado
@@ -305,11 +305,10 @@ int erro;
 					Walking::GetInstance()->m_Joint.SetEnableBody(false);
 					Action::GetInstance()->m_Joint.SetEnableBody(true);
 					MotionManager::GetInstance()->SetEnable(true);
-					if(a!=Action::GetInstance())
-					{
-						Action::GetInstance()->Start(1);    /* Init(stand up) pose */
-						while(Action::GetInstance()->IsRunning()) usleep(8*1000);
-					}
+					usleep(500000); //Aguarda meio segundo
+					Action::GetInstance()->Start(1); // Realiza a ação do numero contido no move_number
+					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
+					stop_gait = 1;
 		        break;
 
 		        case 104: //h
