@@ -22,7 +22,6 @@ OBJS =	./cmd_process.o	\
 all: darwin.a $(TARGET)
 
 darwin.a:
-	make -C ../../../build
 
 $(TARGET): $(OBJS) ../../../lib/darwin.a
 	$(CXX) -o $(TARGET) $(OBJS) ../../../lib/darwin.a $(LIBS)
