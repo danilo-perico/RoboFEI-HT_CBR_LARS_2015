@@ -1,13 +1,13 @@
 /*--------------------------------------------------------------------
 
 ******************************************************************************
-* @file blackboard.h
+* @file blackboard.cpp
 * @author Isaac Jesus da Silva - ROBOFEI-HT - FEI
 * @version V0.0.3
 * @created 07/04/2014
 * @Modified 10/09/2015
 * @e-mail isaac25silva@yahoo.com.br
-* @brief black board
+* @brief blackboard
 ****************************************************************************
 
 Arquivo fonte contendo as funções que cria ou acopla a memória compartilhada

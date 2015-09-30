@@ -1,3 +1,20 @@
+/*--------------------------------------------------------------------------
+
+****************************************************************************
+* @file main.cpp
+* @author Isaac Jesus da Silva - ROBOFEI-HT - FEI
+* @version V0.0.3
+* @created 20/01/2015
+* @Modified 30/09/2015
+* @e-mail isaac25silva@yahoo.com.br
+* @brief Action Editor
+****************************************************************************
+
+Arquivo fonte contendo o programa que grava pontos de ações do robô
+
+/-------------------------------------------------------------------------*/
+
+
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -59,7 +76,7 @@ int main(int argc, char *argv[])
     /////////////// Load/Create Action File //////////////////
     if(Action::GetInstance()->LoadFile(filename) == false)
     {
-        printf("Can not open %s\n", filename);
+        printf("Can not open \e[0;31m%s\e[0m\n", filename);
         printf("Do you want to make a new action file? (y/n) ");
         ch = _getch();
         if(ch != 'y')
@@ -70,7 +87,7 @@ int main(int argc, char *argv[])
 
         if(Action::GetInstance()->CreateFile(filename) == false)
         {
-            printf("Fail to create %s\n", filename);
+            printf("\e[1;31mFail to create %s\e[0m\n", filename);
             return 0;
         }
     }
@@ -138,6 +155,7 @@ int main(int argc, char *argv[])
     {
         printf("Fail to initialize Motion Manager!\n");
     }
+	sleep(1);
 //================================================================================== 
 
 
