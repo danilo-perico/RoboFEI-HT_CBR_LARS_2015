@@ -200,7 +200,7 @@ int main(int argc, char **argv)
 		        break;
 
 		        case 99: //c
-				    cout << "Chutar direito" << endl;
+				    cout << "Chutar direito bola branca" << endl;
 					move_action(1, 0, stop_gait);
 					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
 					Action::GetInstance()->Start(20);
@@ -220,7 +220,7 @@ int main(int argc, char **argv)
 		        break;
 
 		        case 103: //g
-				    cout << "Chutar esquerdo" << endl;
+				    cout << "Chutar esquerdo bola branca" << endl;
 					move_action(1, 0, stop_gait);
 					Action::GetInstance()->Start(21);
 					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
@@ -236,6 +236,16 @@ int main(int argc, char **argv)
 					MotionManager::GetInstance()->SetEnable(true);
 					Action::GetInstance()->Start(79);
 					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
+		        break;
+
+		        case 112: //p
+				    cout << "Chutar direito bola laranja" << endl;
+					move_action(12, 0, stop_gait);
+		        break;
+
+		        case 108: //l
+				    cout << "Chutar esquerdo bola laranja" << endl;
+					move_action(13, 0, stop_gait);
 		        break;
 
 		        case 102: //f
