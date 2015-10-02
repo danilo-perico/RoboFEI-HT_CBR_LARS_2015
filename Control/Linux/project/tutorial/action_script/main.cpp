@@ -203,7 +203,7 @@ int main(int argc, char **argv)
 				    cout << "Chutar direito" << endl;
 					move_action(1, 0, stop_gait);
 					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
-					Action::GetInstance()->Start(12);
+					Action::GetInstance()->Start(20);
 					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
 					Action::GetInstance()->Stop();
 		   			Action::GetInstance()->m_Joint.SetEnableBody(false);
@@ -222,7 +222,7 @@ int main(int argc, char **argv)
 		        case 103: //g
 				    cout << "Chutar esquerdo" << endl;
 					move_action(1, 0, stop_gait);
-					Action::GetInstance()->Start(13);
+					Action::GetInstance()->Start(21);
 					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
 					Action::GetInstance()->Stop();
 		   			Action::GetInstance()->m_Joint.SetEnableBody(false);
@@ -383,7 +383,7 @@ int main(int argc, char **argv)
 			{
 				std::cout<<"| Chutar com pe direito"<<std::endl;
 				move_action(1, 0, stop_gait);
-				Action::GetInstance()->Start(12);
+				Action::GetInstance()->Start(20);
 				while(Action::GetInstance()->IsRunning()) usleep(8*1000);
 				Action::GetInstance()->Stop();
 		   		Action::GetInstance()->m_Joint.SetEnableBody(false);
@@ -402,7 +402,7 @@ int main(int argc, char **argv)
 			{
 				std::cout<<" | Chutar com pe esquerdo"<<std::endl;
 				move_action(1, 0, stop_gait);
-				Action::GetInstance()->Start(13);
+				Action::GetInstance()->Start(21);
 				while(Action::GetInstance()->IsRunning()) usleep(8*1000);
 				Action::GetInstance()->Stop();
 		   		Action::GetInstance()->m_Joint.SetEnableBody(false);
