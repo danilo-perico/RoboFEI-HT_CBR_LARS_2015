@@ -10,8 +10,8 @@ config = ConfigParser()
 config.read('../../Control/Data/config.ini')
 
 # read values from section Offset
-head_pan = config.get('Offset', 'ID_19')
-head_tilt = config.getboolean('Offset', 'ID_20')
+head_pan = config.getint('Offset', 'ID_19')
+head_tilt = config.getint('Offset', 'ID_20')
 
 
 print "head_pan = ", head_pan
