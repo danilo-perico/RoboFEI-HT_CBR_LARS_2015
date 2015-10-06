@@ -48,6 +48,7 @@ int main(int argc, char *argv[])
 
     int ch;
     char filename[128];
+    char string[50];
 
 	using_shared_memory();
 
@@ -78,17 +79,77 @@ int main(int argc, char *argv[])
     ////////////////////////////////////////////////////////////
 
   	PS3Controller_Start();
-  //////////////////// Framework Initialize ////////////////////////////	
+
+//////////////////// Framework Initialize ////////////////////////////
+// ---- Open USBDynamixel -----------------------------------------------{
+	bool servoComunica = false;
+	bool servoConectado = false;
+	int * deviceIndex = new int;
+	int idServo;
+	*deviceIndex = 0; 		//endereça o Servo
+	while(*deviceIndex<3)// laço que percorre o servo 0, 1 e 2.
+	{
+		sprintf(string,"/dev/robot/servo%d", *deviceIndex);
+		LinuxCM730* linux_cm730;
+    	linux_cm730 = new LinuxCM730(string);
+		CM730* cm730;
+    	cm730 = new CM730(linux_cm730);
+		if( MotionManager::GetInstance()->Initialize(cm730) == 0)
+		{
+			printf( "Failed to open servo%d!\n", *deviceIndex );
+			if(*deviceIndex==2)  // Não encontrou nenhum
+			{
+				if(servoComunica)
+				    printf("Conectou-se a uma placa mas não conseguiu se comunicar com o servo\n");
+				else
+				    printf("Não encontrou nenhuma placa do servo conectada a porta USB\n");
+			        break;
+			}
+			*deviceIndex = *deviceIndex + 1;      // Não conecta na placa do servo e tenta a proxima porta.
+		}
+		else
+		{
+			servoComunica = true;
+			printf( "Succeed to open Servo%d!\n", *deviceIndex );
+			cm730->ReadByte(15, 3, &idServo, 0);
+			servoConectado = idServo == 15;
+			usleep(1000);
+			cm730->ReadByte(15, 3, &idServo, 0);//Tenta novamente caso falhe a comunicação
+			servoConectado = idServo == 15;
+    		if(servoConectado)
+			{
+       			 	printf("Servo%d okay - Connected and communicated!\n", *deviceIndex);
+			 	break;
+			}
+    		else
+    		{
+			printf("Servo wrong or not communicated!\n");
+				if(*deviceIndex==2)
+				{
+				    printf("Conectou-se a uma placa mas não conseguiu se comunicar com o servo\n");
+				    break;
+				}
+				*deviceIndex = *deviceIndex + 1;
+			}
+		}
+	}
+	delete deviceIndex; //desalocando da memória
+	//-----------------------------------------------------------------------------}
+    //////////////////// Framework Initialize ////////////////////////////
+    LinuxCM730 linux_cm730(string);
+    CM730 cm730(&linux_cm730);
     if(MotionManager::GetInstance()->Initialize(&cm730) == false)
     {
-        printf("Initializing Motion Manager failed!\n");
-        return 0;
+        printf("Fail to initialize Motion Manager!\n");
     }
-       MotionManager::GetInstance()->SetEnable(false);
-       MotionManager::GetInstance()->AddModule((MotionModule*)Action::GetInstance());	
-       linuxMotionTimer.Initialize(MotionManager::GetInstance());
-       linuxMotionTimer.Stop();
-		//MotionManager::GetInstance()->StopThread();
+	sleep(1);
+//================================================================================== 
+
+
+    MotionManager::GetInstance()->AddModule((MotionModule*)Action::GetInstance());	
+    linuxMotionTimer.Initialize(MotionManager::GetInstance());
+	linuxMotionTimer.Stop();
+	//MotionManager::GetInstance()->StopThread();
     /////////////////////////////////////////////////////////////////////
 	
     DrawIntro(&cm730);
