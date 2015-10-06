@@ -10,9 +10,11 @@
 TARGET = rme
 
 CXX = g++
-INCLUDE_DIRS = -I../../include -I../../../Framework/include
+INCLUDE_DIRS = -I../../include -I../../../Framework/include -I../../../../Blackboard/include
 CXXFLAGS +=	-O2 -DLINUX -g -Wall -fmessage-length=0 $(INCLUDE_DIRS)
 LIBS += -lpthread -lncurses -lrt -lbluetooth
+
+DEPN = ../../../../Blackboard/src/blackboard.cpp
 
 OBJS =	./cmd_process.o	\
 		./main.o
@@ -21,10 +23,9 @@ OBJS =	./cmd_process.o	\
 all: darwin.a $(TARGET)
 
 darwin.a:
-	make -C ../../build
 
 $(TARGET): $(OBJS) ../../lib/darwin.a
-	$(CXX) -o $(TARGET) $(OBJS) ../../lib/darwin.a $(LIBS)
+	$(CXX) -o $(TARGET) $(OBJS) $(DEPN) $(INCLUDE_DIRS) ../../lib/darwin.a $(LIBS)
 	
 clean:
 	rm -f $(OBJS) $(TARGET)

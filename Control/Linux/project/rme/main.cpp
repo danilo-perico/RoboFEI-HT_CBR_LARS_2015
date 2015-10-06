@@ -8,6 +8,7 @@
 #include <signal.h>
 #include "cmd_process.h"
 #include "PS3Controller.h"
+#include "blackboard.h"
 
 #ifdef MX28_1024
 #define MOTION_FILE_PATH    "../../../Data/motion_1024.bin"
@@ -48,6 +49,8 @@ int main(int argc, char *argv[])
     int ch;
     char filename[128];
 
+	using_shared_memory();
+
     change_current_dir();
     if(argc < 2)
         strcpy(filename, MOTION_FILE_PATH); // Set default motion file path
@@ -57,7 +60,7 @@ int main(int argc, char *argv[])
     /////////////// Load/Create Action File //////////////////
     if(Action::GetInstance()->LoadFile(filename) == false)
     {
-        printf("Can not open %s\n", filename);
+        printf("Can not open \e[0;31m%s\e[0m\n", filename);
         printf("Do you want to make a new action file? (y/n) ");
         ch = _getch();
         if(ch != 'y')
@@ -68,7 +71,7 @@ int main(int argc, char *argv[])
 
         if(Action::GetInstance()->CreateFile(filename) == false)
         {
-            printf("Fail to create %s\n", filename);
+            printf("\e[1;31mFail to create %s\e[0m\n", filename);
             return 0;
         }
     }
