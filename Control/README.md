@@ -8,9 +8,8 @@ All code within project is GPL GNU v3.
 
 Original source code can be found here:  
 
-
-https://sourceforge.net/projects/darwinop/
-https://github.com/21stCenturyRobot/HROS5-Framework
+    https://sourceforge.net/projects/darwinop/  
+    https://github.com/21stCenturyRobot/HROS5-Framework
 
 
 Notes
