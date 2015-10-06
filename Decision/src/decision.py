@@ -16,6 +16,11 @@ try:
 except ImportError:
     from ConfigParser import ConfigParser  # ver. < 3.0
 
+#looking for the library SharedMemory
+from SharedMemory import SharedMemory as blackboard
+
+bkb = blackboard() #Instantiate the BlackBoard's class
+
 # instantiate
 config = ConfigParser()
 
@@ -25,7 +30,6 @@ config.read('../../Control/Data/config.ini')
 # read values from section Offset
 head_pan = config.getint('Offset', 'ID_19')
 head_tilt = config.getint('Offset', 'ID_20')
-
 
 print "head_pan = ", head_pan
 print "head_tilt = ", head_tilt
