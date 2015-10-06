@@ -6,6 +6,9 @@
 #include <fcntl.h>
 #include <ncurses.h>
 #include "cmd_process.h"
+#include "minIni.h"
+
+#define INI_FILE_PATH       "../../../Data/config.ini"
 
 using namespace Robot;
 
@@ -1098,6 +1101,11 @@ void PlayCmd(CM730 *cm730,int pageNum)
 
 	//MotionManager::GetInstance()->StartThread();
 	linuxMotionTimer.Start();
+
+
+	minIni* ini;
+	ini = new minIni(INI_FILE_PATH);
+	MotionManager::GetInstance()->LoadINISettings(ini);
 	Action::GetInstance()->m_Joint.SetEnableBody(true, true);
 	MotionManager::GetInstance()->SetEnable(true);
 	if(Action::GetInstance()->Start(pageNum, &Page) == false)
