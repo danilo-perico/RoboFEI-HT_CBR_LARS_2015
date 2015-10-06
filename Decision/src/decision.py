@@ -1,3 +1,16 @@
+#coding: utf-8
+#  ----------------------------------------------------------------------------
+#  ****************************************************************************
+#  * @file decision.py
+#  * @author Isaac Jesus da Silva - ROBOFEI-HT - FEI 😛
+#  * @version V0.0.1
+#  * @created 06/10/2015
+#  * @Modified 06/10/2015
+#  * @e-mail isaac25silva@yahoo.com.br
+#  * @brief Decision 😛
+#  ****************************************************************************
+#  Program to execute the Decision process
+#  ****************************************************************************
 try:
     from configparser import ConfigParser
 except ImportError:
