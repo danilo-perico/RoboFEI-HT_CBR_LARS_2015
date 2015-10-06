@@ -1,3 +1,19 @@
+/*--------------------------------------------------------------------------
+
+****************************************************************************
+* @file main.cpp
+* @author Isaac Jesus da Silva - ROBOFEI-HT - FEI
+* @version V0.0.1
+* @created 06/10/2015
+* @Modified 06/10/2015
+* @e-mail isaac25silva@yahoo.com.br
+* @brief Action Editor (rme)
+****************************************************************************
+
+Arquivo fonte contendo o programa que grava pontos de ações do robô
+
+/-------------------------------------------------------------------------*/
+
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
