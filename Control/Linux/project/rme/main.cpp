@@ -34,8 +34,6 @@ Arquivo fonte contendo o programa que grava pontos de ações do robô
 
 using namespace Robot;
 
-LinuxCM730 linux_cm730("/dev/ttyUSB1");
-CM730 cm730(&linux_cm730);
 LinuxMotionTimer linuxMotionTimer;
 
 void change_current_dir()
