@@ -1,6 +1,12 @@
 ServoTool
 =========
 
+Code released by Team Darmstadt Dribblers in the RoboCup humanoid league website: https://www.robocuphumanoid.org/materials/open-source/
+
+
+This code is in the repository on github: https://github.com/DorianScholz/ServoTool
+
+
 A GUI tool written in Python and Qt to configure and analyze different servo motors (mainly the ones made by Robotis, INC).
 It's primary aim was to provide a cross platform tool running on Linux, OSX and Windows.
 Besides offering an overview of the connected servo motors and their current configuration in a table view it provides a 2D plot to visualize motor data.
