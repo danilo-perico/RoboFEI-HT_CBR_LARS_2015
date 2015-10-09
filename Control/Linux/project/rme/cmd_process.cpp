@@ -6,6 +6,9 @@
 #include <fcntl.h>
 #include <ncurses.h>
 #include "cmd_process.h"
+#include "minIni.h"
+
+#define INI_FILE_PATH       "../../../Data/config.ini"
 
 using namespace Robot;
 
@@ -1054,50 +1057,56 @@ void PlayCmd(CM730 *cm730,int pageNum)
 	int value,oldIndex=0;	
 	Action::PAGE page;
 
-	oldIndex = indexPage;
-	if(pageNum != indexPage)
-		{
-		memcpy(&page,&Page,sizeof(Action::PAGE));
-		indexPage = pageNum;
-		if(Action::GetInstance()->LoadPage(indexPage, &Page) != true)
-				{
-				memcpy(&Page,&page,sizeof(Action::PAGE));
-				indexPage = oldIndex;
-				return;
-				}
-		}
-	for(int i=0; i<Page.header.stepnum; i++)
-	{
-		for(int id=JointData::ID_MIN; id<=JointData::ID_MAX; id++)
-		{
-			if(Page.step[i].position[id] & Action::INVALID_BIT_MASK)
-			{
-				PrintCmd("Exist invalid joint value");
-				//return;
-			}
-		}
-	}
+//	oldIndex = indexPage;
+//	if(pageNum != indexPage)
+//		{
+//		memcpy(&page,&Page,sizeof(Action::PAGE));
+//		indexPage = pageNum;
+//		if(Action::GetInstance()->LoadPage(indexPage, &Page) != true)
+//				{
+//				memcpy(&Page,&page,sizeof(Action::PAGE));
+//				indexPage = oldIndex;
+//				return;
+//				}
+//		}
+//	for(int i=0; i<Page.header.stepnum; i++)
+//	{
+//		for(int id=JointData::ID_MIN; id<=JointData::ID_MAX; id++)
+//		{
+//			if(Page.step[i].position[id] & Action::INVALID_BIT_MASK)
+//			{
+//				PrintCmd("Exist invalid joint value");
+//				//return;
+//			}
+//		}
+//	}
+//
+//	for(int id=JointData::ID_MIN; id<=JointData::ID_MAX; id++)
+//	{
+//		if(cm730->ReadByte(id, MX28::P_TORQUE_ENABLE, &value, 0) == CM730::SUCCESS)
+//		{
+//			if(value == 0)
+//			{
+//				if(cm730->ReadWord(id, MX28::P_PRESENT_POSITION_L, &value, 0) == CM730::SUCCESS)
+//					MotionStatus::m_CurrentJoints.SetValue(id, value);
+//			}
+//			else
+//			{
+//				if(cm730->ReadWord(id, MX28::P_GOAL_POSITION_L, &value, 0) == CM730::SUCCESS)
+//					MotionStatus::m_CurrentJoints.SetValue(id, value);
+//			}
+//		}
+//	}
 
-	for(int id=JointData::ID_MIN; id<=JointData::ID_MAX; id++)
-	{
-		if(cm730->ReadByte(id, MX28::P_TORQUE_ENABLE, &value, 0) == CM730::SUCCESS)
-		{
-			if(value == 0)
-			{
-				if(cm730->ReadWord(id, MX28::P_PRESENT_POSITION_L, &value, 0) == CM730::SUCCESS)
-					MotionStatus::m_CurrentJoints.SetValue(id, value);
-			}
-			else
-			{
-				if(cm730->ReadWord(id, MX28::P_GOAL_POSITION_L, &value, 0) == CM730::SUCCESS)
-					MotionStatus::m_CurrentJoints.SetValue(id, value);
-			}
-		}
-	}
 	PrintCmd("Playing... ('s' to stop, 'b' to brake)");
 
 	//MotionManager::GetInstance()->StartThread();
 	linuxMotionTimer.Start();
+
+
+	minIni* ini;
+	ini = new minIni(INI_FILE_PATH);
+	MotionManager::GetInstance()->LoadINISettings(ini);
 	Action::GetInstance()->m_Joint.SetEnableBody(true, true);
 	MotionManager::GetInstance()->SetEnable(true);
 	if(Action::GetInstance()->Start(pageNum, &Page) == false)

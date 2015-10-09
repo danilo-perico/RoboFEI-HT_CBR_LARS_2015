@@ -974,34 +974,34 @@ void PlayCmd(CM730 *cm730)
 {
 	int value;	
 
-	for(int i=0; i<Page.header.stepnum; i++)
-	{
-		for(int id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++)
-		{
-			if(Page.step[i].position[id] & Action::INVALID_BIT_MASK)
-			{
-				PrintCmd("Exist invalid joint value");
-				return;
-			}
-		}
-	}
+//	for(int i=0; i<Page.header.stepnum; i++)
+//	{
+//		for(int id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++)
+//		{
+//			if(Page.step[i].position[id] & Action::INVALID_BIT_MASK)
+//			{
+//				PrintCmd("Exist invalid joint value");
+//				return;
+//			}
+//		}
+//	}
 
-	for(int id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++)
-	{
-		if(cm730->ReadByte(id, MX28::P_TORQUE_ENABLE, &value, 0) == CM730::SUCCESS)
-		{
-			if(value == 0)
-			{
-				if(cm730->ReadWord(id, MX28::P_PRESENT_POSITION_L, &value, 0) == CM730::SUCCESS)
-					MotionStatus::m_CurrentJoints.SetValue(id, value);
-			}
-			else
-			{
-				if(cm730->ReadWord(id, MX28::P_GOAL_POSITION_L, &value, 0) == CM730::SUCCESS)
-					MotionStatus::m_CurrentJoints.SetValue(id, value);
-			}
-		}
-	}
+//	for(int id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++)
+//	{
+//		if(cm730->ReadByte(id, MX28::P_TORQUE_ENABLE, &value, 0) == CM730::SUCCESS)
+//		{
+//			if(value == 0)
+//			{
+//				if(cm730->ReadWord(id, MX28::P_PRESENT_POSITION_L, &value, 0) == CM730::SUCCESS)
+//					MotionStatus::m_CurrentJoints.SetValue(id, value);
+//			}
+//			else
+//			{
+//				if(cm730->ReadWord(id, MX28::P_GOAL_POSITION_L, &value, 0) == CM730::SUCCESS)
+//					MotionStatus::m_CurrentJoints.SetValue(id, value);
+//			}
+//		}
+//	}
 
 	PrintCmd("Playing... ('s' to stop, 'b' to brake)");
 

@@ -65,6 +65,7 @@ namespace Robot
 
 		bool Initialize(CM730 *cm730, bool fadeIn = true);
 		bool Reinitialize();
+		void Restartrobot();
         void Process();
 		void SetEnable(bool enable);
 		bool GetEnable()				{ return m_Enabled; }
