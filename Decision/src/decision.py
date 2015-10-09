@@ -27,10 +27,15 @@ config = ConfigParser()
 # looking for the file config.ini
 config.read('../../Control/Data/config.ini')
 
-# read values from section Offset
-head_pan = config.getint('Offset', 'ID_19')
-head_tilt = config.getint('Offset', 'ID_20')
+while True:
 
-print "head_pan = ", head_pan
-print "head_tilt = ", head_tilt
+	# read values from section Offset
+	head_pan_initial = config.getint('Offset', 'ID_19')
+	head_tilt_initial = config.getint('Offset', 'ID_20')
+
+	print "head_pan = ", head_pan_initial
+	print "head_tilt = ", head_tilt_initial
+
+	print "VISION_MOTOR1_ANGLE: ", bkb.read_int('VISION_MOTOR1_ANGLE')
+	print "VISION_MOTOR2_ANGLE: ", bkb.read_int('VISION_MOTOR2_ANGLE')
 
