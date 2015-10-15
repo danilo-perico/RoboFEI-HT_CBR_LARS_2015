@@ -2,4 +2,7 @@
 #!/RoboFEI-HT/build/bin
 
 echo "vision"
-python /home/perico/doctorate_code/Doutorado/Vision/src/color_segmentation.py
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/RoboFEI-HT/build/lib
+export PATH=$PATH:~/RoboFEI-HT/build/bin
+source #HOME/.bashrc
+vision --F2
