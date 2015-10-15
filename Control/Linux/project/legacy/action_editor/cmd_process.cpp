@@ -681,7 +681,7 @@ void SetValue(CM730 *cm730, int value)
 				if(!(Step.position[row + 1] & Action::INVALID_BIT_MASK) && !(Step.position[row + 1] & Action::TORQUE_OFF_BIT_MASK))
 				{
 					int error;
-					if(cm730->WriteWord(row + 1, MX28::P_GOAL_POSITION_L, value, &error) == CM730::SUCCESS)
+					if(cm730->WriteWord(row + 1, MX28::P_GOAL_POSITION_L, value  + MotionManager::GetInstance()->m_Offset[row + 1], &error) == CM730::SUCCESS)
 					{
 						if(!(error & CM730::ANGLE_LIMIT))
 						{
@@ -794,6 +794,7 @@ void SetValue(CM730 *cm730, int value)
 			{
 				if(Page.header.stepnum != value)
 				{
+
 					DrawStepLine(true);
 					Page.header.stepnum = value;
 					DrawStepLine(false);
