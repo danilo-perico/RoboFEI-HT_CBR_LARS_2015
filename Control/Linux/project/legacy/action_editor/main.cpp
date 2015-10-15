@@ -25,6 +25,7 @@ Arquivo fonte contendo o programa que grava pontos de ações do robô
 #include <signal.h>
 #include "cmd_process.h"
 #include "blackboard.h"
+#include <stdlib.h>     /* system, NULL, EXIT_FAILURE */
 
 #ifdef MX28_1024
 #define MOTION_FILE_PATH    "../../../../Data/motion_1024.bin"
