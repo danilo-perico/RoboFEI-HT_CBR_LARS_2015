@@ -95,7 +95,7 @@ void ReadStep(CM730 *cm730)
 				if(value == 1)
 				{
 					if(cm730->ReadWord(id, MX28::P_GOAL_POSITION_L, &value, 0) == CM730::SUCCESS)
-						Step.position[id] = value;
+						Step.position[id] = value - MotionManager::GetInstance()->m_Offset[id];
 					else
 						Step.position[id] = Action::INVALID_BIT_MASK;
 				}
