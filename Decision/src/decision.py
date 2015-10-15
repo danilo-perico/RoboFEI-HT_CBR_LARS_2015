@@ -21,21 +21,23 @@ except ImportError:
 #import parser for arguments    
 import argparse
 
-#looking for the library SharedMemory
-from SharedMemory import SharedMemory as blackboard
+import time
 
-print('')
-print ('################### Decision #########################')
-print('')
+from behavior import *
 
-bkb = blackboard() #Instantiate the BlackBoard's class
-print('')
+print
+print '################### Decision #########################'
+print 
+
+
+
 # instantiate
 config = ConfigParser()
-print('')
+
 # looking for the file config.ini
 config.read('../../Control/Data/config.ini')
 
+#create arguments for each behavior
 parser = argparse.ArgumentParser(description='Robot behavior', epilog= 'Se nenhuma ação for selecionada um comportamento híbrido será adotado! / If there is not a selected argument a hybrid behavior will be adopted!')
 parser.add_argument('--golie', '-g', action="store_true", help = 'Seleciona comportamento de goleiro / selects golie behavior')
 parser.add_argument('--quarterback', '-q', action="store_true", help = 'Seleciona comportamento de zagueiro / selects quarterback behavior')
@@ -45,42 +47,29 @@ args = parser.parse_args()
 
 #Golie decision:
 if args.golie == True:
-    print('')
-    print('----------- Golie behavior ----------------')
-    print('')
-
+    robot = Golie()
+    
 #Quarterback decicion:    
 elif args.quarterback == True:
-    print('')
-    print('----------- Quarterback behavior ----------------')
-    print('')
+    robot = Quarterback()
     
 #Attacker decision:    
 elif args.attacker == True:
-    print('')
-    print('----------- Attacker behavior ----------------')
-    print('')
-
+    robot = Attacker()
+    
 #Hybrid decision:
 else:
-    print('')
-    print('----------- Hybrid behavior ----------------')
-    print('')
-    
-
-#read robot number from config.ini
+    robot = Hybrid()
 
 # read values from section Offset
 head_pan_initial = config.getint('Offset', 'ID_19')
 head_tilt_initial = config.getint('Offset', 'ID_20')
 
-#print "head_pan = ", head_pan_initial
-#print "head_tilt = ", head_tilt_initial
-
+#loop
 while True:
-
-
-
-    bkb.read_int('VISION_MOTOR1_ANGLE')
-    bkb.read_int('VISION_MOTOR2_ANGLE')
-
+    print robot.get_motor_tilt()
+    print robot.get_motor_pan()
+    time.sleep(2) 
+    
+    
+    
