@@ -18,12 +18,11 @@ class Hybrid(object):
     
      #Instantiate the BlackBoard's class
     bkb = SharedMemory()
-    
+
     def __init__(self):
         print
         print 'Hybrid behavior called' 
         print
-
 
     def get_motor_tilt(self):
         return self.bkb.read_int('VISION_MOTOR1_ANGLE')
