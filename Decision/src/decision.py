@@ -18,33 +18,69 @@ try:
 except ImportError:
     from ConfigParser import ConfigParser  # ver. < 3.0
 
+#import parser for arguments    
+import argparse
+
 #looking for the library SharedMemory
 from SharedMemory import SharedMemory as blackboard
 
-bkb = blackboard() #Instantiate the BlackBoard's class
+print('')
+print ('################### Decision #########################')
+print('')
 
+bkb = blackboard() #Instantiate the BlackBoard's class
+print('')
 # instantiate
 config = ConfigParser()
-
+print('')
 # looking for the file config.ini
 config.read('../../Control/Data/config.ini')
 
-print ('Decision')
+parser = argparse.ArgumentParser(description='Robot behavior', epilog= 'Se nenhuma ação for selecionada um comportamento híbrido será adotado! / If there is not a selected argument a hybrid behavior will be adopted!')
+parser.add_argument('--golie', '-g', action="store_true", help = 'Seleciona comportamento de goleiro / selects golie behavior')
+parser.add_argument('--quarterback', '-q', action="store_true", help = 'Seleciona comportamento de zagueiro / selects quarterback behavior')
+parser.add_argument('--attacker', '-a', action="store_true", help = 'Seleciona comportamento de atacante / selects attacker behavior')
+
+args = parser.parse_args()
+
+#Golie decision:
+if args.golie == True:
+    print('')
+    print('----------- Golie behavior ----------------')
+    print('')
+
+#Quarterback decicion:    
+elif args.quarterback == True:
+    print('')
+    print('----------- Quarterback behavior ----------------')
+    print('')
+    
+#Attacker decision:    
+elif args.attacker == True:
+    print('')
+    print('----------- Attacker behavior ----------------')
+    print('')
+
+#Hybrid decision:
+else:
+    print('')
+    print('----------- Hybrid behavior ----------------')
+    print('')
+    
 
 #read robot number from config.ini
-robot_number = config.getint('Communication','no_player_robofei')
-print(robot_number)
 
 # read values from section Offset
 head_pan_initial = config.getint('Offset', 'ID_19')
 head_tilt_initial = config.getint('Offset', 'ID_20')
 
-print "head_pan = ", head_pan_initial
-print "head_tilt = ", head_tilt_initial
+#print "head_pan = ", head_pan_initial
+#print "head_tilt = ", head_tilt_initial
+
+while True:
 
 
-#while True:
 
-print "VISION_MOTOR1_ANGLE: ", bkb.read_int('VISION_MOTOR1_ANGLE')
-print "VISION_MOTOR2_ANGLE: ", bkb.read_int('VISION_MOTOR2_ANGLE')
+    bkb.read_int('VISION_MOTOR1_ANGLE')
+    bkb.read_int('VISION_MOTOR2_ANGLE')
 
