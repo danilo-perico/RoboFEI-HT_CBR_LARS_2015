@@ -7,6 +7,7 @@
 #include <ncurses.h>
 #include "cmd_process.h"
 #include "minIni.h"
+#include <stdlib.h>     /* system, NULL, EXIT_FAILURE */
 
 #define INI_FILE_PATH       "../../../../Data/config.ini"
 
@@ -747,7 +748,7 @@ void SetValue(CM730 *cm730, int value)
 		}
 		else
 		{
-			if(value >= 0 && value <= MX28::MAX_VALUE)
+			if(value >= 0 && value <= MX28::MAX_VALUE*1.5) //Aumentando o valor da entrada
 			{
 				if(!(Page.step[i].position[row + 1] & Action::INVALID_BIT_MASK))
 				{
