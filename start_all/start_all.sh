@@ -36,6 +36,5 @@ do
     then
        gnome-terminal -x sh -c 'echo 123456 | sudo -S ./home/fei/RoboFEI-HT/start_all/start_comm.sh' &
     fi
-   
-       sleep 10
+    sleep 10
 done
