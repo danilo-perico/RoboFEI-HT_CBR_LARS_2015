@@ -232,7 +232,7 @@ int main(int argc, char *argv[])
                         input[--idx] = 0;
                     }
                 }
-                else if( ( ch >= 'A' && ch <= 'z' ) || ch == ' ' || ( ch >= '0' && ch <= '9'))
+                else if( ( ch >= 'A' && ch <= 'z' ) || ch == ' ' || ch == '-' || ( ch >= '0' && ch <= '9'))
                 {
                     if(idx < 127)
                     {
@@ -266,6 +266,7 @@ int main(int argc, char *argv[])
                     else if(strcmp(cmd, "re") == 0)
                         DrawPage();
                     else if(strcmp(cmd, "help") == 0)
+
                         HelpCmd();
                     else if(strcmp(cmd, "n") == 0)
                         NextCmd();
@@ -288,7 +289,7 @@ int main(int argc, char *argv[])
                     }
                     else if(strcmp(cmd, "set") == 0)
                     {
-                        if(num_param > 0)
+                        if(num_param > -900)
                             SetValue(&cm730, iparam[0]);
                         else
                             PrintCmd("Need parameter");

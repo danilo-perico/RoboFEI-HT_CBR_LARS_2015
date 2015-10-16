@@ -438,7 +438,7 @@ void DrawStep(int index)
 	for( int id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++ )
 	{
 		GoToCursor(col, id -1);
-		if(step->position[id] & Action::INVALID_BIT_MASK)
+		if(step->position[id]  & Action::INVALID_BIT_MASK)
 			printf("----");
 		else if(step->position[id] & Action::TORQUE_OFF_BIT_MASK)
 			printf("????");
@@ -686,7 +686,10 @@ void SetValue(CM730 *cm730, int value)
 						if(!(error & CM730::ANGLE_LIMIT))
 						{
 							Step.position[row + 1] = value;
-							printf( "%.4d", value );
+							if(value > 0)
+								printf( "%.4d", value );
+							else
+								printf( "%.3d", value );
 							bEdited = true;
 						}
 					}
@@ -753,7 +756,10 @@ void SetValue(CM730 *cm730, int value)
 				if(!(Page.step[i].position[row + 1] & Action::INVALID_BIT_MASK))
 				{
 					Page.step[i].position[row + 1] = value;
-					printf( "%.4d", value );
+					if(value > 0)
+						printf( "%.4d", value );
+					else
+						printf( "%.3d", value );
 					bEdited = true;
 				}
 			}
