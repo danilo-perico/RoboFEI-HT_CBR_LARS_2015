@@ -438,10 +438,12 @@ void DrawStep(int index)
 	for( int id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++ )
 	{
 		GoToCursor(col, id -1);
-		if(step->position[id]  & Action::INVALID_BIT_MASK)
+		if(step->position[id] + MotionManager::GetInstance()->m_Offset[id] & Action::INVALID_BIT_MASK)
 			printf("----");
-		else if(step->position[id] & Action::TORQUE_OFF_BIT_MASK)
+		else if(step->position[id] + MotionManager::GetInstance()->m_Offset[id] & Action::TORQUE_OFF_BIT_MASK)
 			printf("????");
+		else if(step->position[id]  < 0)
+			printf("%.3d", step->position[id]);
 		else
 			printf("%.4d", step->position[id]);
 	}
@@ -678,7 +680,7 @@ void SetValue(CM730 *cm730, int value)
 		{
 			if(value  + MotionManager::GetInstance()->m_Offset[row + 1] >= 0 && value  + MotionManager::GetInstance()->m_Offset[row + 1] <= MX28::MAX_VALUE)
 			{
-				if(!(Step.position[row + 1] & Action::INVALID_BIT_MASK) && !(Step.position[row + 1] & Action::TORQUE_OFF_BIT_MASK))
+				if(!(Step.position[row + 1] + MotionManager::GetInstance()->m_Offset[row + 1] & Action::INVALID_BIT_MASK) && !(Step.position[row + 1] + MotionManager::GetInstance()->m_Offset[row + 1]  & Action::TORQUE_OFF_BIT_MASK))
 				{
 					int error;
 					if(cm730->WriteWord(row + 1, MX28::P_GOAL_POSITION_L, value  + MotionManager::GetInstance()->m_Offset[row + 1], &error) == CM730::SUCCESS)
@@ -753,7 +755,7 @@ void SetValue(CM730 *cm730, int value)
 		{
 			if(value  + MotionManager::GetInstance()->m_Offset[row + 1] >= 0 && value  + MotionManager::GetInstance()->m_Offset[row + 1] <= MX28::MAX_VALUE) //Aumentando o valor da entrada
 			{
-				if(!(Page.step[i].position[row + 1] & Action::INVALID_BIT_MASK))
+				if(!(Page.step[i].position[row + 1] + MotionManager::GetInstance()->m_Offset[row + 1] & Action::INVALID_BIT_MASK))
 				{
 					Page.step[i].position[row + 1] = value;
 					if(value > 0)
@@ -858,7 +860,7 @@ void ToggleTorque(CM730 *cm730)
 
 	int id = Row + 1;
 
-	if(Step.position[id] & Action::TORQUE_OFF_BIT_MASK)
+	if(Step.position[id] + MotionManager::GetInstance()->m_Offset[id] & Action::TORQUE_OFF_BIT_MASK)
 	{
 		if(cm730->WriteByte(id, MX28::P_TORQUE_ENABLE, 1, 0) != CM730::SUCCESS)
 			return;
@@ -1159,7 +1161,7 @@ void WriteStepCmd(int index)
 {
 	for(int id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++)
 	{
-		if(Step.position[id] & Action::TORQUE_OFF_BIT_MASK)
+		if(Step.position[id] + MotionManager::GetInstance()->m_Offset[id] & Action::TORQUE_OFF_BIT_MASK)
 			return;
 	}
 
@@ -1216,7 +1218,7 @@ void InsertStepCmd(int index)
 {
 	for(int id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++)
 	{
-		if(Step.position[id] & Action::TORQUE_OFF_BIT_MASK)
+		if(Step.position[id] + MotionManager::GetInstance()->m_Offset[id] & Action::TORQUE_OFF_BIT_MASK)
 		{			
 			PrintCmd("Exist invalid joint value");
 			return;
@@ -1339,7 +1341,7 @@ void GoCmd(CM730 *cm730, int index)
 
 	for(id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++)
 	{
-		if(Page.step[index].position[id] & Action::INVALID_BIT_MASK)
+		if(Page.step[index].position[id] + MotionManager::GetInstance()->m_Offset[id] & Action::INVALID_BIT_MASK)
 		{			
 			PrintCmd("Exist invalid joint value");
 			return;
