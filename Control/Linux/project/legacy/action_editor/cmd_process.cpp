@@ -698,6 +698,8 @@ void SetValue(CM730 *cm730, int value)
 					}
 				}
 			}
+			else
+				PrintCmd("Valor ultrapassando o limite do servo");
 		}
 	}
 	else if( col <= STP6_COL )
