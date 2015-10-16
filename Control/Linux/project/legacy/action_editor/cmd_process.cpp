@@ -931,6 +931,8 @@ void HelpCmd()
 	printf(" on/off             Turn On/Off torque from ALL actuators.\n");
 	printf(" on/off [index1] [index2] ...  \n"
 	       "                    turns On/Off torque from ID[index1] ID[index2]...\n");
+	printf(" init               Motion playback of page 1 keeping the current page.\n");
+	printf(" read               Read the motor position.\n");
 	printf("\n");
 	printf("       Copyright ROBOTIS CO.,LTD.\n");
 	printf("\n");
