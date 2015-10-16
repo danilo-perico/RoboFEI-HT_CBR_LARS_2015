@@ -676,7 +676,7 @@ void SetValue(CM730 *cm730, int value)
 		}
 		else
 		{
-			if(value >= 0 && value <= MX28::MAX_VALUE)
+			if(value  + MotionManager::GetInstance()->m_Offset[row + 1] >= 0 && value  + MotionManager::GetInstance()->m_Offset[row + 1] <= MX28::MAX_VALUE)
 			{
 				if(!(Step.position[row + 1] & Action::INVALID_BIT_MASK) && !(Step.position[row + 1] & Action::TORQUE_OFF_BIT_MASK))
 				{
@@ -748,7 +748,7 @@ void SetValue(CM730 *cm730, int value)
 		}
 		else
 		{
-			if(value >= 0 && value <= MX28::MAX_VALUE*1.5) //Aumentando o valor da entrada
+			if(value  + MotionManager::GetInstance()->m_Offset[row + 1] >= 0 && value  + MotionManager::GetInstance()->m_Offset[row + 1] <= MX28::MAX_VALUE) //Aumentando o valor da entrada
 			{
 				if(!(Page.step[i].position[row + 1] & Action::INVALID_BIT_MASK))
 				{
@@ -791,6 +791,7 @@ void SetValue(CM730 *cm730, int value)
 		else if(row == STEPNUM_ROW)
 		{
 			if(value >= 0 && value <= Action::MAXNUM_STEP)
+
 			{
 				if(Page.header.stepnum != value)
 				{
