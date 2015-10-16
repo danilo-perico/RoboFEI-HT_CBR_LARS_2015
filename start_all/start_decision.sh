@@ -1,8 +1,12 @@
 #!/bin/bash
 #!/RoboFEI-HT/build/bin
 
-echo "decision"
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/RoboFEI-HT/build/lib
-export PATH=$PATH:~/RoboFEI-HT/build/bin
-source #HOME/.bashrc
-decision
+echo "starting decision"
+cd ..
+cd Decision/src/
+#choose robot behavior: 
+#-a: attacker
+#-q: quarterback
+#-g: golie:
+#no arguments: hybrid 
+python decision.py
