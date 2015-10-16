@@ -555,10 +555,11 @@ void Action::Process()
 					// 이전, 현재, 미래를 바탕으로 궤적을 계산
 					ipAccelAngle1024[bID] = 0;
 
+
 					// Find current target angle
-					if( m_PlayPage.step[m_PageStepCount-1].position[bID] & INVALID_BIT_MASK )
-						wCurrentTargetAngle = wpTargetAngle1024[bID];
-					else
+					//if( m_PlayPage.step[m_PageStepCount-1].position[bID] & INVALID_BIT_MASK )
+					//	wCurrentTargetAngle = wpTargetAngle1024[bID];
+					//else
 						wCurrentTargetAngle = m_PlayPage.step[m_PageStepCount-1].position[bID];
 
 					// Update start, prev_target, curr_target
@@ -576,17 +577,17 @@ void Action::Process()
 							wNextTargetAngle = wCurrentTargetAngle;
 						else
 						{
-							if( m_NextPlayPage.step[0].position[bID] & INVALID_BIT_MASK )
-								wNextTargetAngle = wCurrentTargetAngle;
-							else
+							//if( m_NextPlayPage.step[0].position[bID] & INVALID_BIT_MASK )
+							//	wNextTargetAngle = wCurrentTargetAngle;
+							//else
 								wNextTargetAngle = m_NextPlayPage.step[0].position[bID];
 						}
 					}
 					else
 					{
-						if( m_PlayPage.step[m_PageStepCount].position[bID] & INVALID_BIT_MASK )
-							wNextTargetAngle = wCurrentTargetAngle;
-						else
+						//if( m_PlayPage.step[m_PageStepCount].position[bID] & INVALID_BIT_MASK )
+						//	wNextTargetAngle = wCurrentTargetAngle;
+						//else
 							wNextTargetAngle = m_PlayPage.step[m_PageStepCount].position[bID];
 					}
 
