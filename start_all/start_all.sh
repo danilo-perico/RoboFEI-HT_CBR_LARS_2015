@@ -12,29 +12,29 @@ do
     then
        gnome-terminal -x sh -c './start_imu.sh' &
    fi
-#   if [ ! "$(pidof -x start_vision.sh)" ] 
-#   then
-#          gnome-terminal -x sh -c 'echo 123456 | sudo -S ./start_vision.sh'
-#   fi
+   if [ ! "$(pidof -x start_vision.sh)" ] 
+   then
+          gnome-terminal -x sh -c './start_vision.sh' &
+   fi
     if [ ! "$(pidof -x start_decision.sh)" ]  
     then
-        gnome-terminal -x sh -c './start_decision.sh'
+        gnome-terminal -x sh -c './start_decision.sh' &
     fi
-#    if [ ! "$(pidof control)" ] 
-#    then
-#       gnome-terminal -x sh -c 'echo 123456 | sudo -S ./start_control.sh'
-#    fi
-#    if [ ! "$(pidof communication)" ] 
-#    then
-#       gnome-terminal -x sh -c 'echo 123456 | sudo -S ./start_comm.sh'
-#    fi
-#    if [ ! "$(pidof commServer)" ] 
-#    then
-#       gnome-terminal -x sh -c 'echo 123456 | sudo -S ./start_comm.sh'
-#    fi
-#    if [ ! "$(pidof CommClient)" ] 
-#    then
-#       gnome-terminal -x sh -c 'echo 123456 | sudo -S ./start_comm.sh'
-#    fi
+    if [ ! "$(pidof control)" ] 
+    then
+       gnome-terminal -x sh -c './start_control.sh' &
+    fi
+    if [ ! "$(pidof communication)" ] 
+    then
+       gnome-terminal -x sh -c './start_comm.sh' &
+    fi
+    if [ ! "$(pidof commServer)" ] 
+    then
+       gnome-terminal -x sh -c './start_commServer.sh' &
+    fi
+    if [ ! "$(pidof CommClient)" ] 
+    then
+       gnome-terminal -x sh -c './start_commClient.sh' &
+    fi
     sleep 10
 done

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #!/RoboFEI-HT/build/bin
 
 echo "communication"
