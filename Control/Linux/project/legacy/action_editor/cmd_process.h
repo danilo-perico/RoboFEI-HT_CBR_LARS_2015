@@ -111,5 +111,8 @@ void NewCmd();
 void GoCmd(Robot::CM730 *cm730, int index);
 void SaveCmd();
 void NameCmd();
+void goInitPage(); //Criando novas funcoes
+void backToPage(); //Criando novas funcoes
+void readServo(Robot::CM730 *cm730);
 
 #endif

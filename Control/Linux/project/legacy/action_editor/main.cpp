@@ -348,7 +348,15 @@ int main(int argc, char *argv[])
                         SaveCmd();
                     else if(strcmp(cmd, "name") == 0)
                         NameCmd();
-                    else
+                    else if(strcmp(cmd, "init") == 0)
+					{
+						goInitPage();
+						PlayCmd(&cm730);
+						backToPage();
+					}
+                    else if(strcmp(cmd, "read") == 0)
+						readServo(&cm730);
+					else
                         PrintCmd("Bad command! please input 'help'");
                 }
             }

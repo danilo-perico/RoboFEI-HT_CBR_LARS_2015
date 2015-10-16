@@ -21,6 +21,7 @@ int Old_Row;
 bool bBeginCommandMode = false;
 bool bEdited = false;
 int indexPage = 1;
+int indexPageBuffer = 1;
 Action::PAGE Page;
 Action::STEP Step;
 
@@ -1376,6 +1377,18 @@ void GoCmd(CM730 *cm730, int index)
 	DrawStep(7);
 }
 
+void goInitPage()
+{
+	indexPageBuffer = indexPage;
+	Action::GetInstance()->LoadPage(1, &Page);
+}
+
+void backToPage()
+{
+	Action::GetInstance()->LoadPage(indexPageBuffer, &Page);
+	indexPage = indexPageBuffer;
+}
+
 void SaveCmd()
 {
 	if(bEdited == false)
@@ -1383,6 +1396,17 @@ void SaveCmd()
 
 	if(Action::GetInstance()->SavePage(indexPage, &Page) == true)
 		bEdited = false;
+}
+
+void readServo(CM730 *cm730)
+{
+	int value;
+	for(int id=JointData::ID_MIN; id<JointData::ID_MAX; id++)
+	{
+			if(cm730->ReadWord(id, MX28::P_GOAL_POSITION_L, &value, 0) == CM730::SUCCESS)
+				Step.position[id] = value - MotionManager::GetInstance()->m_Offset[id];
+	}
+	DrawStep(7);
 }
 
 void NameCmd()
