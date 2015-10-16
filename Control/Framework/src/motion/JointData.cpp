@@ -167,7 +167,7 @@ bool JointData::GetEnable(int id)
 
 void JointData::SetValue(int id, int value)
 {
-    if(value < MX28::MIN_VALUE)
+    if(value < -MX28::MAX_VALUE) //Permitindo que o action aceite valores negativo do motion_1024.bin
         value = MX28::MIN_VALUE;
     else if(value >= MX28::MAX_VALUE)
         value = MX28::MAX_VALUE;
