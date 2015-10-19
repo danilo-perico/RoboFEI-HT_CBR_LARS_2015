@@ -13,10 +13,6 @@
 #  ****************************************************************************
 #  Program to execute the Decision process
 #  ****************************************************************************
-try:
-    from configparser import ConfigParser
-except ImportError:
-    from ConfigParser import ConfigParser  # ver. < 3.0
 
 #import parser for arguments    
 import argparse
@@ -28,14 +24,6 @@ from behavior import *
 print
 print '################### Decision #########################'
 print 
-
-
-
-# instantiate
-config = ConfigParser()
-
-# looking for the file config.ini
-config.read('../../Control/Data/config.ini')
 
 #create arguments for each behavior
 parser = argparse.ArgumentParser(description='Robot behavior', epilog= 'Se nenhuma ação for selecionada um comportamento híbrido será adotado! / If there is not a selected argument a hybrid behavior will be adopted!')
@@ -57,18 +45,19 @@ elif args.quarterback == True:
 elif args.attacker == True:
     robot = Attacker()
     
-#Hybrid decision:
+#Ordinary decision:
 else:
-    robot = Hybrid()
+    robot = Ordinary()
 
-# read values from section Offset
-head_pan_initial = config.getint('Offset', 'ID_19')
-head_tilt_initial = config.getint('Offset', 'ID_20')
 
 #loop
 while True:
-    print robot.get_motor_tilt()
-    print robot.get_motor_pan()
+    
+    if robot.get_referee_usage() == 1:
+        robot.decision(robot.get_referee()) #will read the referee 
+    else:
+        robot.decision(2) #always on play 
+   
     time.sleep(2) 
     
     
