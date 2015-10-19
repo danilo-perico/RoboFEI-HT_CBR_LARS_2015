@@ -12,7 +12,7 @@ do
     then
        gnome-terminal -x sh -c './start_imu.sh' &
    fi
-   if [ ! "$(pidof -x start_vision.sh)" ] 
+   if [ ! "$(pidof vision)" ] 
    then
           gnome-terminal -x sh -c './start_vision.sh' &
    fi
@@ -22,7 +22,7 @@ do
     fi
     if [ ! "$(pidof control)" ] 
     then
-       gnome-terminal -x sh -c './start_control.sh' &
+       gnome-terminal -x sh -c 'echo 123456 | sudo -S ./start_control.sh' &
     fi
     if [ ! "$(pidof communication)" ] 
     then
@@ -32,7 +32,7 @@ do
     then
        gnome-terminal -x sh -c './start_commServer.sh' &
     fi
-    if [ ! "$(pidof CommClient)" ] 
+    if [ ! "$(pidof commClient)" ] 
     then
        gnome-terminal -x sh -c './start_commClient.sh' &
     fi
