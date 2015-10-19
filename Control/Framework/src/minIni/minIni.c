@@ -309,7 +309,8 @@ double ini_getd(const TCHAR *Section, const TCHAR *Key, double DefValue, const T
  *
  * \return            the value located at Key
  */
-std::string ini_getChar(const TCHAR *Section, const TCHAR *Key, double DefValue, const TCHAR *Filename)
+template<typename TYPE>
+std::string ini_getChar(const TCHAR *Section, const TCHAR *Key, TYPE DefValue, const TCHAR *Filename)
 {
   TCHAR buff[64];
   int len = ini_gets(Section, Key, __T(""), buff, sizearray(buff), Filename);
