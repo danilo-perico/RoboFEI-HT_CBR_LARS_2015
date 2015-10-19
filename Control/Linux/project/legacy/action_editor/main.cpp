@@ -25,6 +25,7 @@ Arquivo fonte contendo o programa que grava pontos de ações do robô
 #include <signal.h>
 #include "cmd_process.h"
 #include "blackboard.h"
+#include <stdlib.h>     /* system, NULL, EXIT_FAILURE */
 
 #ifdef MX28_1024
 #define MOTION_FILE_PATH    "../../../../Data/motion_1024.bin"
@@ -231,7 +232,7 @@ int main(int argc, char *argv[])
                         input[--idx] = 0;
                     }
                 }
-                else if( ( ch >= 'A' && ch <= 'z' ) || ch == ' ' || ( ch >= '0' && ch <= '9'))
+                else if( ( ch >= 'A' && ch <= 'z' ) || ch == ' ' || ch == '-' || ( ch >= '0' && ch <= '9'))
                 {
                     if(idx < 127)
                     {
@@ -265,6 +266,7 @@ int main(int argc, char *argv[])
                     else if(strcmp(cmd, "re") == 0)
                         DrawPage();
                     else if(strcmp(cmd, "help") == 0)
+
                         HelpCmd();
                     else if(strcmp(cmd, "n") == 0)
                         NextCmd();
@@ -287,7 +289,7 @@ int main(int argc, char *argv[])
                     }
                     else if(strcmp(cmd, "set") == 0)
                     {
-                        if(num_param > 0)
+                        if(num_param > -900)
                             SetValue(&cm730, iparam[0]);
                         else
                             PrintCmd("Need parameter");
@@ -346,7 +348,15 @@ int main(int argc, char *argv[])
                         SaveCmd();
                     else if(strcmp(cmd, "name") == 0)
                         NameCmd();
-                    else
+                    else if(strcmp(cmd, "init") == 0)
+					{
+						goInitPage();
+						PlayCmd(&cm730);
+						backToPage();
+					}
+                    else if(strcmp(cmd, "read") == 0)
+						readServo(&cm730);
+					else
                         PrintCmd("Bad command! please input 'help'");
                 }
             }

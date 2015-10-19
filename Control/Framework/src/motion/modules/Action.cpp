@@ -277,14 +277,14 @@ void Action::Process()
     unsigned short wMaxAngle1024;
     unsigned short wMaxSpeed256;
     unsigned short wTmp;
-    unsigned short wPrevTargetAngle; // Start position
-    unsigned short wCurrentTargetAngle; // Target position
-    unsigned short wNextTargetAngle; // Next target position
+    short int wPrevTargetAngle; // Start position
+    short int wCurrentTargetAngle; // Target position
+    short int wNextTargetAngle; // Next target position
     unsigned char bDirectionChanged;
 
     ///////////////// Static 변수
-	static unsigned short wpStartAngle1024[JointData::NUMBER_OF_JOINTS]; // 보간할 시작 지점
-    static unsigned short wpTargetAngle1024[JointData::NUMBER_OF_JOINTS]; // 보간할 도착 지점
+	static short int wpStartAngle1024[JointData::NUMBER_OF_JOINTS]; // 보간할 시작 지점
+    static short int wpTargetAngle1024[JointData::NUMBER_OF_JOINTS]; // 보간할 도착 지점
     static short int ipMovingAngle1024[JointData::NUMBER_OF_JOINTS]; // 총 가야할 거리
     static short int ipMainAngle1024[JointData::NUMBER_OF_JOINTS]; // 등속 구간에서 가야할 거리
     static short int ipAccelAngle1024[JointData::NUMBER_OF_JOINTS]; // 가속 구간에서 가야할 거리
@@ -555,10 +555,12 @@ void Action::Process()
 					// 이전, 현재, 미래를 바탕으로 궤적을 계산
 					ipAccelAngle1024[bID] = 0;
 
+
+
 					// Find current target angle
-					if( m_PlayPage.step[m_PageStepCount-1].position[bID] & INVALID_BIT_MASK )
-						wCurrentTargetAngle = wpTargetAngle1024[bID];
-					else
+					//if( m_PlayPage.step[m_PageStepCount-1].position[bID] & INVALID_BIT_MASK )
+					//	wCurrentTargetAngle = wpTargetAngle1024[bID];
+					//else
 						wCurrentTargetAngle = m_PlayPage.step[m_PageStepCount-1].position[bID];
 
 					// Update start, prev_target, curr_target
@@ -576,17 +578,17 @@ void Action::Process()
 							wNextTargetAngle = wCurrentTargetAngle;
 						else
 						{
-							if( m_NextPlayPage.step[0].position[bID] & INVALID_BIT_MASK )
-								wNextTargetAngle = wCurrentTargetAngle;
-							else
+							//if( m_NextPlayPage.step[0].position[bID] & INVALID_BIT_MASK )
+							//	wNextTargetAngle = wCurrentTargetAngle;
+							//else
 								wNextTargetAngle = m_NextPlayPage.step[0].position[bID];
 						}
 					}
 					else
 					{
-						if( m_PlayPage.step[m_PageStepCount].position[bID] & INVALID_BIT_MASK )
-							wNextTargetAngle = wCurrentTargetAngle;
-						else
+						//if( m_PlayPage.step[m_PageStepCount].position[bID] & INVALID_BIT_MASK )
+						//	wNextTargetAngle = wCurrentTargetAngle;
+						//else
 							wNextTargetAngle = m_PlayPage.step[m_PageStepCount].position[bID];
 					}
 
