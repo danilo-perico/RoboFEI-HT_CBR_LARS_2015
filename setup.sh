@@ -59,7 +59,7 @@ make install
 
 sudo echo  -e "Criando as regras para reconhecer o dispositivo${red} IMU${NC}"
 cat <<EOF > 41-ftdi-imu.rules
-KERNEL=="ttyUSB?", SUBSYSTEMS=="usb", ATTRS{idVendor}=="1d6b",  ATTRS{idProduct}=="0001", MODE="0666", SYMLINK+="robot/imu"
+KERNEL=="ttyUSB?", SUBSYSTEMS=="usb", ATTRS{idVendor}=="067b",  ATTRS{idProduct}=="2303", MODE="0777", SYMLINK+="robot/imu"
 EOF
 chmod +x 41-ftdi-imu.rules
 sudo echo  -e "Copiando arquivo${blue} 41-ftdi-imu.rules${NC} para ${green}/etc/udev/rules.d${NC}"
