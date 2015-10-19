@@ -201,11 +201,11 @@ void *recebendo(void* arg)
 		             }
 			else if(referre.state == STATE_READY){
 				state = 1;
-				COM_REFEREE = 1; //ready
+				COM_REFEREE = 11; //ready
 			     }
 			else if(referre.state == STATE_SET){
 				state = 2;
-				COM_REFEREE = 1; //stop
+				COM_REFEREE = 12; //stop
 		             }
 			else if(referre.kickOffTeam == TEAM_ROBOFEI && referre.state == STATE_PLAYING && (referre.secondaryState == STATE2_NORMAL || referre.secondaryState == STATE2_OVERTIME)){
 				state = 3;
