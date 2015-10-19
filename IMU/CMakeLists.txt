@@ -1,12 +1,19 @@
+# @author Isaac Jesus da Silva - ROBOFEI-HT - FEI
+# @version V0.0.1
+# @created 24/08/2015
+# @Modified 24/08/2015 
+#
+# 
+# Para Help acesse http://www.cmake.org/cmake/help/v2.8.0/cmake.html#command:link_directories
 
 find_package( Boost REQUIRED )
 
 include_directories(
   include
   ${Boost_INCLUDE_DIRS}
-  ${RoboFEI-HT_SOURCE_DIR}/Blackboard/include
-  ${RoboFEI-HT_SOURCE_DIR}/IMU/include/um6
-  ${SOURCE_DIR}/usr/local/include/serial
+  ../Blackboard/include
+  ../IMU/include/um7
+  ./serial/include
 
 )
 

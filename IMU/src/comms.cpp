@@ -1,11 +1,11 @@
 /**
  *
  *  \file
- *  \brief      Implementation of Comms class methods to handle reading and
- *              writing to the UM6 serial interface.
+ *  \brief      Implementation of Comms class methods to handle reading and 
+ *              writing to the UM7 serial interface.
  *  \author     Mike Purvis <mpurvis@clearpathrobotics.com>
  *  \copyright  Copyright (c) 2013, Clearpath Robotics, Inc.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -16,7 +16,7 @@
  *     * Neither the name of Clearpath Robotics, Inc. nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -27,12 +27,23 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * Please send comments, questions, or patches to code@clearpathrobotics.com
- *
- */
+ * 
+ * Please send comments, questions, or patches to code@clearpathrobotics.com 
+ *--------------------------------------------------------------------
+ ******************************************************************************
+ * @file comms.cpp
+ * @author Isaac Jesus da Silva - ROBOFEI-HT - FEI 😛
+ * @version V0.0.1
+ * @created 24/08/2015
+ * @Modified 24/08/2015
+ * @e-mail isaac25silva@yahoo.com.br
+ * @brief comms 😛
+ ****************************************************************************
+ ****************************************************************************
+ * Arquivo fonte modificado para usar sem as bibliotecas do ROS
+ /--------------------------------------------------------------------------*/
 
-#include "um6/comms.h"
+#include "um7/comms.h"
 
 #include <arpa/inet.h>
 #include <boost/algorithm/string/predicate.hpp>
@@ -40,12 +51,10 @@
 #include <string>
 
 //#include "ros/console.h"
-#include "../serial/include/serial.h"
-#include "registers.h"
+#include "serial/serial.h"
+#include "um7/registers.h"
 
-//using namespace serial;
-
-namespace um6
+namespace um7
 {
 
 const uint8_t Comms::PACKET_HAS_DATA = 1 << 7;
@@ -58,12 +67,11 @@ int16_t Comms::receive(Registers* registers = NULL)
   // Search the serial stream for a start-of-packet sequence.
   try
   {
-    //size_t available = serial_->available();
     size_t available = serial_->available();
     if (available > 255)
     {
       //ROS_WARN_STREAM("Serial read buffer is " << available << ", now flushing in an attempt to catch up.");
-      std::cout << "Serial read buffer is " << available << ", now flushing in an attempt to catch up." << std::endl;
+	  std::cout << "Serial read buffer is " << available << ", now flushing in an attempt to catch up." << std::endl;
       serial_->flushInput();
     }
 
@@ -87,7 +95,7 @@ int16_t Comms::receive(Registers* registers = NULL)
       if (snp.length() > 3)
       {
         //ROS_WARN_STREAM_COND(!first_spin_,
-        //                     "Discarded " << 5 + snp.length() - 3 << " junk byte(s) preceeding packet.");
+          //"Discarded " << 5 + snp.length() - 3 << " junk byte(s) preceeding packet.");
         if (!first_spin_) {
             std::cout << "Discarded " << 5 + snp.length() - 3 << " junk byte(s) preceeding packet." << std::endl;
         }
@@ -107,7 +115,7 @@ int16_t Comms::receive(Registers* registers = NULL)
       {
         data_length = (type >> PACKET_BATCH_LENGTH_OFFSET) & PACKET_BATCH_LENGTH_MASK;
         //ROS_DEBUG("Received packet %02x with batched (%d) data.", address, data_length);
-        //std::cout << "Received packet " << address << " with batched " << data_length << " data." << std::endl;
+	    //std::cout << "Received packet " << address << " with batched " << data_length << " data." << std::endl;
       }
       else
       {
@@ -141,7 +149,7 @@ int16_t Comms::receive(Registers* registers = NULL)
     }
 
     // Copy data from checksum buffer into registers, if specified.
-    // Note that byte-order correction (as necessary) happens at access-time.
+    // Note that byte-order correction (as necessary) happens at access-time
     if ((data.length() > 0) && registers)
     {
       registers->write_raw(address, data);
@@ -157,6 +165,7 @@ int16_t Comms::receive(Registers* registers = NULL)
   }
   catch(const BadChecksum& e)
   {
+    //ROS_WARN("Discarding packet due to bad checksum.");
     std::cout << "Discarding packet due to bad checksum." << std::endl;
   }
   return -1;
@@ -234,4 +243,4 @@ bool Comms::sendWaitAck(const Accessor_& r)
   }
   return false;
 }
-}  // namespace um6
+}  // namespace um7
