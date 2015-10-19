@@ -21,6 +21,7 @@ int Old_Row;
 bool bBeginCommandMode = false;
 bool bEdited = false;
 int indexPage = 1;
+int indexPageBuffer = 1;
 Action::PAGE Page;
 Action::STEP Step;
 
@@ -95,7 +96,7 @@ void ReadStep(CM730 *cm730)
 				if(value == 1)
 				{
 					if(cm730->ReadWord(id, MX28::P_GOAL_POSITION_L, &value, 0) == CM730::SUCCESS)
-						Step.position[id] = value;
+						Step.position[id] = value - MotionManager::GetInstance()->m_Offset[id];
 					else
 						Step.position[id] = Action::INVALID_BIT_MASK;
 				}
@@ -438,10 +439,12 @@ void DrawStep(int index)
 	for( int id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++ )
 	{
 		GoToCursor(col, id -1);
-		if(step->position[id] & Action::INVALID_BIT_MASK)
+		if(step->position[id] + MotionManager::GetInstance()->m_Offset[id] & Action::INVALID_BIT_MASK)
 			printf("----");
-		else if(step->position[id] & Action::TORQUE_OFF_BIT_MASK)
+		else if(step->position[id] + MotionManager::GetInstance()->m_Offset[id] & Action::TORQUE_OFF_BIT_MASK)
 			printf("????");
+		else if(step->position[id]  < 0)
+			printf("%.3d", step->position[id]);
 		else
 			printf("%.4d", step->position[id]);
 	}
@@ -676,22 +679,27 @@ void SetValue(CM730 *cm730, int value)
 		}
 		else
 		{
-			if(value >= 0 && value <= MX28::MAX_VALUE)
+			if(value  + MotionManager::GetInstance()->m_Offset[row + 1] >= 0 && value  + MotionManager::GetInstance()->m_Offset[row + 1] <= MX28::MAX_VALUE)
 			{
-				if(!(Step.position[row + 1] & Action::INVALID_BIT_MASK) && !(Step.position[row + 1] & Action::TORQUE_OFF_BIT_MASK))
+				if(!(Step.position[row + 1] + MotionManager::GetInstance()->m_Offset[row + 1] & Action::INVALID_BIT_MASK) && !(Step.position[row + 1] + MotionManager::GetInstance()->m_Offset[row + 1]  & Action::TORQUE_OFF_BIT_MASK))
 				{
 					int error;
-					if(cm730->WriteWord(row + 1, MX28::P_GOAL_POSITION_L, value, &error) == CM730::SUCCESS)
+					if(cm730->WriteWord(row + 1, MX28::P_GOAL_POSITION_L, value  + MotionManager::GetInstance()->m_Offset[row + 1], &error) == CM730::SUCCESS)
 					{
 						if(!(error & CM730::ANGLE_LIMIT))
 						{
 							Step.position[row + 1] = value;
-							printf( "%.4d", value );
+							if(value > 0)
+								printf( "%.4d", value );
+							else
+								printf( "%.3d", value );
 							bEdited = true;
 						}
 					}
 				}
 			}
+			else
+				PrintCmd("Valor ultrapassando o limite do servo");
 		}
 	}
 	else if( col <= STP6_COL )
@@ -748,12 +756,15 @@ void SetValue(CM730 *cm730, int value)
 		}
 		else
 		{
-			if(value >= 0 && value <= MX28::MAX_VALUE*1.5) //Aumentando o valor da entrada
+			if(value  + MotionManager::GetInstance()->m_Offset[row + 1] >= 0 && value  + MotionManager::GetInstance()->m_Offset[row + 1] <= MX28::MAX_VALUE) //Aumentando o valor da entrada
 			{
-				if(!(Page.step[i].position[row + 1] & Action::INVALID_BIT_MASK))
+				if(!(Page.step[i].position[row + 1] + MotionManager::GetInstance()->m_Offset[row + 1] & Action::INVALID_BIT_MASK))
 				{
 					Page.step[i].position[row + 1] = value;
-					printf( "%.4d", value );
+					if(value > 0)
+						printf( "%.4d", value );
+					else
+						printf( "%.3d", value );
 					bEdited = true;
 				}
 			}
@@ -791,9 +802,11 @@ void SetValue(CM730 *cm730, int value)
 		else if(row == STEPNUM_ROW)
 		{
 			if(value >= 0 && value <= Action::MAXNUM_STEP)
+
 			{
 				if(Page.header.stepnum != value)
 				{
+
 					DrawStepLine(true);
 					Page.header.stepnum = value;
 					DrawStepLine(false);
@@ -850,7 +863,7 @@ void ToggleTorque(CM730 *cm730)
 
 	int id = Row + 1;
 
-	if(Step.position[id] & Action::TORQUE_OFF_BIT_MASK)
+	if(Step.position[id] + MotionManager::GetInstance()->m_Offset[id] & Action::TORQUE_OFF_BIT_MASK)
 	{
 		if(cm730->WriteByte(id, MX28::P_TORQUE_ENABLE, 1, 0) != CM730::SUCCESS)
 			return;
@@ -918,6 +931,8 @@ void HelpCmd()
 	printf(" on/off             Turn On/Off torque from ALL actuators.\n");
 	printf(" on/off [index1] [index2] ...  \n"
 	       "                    turns On/Off torque from ID[index1] ID[index2]...\n");
+	printf(" init               Motion playback of page 1 keeping the current page.\n");
+	printf(" read               Read the motor position.\n");
 	printf("\n");
 	printf("       Copyright ROBOTIS CO.,LTD.\n");
 	printf("\n");
@@ -1151,7 +1166,7 @@ void WriteStepCmd(int index)
 {
 	for(int id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++)
 	{
-		if(Step.position[id] & Action::TORQUE_OFF_BIT_MASK)
+		if(Step.position[id] + MotionManager::GetInstance()->m_Offset[id] & Action::TORQUE_OFF_BIT_MASK)
 			return;
 	}
 
@@ -1208,7 +1223,7 @@ void InsertStepCmd(int index)
 {
 	for(int id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++)
 	{
-		if(Step.position[id] & Action::TORQUE_OFF_BIT_MASK)
+		if(Step.position[id] + MotionManager::GetInstance()->m_Offset[id] & Action::TORQUE_OFF_BIT_MASK)
 		{			
 			PrintCmd("Exist invalid joint value");
 			return;
@@ -1331,7 +1346,7 @@ void GoCmd(CM730 *cm730, int index)
 
 	for(id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++)
 	{
-		if(Page.step[index].position[id] & Action::INVALID_BIT_MASK)
+		if(Page.step[index].position[id] + MotionManager::GetInstance()->m_Offset[id] & Action::INVALID_BIT_MASK)
 		{			
 			PrintCmd("Exist invalid joint value");
 			return;
@@ -1366,6 +1381,18 @@ void GoCmd(CM730 *cm730, int index)
 	DrawStep(7);
 }
 
+void goInitPage()
+{
+	indexPageBuffer = indexPage;
+	Action::GetInstance()->LoadPage(1, &Page);
+}
+
+void backToPage()
+{
+	Action::GetInstance()->LoadPage(indexPageBuffer, &Page);
+	indexPage = indexPageBuffer;
+}
+
 void SaveCmd()
 {
 	if(bEdited == false)
@@ -1373,6 +1400,17 @@ void SaveCmd()
 
 	if(Action::GetInstance()->SavePage(indexPage, &Page) == true)
 		bEdited = false;
+}
+
+void readServo(CM730 *cm730)
+{
+	int value;
+	for(int id=JointData::ID_MIN; id<JointData::ID_MAX; id++)
+	{
+			if(cm730->ReadWord(id, MX28::P_GOAL_POSITION_L, &value, 0) == CM730::SUCCESS)
+				Step.position[id] = value - MotionManager::GetInstance()->m_Offset[id];
+	}
+	DrawStep(7);
 }
 
 void NameCmd()
