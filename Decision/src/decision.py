@@ -17,8 +17,6 @@
 #import parser for arguments    
 import argparse
 
-import time
-
 from behavior import *
 
 print

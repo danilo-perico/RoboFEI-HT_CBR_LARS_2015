@@ -17,6 +17,8 @@ except ImportError:
 #looking for the library SharedMemory
 from SharedMemory import SharedMemory 
 
+import time
+
 ###############################################################################
 
 class TreatingRawData(object):
@@ -48,6 +50,7 @@ class TreatingRawData(object):
         return self.bkb.read_int('VISION_MOTOR2_ANGLE')
           
     def get_orientation(self):
+        '''1 for correct orientation'''
         return self.bkb.read_int('LOCALIZATION_THETA')
         
     def get_dist_ball(self):
@@ -173,9 +176,23 @@ class Ordinary(TreatingRawData):
 							self.set_walk_forward_slow()
 						else:
 						    if self.delta_position_pan() >= 0:
-						        self.set_kick_right()
+						        self.set_vision_orientation()
+						        time.sleep(2)
+						        if self.get_orientation() == 1:
+						            self.set_kick_right()
+						        else:
+						            self.set_revolve_around_ball()
+						            time.sleep(2)
+						            self.set_vision_ball()
 						    else:
-						        self.set_kick_left()
+   						        self.set_vision_orientation()
+						        time.sleep(2)
+						        if self.get_orientation() == 1:
+						            self.set_kick_left()
+						        else:
+						            self.set_revolve_around_ball()
+						            time.sleep()
+						            self.set_vision_ball()
 						        
 				    #pan in the right:
 					if self.delta_position_pan() > 70:
