@@ -546,10 +546,10 @@ VideoWriter video("/home/fei/RoboFEI-HT/genfiles/SavedVideo/Bola.avi",CV_FOURCC(
 	VISION_DIST_GOAL=0; //zera a variavel do gol
 
 	VISION_MOTOR2_ANGLE = dxl_read_word( HEAD_PAN, P_PRESENT_POSITION_L);
-	std::cout <<"Servo2 Bola = "<< VISION_MOTOR2_ANGLE << std::endl;
+	std::cout <<"Delta Pan Bola = "<< pos_servo2 - VISION_MOTOR2_ANGLE << std::endl;
 
 	VISION_MOTOR1_ANGLE = dxl_read_word( HEAD_TILT, P_PRESENT_POSITION_L);
-	std::cout <<"Servo1 Bola= "<<VISION_MOTOR1_ANGLE << std::endl;
+	std::cout <<"Delta Tilt Bola= "<<pos_servo1 - VISION_MOTOR1_ANGLE<< std::endl;
 
 	BufferBallServo1 = VISION_MOTOR1_ANGLE; //Guarda a posição do servo1
 	BufferBallServo2 = VISION_MOTOR2_ANGLE; //Guarda a posição do servo2
