@@ -43,20 +43,20 @@ using namespace cv;
 using namespace std;
 
 // Tamanho Padrão de captura WebCam Robo- 640x480
-//#define RESOLUCAO_X 1280 //1280   1920
-//#define RESOLUCAO_Y 720  //720   1080
+#define RESOLUCAO_X 1280 //1280   1920
+#define RESOLUCAO_Y 720  //720   1080
 
-#define RESOLUCAO_X 1920 //1280   1920
-#define RESOLUCAO_Y 1080  //720   1080
+//#define RESOLUCAO_X 1920 //1280   1920
+//#define RESOLUCAO_Y 1080  //720   1080
 
 #define CENTERBALL 0.05 // Porcentagem de quanto centraliza a bola no quadro
 //#define AJUSTE 0.285 // para resolução de 640x480
-//#define AJUSTE 0.285*0.49 // para resolução de 1280x720
+#define AJUSTE 0.285*0.49 // para resolução de 1280x720
 //#define AJUSTE 0.285*0.33 // para resolução de 1920x1080
-#define AJUSTE 0.285*0.25 // para resolução de 1920x1080
+//#define AJUSTE 0.285*0.25 // para resolução de 1920x1080
 //#define AJUSTEDIST 1 // para resolução de 640x480
-//#define AJUSTEDIST 0.5 //para resolução de 1280x720
-#define AJUSTEDIST 0.33 //para resolução de 1920x1080
+#define AJUSTEDIST 0.5 //para resolução de 1280x720
+//#define AJUSTEDIST 0.33 //para resolução de 1920x1080
 
 void PrintCommStatus(int CommStatus);
 void PrintErrorCode(void);
