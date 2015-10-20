@@ -1,5 +1,5 @@
 #coding: utf-8
- # -----------------------------------------------------------------------------------------------------
+ # ----------------------------------------------------------------------------
  # ****************************************************************************
  # * @file behavior.py
  # * @author Danilo H Perico
@@ -16,6 +16,8 @@ except ImportError:
 
 #looking for the library SharedMemory
 from SharedMemory import SharedMemory 
+
+###############################################################################
 
 class TreatingRawData(object):
 
@@ -53,50 +55,62 @@ class TreatingRawData(object):
         
     def get_head_pan_initial(self):
         return self.config.getint('Offset', 'ID_19')
+
+    def get_head_tilt_initial(self):
+        return self.config.getint('Offset', 'ID_20')
         
     def get_search_ball_status(self):
         return self.bkb.read_int('VISION_SEARCH_BALL')
         
     def get_lost_ball_status(self):
         return self.bkb.read_int('VISION_LOST_BALL')
-        
-    def get_head_tilt_initial(self):
-        return self.config.getint('Offset', 'ID_20')
-        
+
     def set_gait(self):
+        print 'gait'
         return self.bkb.write_int('DECISION_ACTION_A', 0)
 
     def set_walk_forward(self):
+        print 'walk forward'
         return self.bkb.write_int('DECISION_ACTION_A', 1)
-
+        
     def set_turn_left(self):
+        print 'turn left'
         return self.bkb.write_int('DECISION_ACTION_A', 2)        
         
     def set_turn_right(self):
+        print 'turn right'
         return self.bkb.write_int('DECISION_ACTION_A', 3)       
         
     def set_kick_right(self):
+        print 'kick right'
         return self.bkb.write_int('DECISION_ACTION_A', 4)       
         
     def set_kick_left(self):
+        print 'kick left'
         return self.bkb.write_int('DECISION_ACTION_A', 5)       
         
     def set_sidle_left(self):
+        print 'sidle left'
         return self.bkb.write_int('DECISION_ACTION_A', 6)       
         
     def set_sidle_right(self):
+        print 'sidle right'
         return self.bkb.write_int('DECISION_ACTION_A', 7)       
         
     def set_walk_forward_slow(self):
+        print 'walk forward slow'
         return self.bkb.write_int('DECISION_ACTION_A', 8)       
         
     def set_revolve_around_ball(self):
+        print 'revolve around ball'
         return self.bkb.write_int('DECISION_ACTION_A', 9)       
         
     def set_walk_backward(self):
+        print 'walk backward'
         return self.bkb.write_int('DECISION_ACTION_A', 10)       
         
     def set_stand_still(self):
+        print 'stand still'
         return self.bkb.write_int('DECISION_ACTION_A', 11)       
         
     def set_vision_ball(self):
@@ -105,7 +119,16 @@ class TreatingRawData(object):
     def set_vision_orientation(self):
         return self.bkb.write_int('DECISION_ACTION_VISION',2) 
         
+    def delta_position_pan(self):
+        '''right > 0 / left < 0'''
+        return self.get_head_pan_initial() - self.get_motor_pan()
 
+    def delta_position_tilt(self):
+        '''up > 0 / down < 0 / middle is looking for the horizon'''
+        return self.get_head_tilt_initial() - self.get_motor_tilt()
+
+        
+##############################################################################
 
 class Ordinary(TreatingRawData):
     " " " Ordinary class " " "
@@ -114,7 +137,7 @@ class Ordinary(TreatingRawData):
         print
         print 'Ordinary behavior called' 
         print
-        
+                
     def decision(self, referee):
         if referee == 1: #stopped
             print 'stand'
@@ -131,15 +154,51 @@ class Ordinary(TreatingRawData):
             
         elif referee == 2: #play
             print 'play'
-            self.set_vision_ball()
-            if self.get_search_ball_status == 1:
-                self.set_stand_still()
-                if self.get_lost_ball_status == 1:
-                   self.set_turn_right() 
-            
+            self.set_vision_ball() #set vision to find ball
 
+            if self.get_search_ball_status() == 1: #1 - searching ball
+                self.set_stand_still()
+                if self.get_lost_ball_status() == 1: #1 - lost ball
+                   self.set_turn_right()
+            else:
+				if self.get_lost_ball_status() == 1:
+					self.set_stand_still() #stop robot because the ball
+					#can be already found
+				else:
+					#pan in the middle:
+					if self.delta_position_pan() <= 70 and self.delta_position_pan() >= -70:
+						if self.delta_position_tilt() >= -84:
+							self.set_walk_forward()
+						elif self.delta_position_tilt() < -84 and self.delta_position_tilt() >= -225:
+							self.set_walk_forward_slow()
+						else:
+						    if self.delta_position_pan() >= 0:
+						        self.set_kick_right()
+						    else:
+						        self.set_kick_left()
+						        
+				    #pan in the right:
+					if self.delta_position_pan() > 70:
+						if self.delta_position_tilt() >= -225:
+							self.set_turn_right()
+						elif self.delta_position_tilt() < -225 and self.delta_position_pan() > 115:
+						    self.set_sidle_right()
+						else:
+						    self.set_kick_right()
+
+							
+					#pan in the left:
+					if self.delta_position_pan() < -70:
+						if self.delta_position_tilt() >= -225:
+							self.set_turn_left()
+						elif self.delta_position_tilt() < -225 and self.delta_position_pan() < -95:
+						    self.set_sidle_left()
+						else:
+						    self.set_kick_left()
+
+							
     
-############################        
+#############################################################################        
         
 class Attacker(Ordinary):
     " " " Attacker class " " "
@@ -149,7 +208,7 @@ class Attacker(Ordinary):
         print  'Attacker behavior called' 
         print
 
-############################        
+##############################################################################
         
 class Quarterback(Ordinary):
     " " " Quarterback class " " "
@@ -159,7 +218,7 @@ class Quarterback(Ordinary):
         print  'Quarterback behavior called' 
         print
         
-############################ 
+##############################################################################
         
 class Golie(Ordinary):
     " " " Golie class " " "
