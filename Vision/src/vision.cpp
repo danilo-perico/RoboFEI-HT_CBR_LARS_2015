@@ -13,7 +13,7 @@
 
 #include"vision.h"
 
-#define INI_FILE_PATH       "Control/Data/config.ini"
+#define INI_FILE_PATH       "../Control/Data/config.ini"
 
 
 
@@ -27,12 +27,12 @@ system("pwd");
 
 
 	if((pos_servo2=ini->getd("Offset","ID_19",-1024))==-1024){
-		cout<<"Erro na leitura do conf.ini";
+		cout<<"Erro na leitura do config.ini";
 		return(0);
 	}
 
 	if((pos_servo1=ini->getd("Offset","ID_20",-1024))==-1024){
-		cout<<"Erro na leitura do conf.ini";
+		cout<<"Erro na leitura do config.ini";
 		return(0);
 	}
 

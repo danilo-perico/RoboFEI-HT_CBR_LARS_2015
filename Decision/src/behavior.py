@@ -240,6 +240,8 @@ class Ordinary(TreatingRawData):
                                     self.set_vision_ball()
                             else:
                                 self.set_kick_right()
+        else:
+            print 'Invalid argument receveid from referee!'
 
 #############################################################################        
         
