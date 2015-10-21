@@ -38,7 +38,10 @@ class TreatingRawData(object):
         print
         
     def get_referee_usage(self):
-        return self.config.getint('Decision', 'referee')
+        return self.config.get('Decision', 'referee')
+        
+    def get_orientation_usage(self):
+        return self.config.get('Decision', 'orientation')
                     
     def get_referee(self):
         return self.bkb.read_int('COM_REFEREE')
@@ -164,57 +167,80 @@ class Ordinary(TreatingRawData):
                 if self.get_lost_ball_status() == 1: #1 - lost ball
                    self.set_turn_right()
             else:
-				if self.get_lost_ball_status() == 1:
-					self.set_stand_still() #stop robot because the ball
-					#can be already found
-				else:
-					#pan in the middle:
-					if self.delta_position_pan() <= 70 and self.delta_position_pan() >= -70:
-						if self.delta_position_tilt() >= -84:
-							self.set_walk_forward()
-						elif self.delta_position_tilt() < -84 and self.delta_position_tilt() >= -225:
-							self.set_walk_forward_slow()
-						else:
-						    if self.delta_position_pan() >= 0:
-						        self.set_vision_orientation()
-						        time.sleep(2)
-						        if self.get_orientation() == 1:
-						            self.set_kick_right()
-						        else:
-						            self.set_revolve_around_ball()
-						            time.sleep(2)
-						            self.set_vision_ball()
-						    else:
-   						        self.set_vision_orientation()
-						        time.sleep(2)
-						        if self.get_orientation() == 1:
-						            self.set_kick_left()
-						        else:
-						            self.set_revolve_around_ball()
-						            time.sleep()
-						            self.set_vision_ball()
-						        
+                if self.get_lost_ball_status() == 1:
+                    self.set_stand_still() #stop robot because the ball
+                    #can be already found
+                else:
+                    #pan in the middle:
+                    if self.delta_position_pan() <= 70 and self.delta_position_pan() >= -70:
+                        if self.delta_position_tilt() >= -84:
+                            self.set_walk_forward()
+                        elif self.delta_position_tilt() < -84 and self.delta_position_tilt() >= -225:
+                            self.set_walk_forward_slow()
+                        else:
+                            if self.delta_position_pan() >= 0:
+                                if self.get_orientation_usage() == 'yes':
+                                    self.set_vision_orientation()
+                                    time.sleep(2)
+                                    if self.get_orientation() == 1:
+                                        self.set_kick_right()
+                                    else:
+                                        self.set_revolve_around_ball()
+                                        time.sleep(2)
+                                        self.set_vision_ball()
+                                else:
+                                    self.set_kick_right()
+                            else:
+                                if self.get_orientation_usage() == 'yes':
+                                    self.set_vision_orientation()
+                                    time.sleep(2)
+                                    if self.get_orientation() == 1:
+                                        self.set_kick_left()
+                                    else:
+                                        self.set_revolve_around_ball()
+                                        time.sleep(2)
+                                        self.set_vision_ball()
+                                else:
+                                    self.set_kick_left()
+
 				    #pan in the right:
-					if self.delta_position_pan() > 70:
-						if self.delta_position_tilt() >= -225:
-							self.set_turn_right()
-						elif self.delta_position_tilt() < -225 and self.delta_position_pan() > 115:
-						    self.set_sidle_right()
-						else:
-						    self.set_kick_right()
+                    if self.delta_position_pan() > 70:
+                        if self.delta_position_tilt() >= -225:
+                            self.set_turn_right()
+                        elif self.delta_position_tilt() < -225 and self.delta_position_pan() > 115:
+                            self.set_sidle_right()
+                        else:
+                            if self.get_orientation_usage() == 'yes':
+                                self.set_vision_orientation()
+                                time.sleep(2)
+                                if self.get_orientation() == 1:
+                                    self.set_kick_right()
+                                else:
+                                    self.set_revolve_around_ball()
+                                    time.sleep(2)
+                                    self.set_vision_ball()
+                            else:
+                                self.set_kick_right()
 
-							
-					#pan in the left:
-					if self.delta_position_pan() < -70:
-						if self.delta_position_tilt() >= -225:
-							self.set_turn_left()
-						elif self.delta_position_tilt() < -225 and self.delta_position_pan() < -95:
-						    self.set_sidle_left()
-						else:
-						    self.set_kick_left()
+                    #pan in the left:
+                    if self.delta_position_pan() < -70:
+                        if self.delta_position_tilt() >= -225:
+                            self.set_turn_left()
+                        elif self.delta_position_tilt() < -225 and self.delta_position_pan() < -95:
+                            self.set_sidle_left()
+                        else:
+                            if self.get_orientation_usage() == 'yes':
+                                self.set_vision_orientation()
+                                time.sleep(2)
+                                if self.get_orientation() == 1:
+                                    self.set_kick_right()
+                                else:
+                                    self.set_revolve_around_ball()
+                                    time.sleep(2)
+                                    self.set_vision_ball()
+                            else:
+                                self.set_kick_right()
 
-							
-    
 #############################################################################        
         
 class Attacker(Ordinary):
