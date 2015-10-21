@@ -255,7 +255,7 @@ int main(int argc, char **argv)
 
 		        case 100: //d
 				    cout << "Vira para direita" << endl;
-					move_gait(0.0, 0.0, -10.0, stop_gait);
+					move_gait(0.0, 0.0, -20.0, stop_gait);
 		        break;
 
 		        case 105: //i
@@ -265,7 +265,7 @@ int main(int argc, char **argv)
 
 		        case 101: //e
 				    cout << "Vira para esquerda" << endl;
-					move_gait(0.0, 0.0, 10.0, stop_gait);
+					move_gait(0.0, 0.0, 20.0, stop_gait);
 		        break;
 
 		        case 106: //j
