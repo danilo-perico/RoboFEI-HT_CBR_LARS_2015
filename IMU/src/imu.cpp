@@ -419,10 +419,10 @@ int main(int argc, char **argv)
             contador++;
             //--------------------------------------------------------------------
 
-            if(med_accel_z>-0.70) // Identifica se o robô esta caido ou em pé
-                IMU_STATE = 1; // Robo caido
+            if(med_accel_z>0.70) // Identifica se o robô esta caido ou em pé
+                IMU_STATE = 0; // Robo caido
             else
-                IMU_STATE = 0; // Robo em pé
+                IMU_STATE = 1; // Robo em pé
 
             if(t>20)
             {
