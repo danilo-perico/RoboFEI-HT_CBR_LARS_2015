@@ -368,7 +368,15 @@ int main(int argc, char **argv)
 			if(DECISION_ACTION_A == 0)
 			{
 				std::cout<<" | Nada a fazer"<<std::endl;
-				Gait_in_place(stop_gait);
+				while(Walking::GetInstance()->GetCurrentPhase()!=0 && Walking::GetInstance()->IsRunning()!=0)  usleep(8*1000);
+				Walking::GetInstance()->Stop();
+				Walking::GetInstance()->m_Joint.SetEnableBody(false);
+				Action::GetInstance()->m_Joint.SetEnableBody(true);
+				MotionManager::GetInstance()->SetEnable(true);
+				usleep(500000); //Aguarda meio segundo
+				Action::GetInstance()->Start(1); // Realiza a ação do numero contido no move_number
+				while(Action::GetInstance()->IsRunning()) usleep(8*1000);
+				stop_gait = 1;
 			}
 
 			if(DECISION_ACTION_A == 1)
@@ -462,6 +470,11 @@ int main(int argc, char **argv)
 				while(Action::GetInstance()->IsRunning()) usleep(8*1000);
 				Action::GetInstance()->Start(20);    // colocar o action-script para cair e defender!!!
 				usleep(500000);
+			}
+			if(DECISION_ACTION_A == 11)
+			{
+				std::cout<<" | Stop com gait"<<std::endl;
+				Gait_in_place(stop_gait);
 			}
 
 	}

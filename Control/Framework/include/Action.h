@@ -61,7 +61,7 @@ namespace Robot
 
 		typedef struct // Step Structure (total 64unsigned char)
 		{
-			unsigned short position[31];    // Joint position   0~61
+			short int position[31];    // Joint position   0~61
 			unsigned char pause;            // Pause time       62
 			unsigned char time;             // Time             63
 		} STEP;

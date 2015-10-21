@@ -2,10 +2,10 @@
  *
  *  \file
  *  \brief      Comms class definition. Does not manage the serial connection
- *              itself, but takes care of reading and writing to UM6.
+ *              itself, but takes care of reading and writing to UM7.
  *  \author     Mike Purvis <mpurvis@clearpathrobotics.com>
  *  \copyright  Copyright (c) 2013, Clearpath Robotics, Inc.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -16,7 +16,7 @@
  *     * Neither the name of Clearpath Robotics, Inc. nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -27,24 +27,23 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * Please send comments, questions, or patches to code@clearpathrobotics.com
+ * 
+ * Please send comments, questions, or patches to code@clearpathrobotics.com 
  *
  */
 
-#ifndef UM6_COMMS_H
-#define UM6_COMMS_H
+#ifndef INCLUDE_UM7_COMMS_H_
+#define INCLUDE_UM7_COMMS_H_
 
 #include <stdint.h>
 #include <string>
 
 namespace serial
 {
-class Serial;
+  class Serial;
 }
 
-namespace um6
-{
+namespace um7 {
 
 class SerialTimeout : public std::exception {};
 
@@ -53,39 +52,37 @@ class BadChecksum : public std::exception {};
 class Registers;
 class Accessor_;
 
-class Comms
-{
-public:
-  explicit Comms(serial::Serial* s) : serial_(s), first_spin_(true)
-  {
-  }
+class Comms {
+  public:
+    explicit Comms(serial::Serial* s) : serial_(s), first_spin_(true) {
+    }
 
-  /**
-   * Returns -1 if the serial port timed out before receiving a packet
-   * successfully, or if there was a bad checksum or any other error.
-   * Otherwise, returns the 8-bit register number of the successfully
-   * returned packet.
-   */
-  int16_t receive(Registers* r);
+    /**
+     * Returns -1 if the serial port timed out before receiving a packet
+     * successfully, or if there was a bad checksum or any other error.
+     * Otherwise, returns the 8-bit register number of the successfully
+     * returned packet.
+     */
+    int16_t receive(Registers* r);
 
-  void send(const Accessor_& a) const;
+    void send(const Accessor_& a) const;
 
-  bool sendWaitAck(const Accessor_& a);
+    bool sendWaitAck(const Accessor_& a);
 
-  static const uint8_t PACKET_HAS_DATA;
-  static const uint8_t PACKET_IS_BATCH;
-  static const uint8_t PACKET_BATCH_LENGTH_MASK;
-  static const uint8_t PACKET_BATCH_LENGTH_OFFSET;
+    static const uint8_t PACKET_HAS_DATA;
+    static const uint8_t PACKET_IS_BATCH;
+    static const uint8_t PACKET_BATCH_LENGTH_MASK;
+    static const uint8_t PACKET_BATCH_LENGTH_OFFSET;
 
-  static std::string checksum(const std::string& s);
+    static std::string checksum(const std::string& s);
 
-  static std::string message(uint8_t address, std::string data);
+    static std::string message(uint8_t address, std::string data);
 
-private:
-  bool first_spin_;
-  serial::Serial* serial_;
+  private:
+    bool first_spin_;
+    serial::Serial* serial_;
 };
-}  // namespace um6
+}  // namespace um7
 
-#endif  // UM6_COMMS_H
+#endif  // INCLUDE_UM7_COMMS_H_
 

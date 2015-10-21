@@ -42,29 +42,6 @@ OBJS =  ../../Framework/src/CM730.o     	\
         LinuxMotionTimer.o    \
         LinuxNetwork.o
 
-#não pode limpar o minIni.o porque o g++ não está mais compilando ele (dá erro).
-OBJSTOClEAN =  ../../Framework/src/CM730.o     	\
-        ../../Framework/src/math/Matrix.o   \
-        ../../Framework/src/math/Plane.o    \
-        ../../Framework/src/math/Point.o    \
-        ../../Framework/src/math/Vector.o   \
-		../../Framework/src/math/QuadraticStateTransform.o   \
-		../../Framework/src/math/MotionState.o   \
-        ../../Framework/src/motion/JointData.o  	\
-        ../../Framework/src/motion/Kinematics.o 	\
-        ../../Framework/src/motion/MotionManager.o  \
-        ../../Framework/src/motion/MotionStatus.o   \
-		../../Framework/src/motion/AngleEstimator.o \
-        ../../Framework/src/motion/modules/Action.o \
-        ../../Framework/src/motion/modules/Head.o   \
-        ../../Framework/src/motion/modules/Walking.o\
-        ../../Framework/src/controller/PS3Controller.o	\
-        ../../Framework/src/commander/SerialInputCommander.o	\
-        LinuxActionScript.o   \
-        LinuxCM730.o    \
-        LinuxMotionTimer.o    \
-        LinuxNetwork.o
-
 $(TARGET): $(OBJS)
 	mkdir -p ../lib/
 	$(AR) $(ARFLAGS) ../lib/$(TARGET) $(OBJS) 
@@ -73,5 +50,5 @@ $(TARGET): $(OBJS)
 all: $(TARGET)
 
 clean:
-	rm -f $(OBJSTOClEAN) ../lib/$(TARGET)
+	rm -f $(OBJS) ../lib/$(TARGET)
 
