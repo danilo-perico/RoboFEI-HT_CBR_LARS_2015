@@ -119,7 +119,7 @@ int main(int argc, char **argv)
 	po::options_description desc("options");
 	desc.add_options()
     ("help", "produce help message")
-    ("--k", "Inicia com o controle do robô pelo teclado")
+    ("k", "Inicia com o controle do robô pelo teclado")
 	;
   
 	po::variables_map variables;
@@ -338,7 +338,6 @@ int main(int argc, char **argv)
 
 		    }
 		}
-
 	}
 	//==========================================================================================
 
@@ -351,17 +350,16 @@ int main(int argc, char **argv)
 			std::cout<< "Action " << DECISION_ACTION_A; // Mostra o valor da ação
 
 			if (IMU_STATE){ // Ve se esta caido
-				if(IMU_STATE==1){  //Levanta se caido de frente
+				if(IMU_ACCEL_X>0){  //Levanta se caido de frente
 					std::cout<<" | Levantar de frente";
-					move_action(11, 0, stop_gait);
+					move_action(10, 0, stop_gait);
 				}
 				else{  //Levanta se caido de costa
 					std::cout<<" | Levantar de costa";
-					move_action(10, 0, stop_gait);
+					move_action(11, 0, stop_gait);
 				}
 				stop_gait = 1;
-				Gait_in_place(stop_gait);
-				sleep(5);
+				sleep(1);
 			}
 
 
