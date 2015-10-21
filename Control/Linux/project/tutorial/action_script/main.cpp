@@ -5,7 +5,7 @@
 * @author Isaac Jesus da Silva - ROBOFEI-HT - FEI 😛
 * @version V1.1.3
 * @created 20/01/2015
-* @Modified 28/09/2015
+* @Modified 21/10/2015
 * @e-mail isaac25silva@yahoo.com.br
 * @brief control 😛
 ****************************************************************************
@@ -119,7 +119,7 @@ int main(int argc, char **argv)
 	po::options_description desc("options");
 	desc.add_options()
     ("help", "produce help message")
-    ("keyboard", "Inicia com o controle do robô pelo teclado")
+    ("k", "Inicia com o controle do robô pelo teclado")
 	;
   
 	po::variables_map variables;
@@ -178,7 +178,7 @@ int main(int argc, char **argv)
 	int erro;
 
 	//***********************************************************************************************
-	if (variables.count("keyboard")) //verifica se foi chamado o argumento de controle pelo teclado
+	if (variables.count("k")) //verifica se foi chamado o argumento de controle pelo teclado
 	{
 	//-------------iniciando o modulo de andar pelo teclado------------------------------------------
 
@@ -338,7 +338,6 @@ int main(int argc, char **argv)
 
 		    }
 		}
-
 	}
 	//==========================================================================================
 
@@ -351,17 +350,16 @@ int main(int argc, char **argv)
 			std::cout<< "Action " << DECISION_ACTION_A; // Mostra o valor da ação
 
 			if (IMU_STATE){ // Ve se esta caido
-				if(IMU_STATE==1){  //Levanta se caido de frente
+				if(IMU_ACCEL_X>0){  //Levanta se caido de frente
 					std::cout<<" | Levantar de frente";
-					move_action(11, 0, stop_gait);
+					move_action(10, 0, stop_gait);
 				}
 				else{  //Levanta se caido de costa
 					std::cout<<" | Levantar de costa";
-					move_action(10, 0, stop_gait);
+					move_action(11, 0, stop_gait);
 				}
 				stop_gait = 1;
-				Gait_in_place(stop_gait);
-				sleep(5);
+				sleep(1);
 			}
 
 
@@ -450,7 +448,7 @@ int main(int argc, char **argv)
 			if(DECISION_ACTION_A == 8)
 			{
 				std::cout<<" | Andar lento para frente"<<std::endl;
-				move_gait(10.0, 0.0, 0.0, stop_gait);
+				move_gait(float(DECISION_ACTION_B), 0.0, 0.0, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 9)
