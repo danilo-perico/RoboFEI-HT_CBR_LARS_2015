@@ -71,13 +71,16 @@ class TreatingRawData(object):
     def get_lost_ball_status(self):
         return self.bkb.read_int('VISION_LOST_BALL')
 
-    def set_gait(self):
-        print 'gait'
+    def set_stand_still(self):
+        print 'stand still'
         return self.bkb.write_int('DECISION_ACTION_A', 0)
 
     def set_walk_forward(self):
         print 'walk forward'
         return self.bkb.write_int('DECISION_ACTION_A', 1)
+        
+    def set_walk_speed(self,vel):
+        return self.bkb.write_int('DECISION_ACTION_B', vel)
         
     def set_turn_left(self):
         print 'turn left'
@@ -105,6 +108,7 @@ class TreatingRawData(object):
         
     def set_walk_forward_slow(self):
         print 'walk forward slow'
+        self.set_walk_speed(5)
         return self.bkb.write_int('DECISION_ACTION_A', 8)       
         
     def set_revolve_around_ball(self):
@@ -115,8 +119,8 @@ class TreatingRawData(object):
         print 'walk backward'
         return self.bkb.write_int('DECISION_ACTION_A', 10)       
         
-    def set_stand_still(self):
-        print 'stand still'
+    def set_gait(self):
+        print 'gait'
         return self.bkb.write_int('DECISION_ACTION_A', 11)       
         
     def set_vision_ball(self):
