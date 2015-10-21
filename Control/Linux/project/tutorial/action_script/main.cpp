@@ -5,7 +5,7 @@
 * @author Isaac Jesus da Silva - ROBOFEI-HT - FEI 😛
 * @version V1.1.3
 * @created 20/01/2015
-* @Modified 28/09/2015
+* @Modified 21/10/2015
 * @e-mail isaac25silva@yahoo.com.br
 * @brief control 😛
 ****************************************************************************
@@ -119,7 +119,7 @@ int main(int argc, char **argv)
 	po::options_description desc("options");
 	desc.add_options()
     ("help", "produce help message")
-    ("keyboard", "Inicia com o controle do robô pelo teclado")
+    ("--k", "Inicia com o controle do robô pelo teclado")
 	;
   
 	po::variables_map variables;
@@ -178,7 +178,7 @@ int main(int argc, char **argv)
 	int erro;
 
 	//***********************************************************************************************
-	if (variables.count("keyboard")) //verifica se foi chamado o argumento de controle pelo teclado
+	if (variables.count("k")) //verifica se foi chamado o argumento de controle pelo teclado
 	{
 	//-------------iniciando o modulo de andar pelo teclado------------------------------------------
 
@@ -450,7 +450,7 @@ int main(int argc, char **argv)
 			if(DECISION_ACTION_A == 8)
 			{
 				std::cout<<" | Andar lento para frente"<<std::endl;
-				move_gait(10.0, 0.0, 0.0, stop_gait);
+				move_gait(float(DECISION_ACTION_B), 0.0, 0.0, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 9)
