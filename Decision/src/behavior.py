@@ -57,7 +57,7 @@ class TreatingRawData(object):
         return self.bkb.read_int('LOCALIZATION_THETA')
         
     def get_dist_ball(self):
-        return self.bkb.read_int('VISION_DIST_BALL')           
+        return self.bkb.read_int('VISION_DIST_BALL')
         
     def get_head_pan_initial(self):
         return self.config.getint('Offset', 'ID_19')
@@ -170,6 +170,8 @@ class Ordinary(TreatingRawData):
                 self.set_stand_still()
                 if self.get_lost_ball_status() == 1: #1 - lost ball
                    self.set_turn_right()
+                   time.sleep(3)
+                   self.set_stand_still()
             else:
                 if self.get_lost_ball_status() == 1:
                     self.set_stand_still() #stop robot because the ball
@@ -179,7 +181,7 @@ class Ordinary(TreatingRawData):
                     if self.delta_position_pan() <= 70 and self.delta_position_pan() >= -70:
                         if self.delta_position_tilt() >= -84:
                             self.set_walk_forward()
-                        elif self.delta_position_tilt() < -84 and self.delta_position_tilt() >= -225:
+                        elif self.delta_position_tilt() < -84 and self.delta_position_tilt() >= -210:
                             self.set_walk_forward_slow()
                         else:
                             if self.delta_position_pan() >= 0:
@@ -207,11 +209,11 @@ class Ordinary(TreatingRawData):
                                 else:
                                     self.set_kick_left()
 
-				    #pan in the right:
+                    #pan in the right:
                     if self.delta_position_pan() > 70:
-                        if self.delta_position_tilt() >= -225:
+                        if self.delta_position_tilt() >= -210:
                             self.set_turn_right()
-                        elif self.delta_position_tilt() < -225 and self.delta_position_pan() > 115:
+                        elif self.delta_position_tilt() < -210 and self.delta_position_pan() > 115:
                             self.set_sidle_right()
                         else:
                             if self.get_orientation_usage() == 'yes':
@@ -228,9 +230,9 @@ class Ordinary(TreatingRawData):
 
                     #pan in the left:
                     if self.delta_position_pan() < -70:
-                        if self.delta_position_tilt() >= -225:
+                        if self.delta_position_tilt() >= -210:
                             self.set_turn_left()
-                        elif self.delta_position_tilt() < -225 and self.delta_position_pan() < -95:
+                        elif self.delta_position_tilt() < -210 and self.delta_position_pan() < -95:
                             self.set_sidle_left()
                         else:
                             if self.get_orientation_usage() == 'yes':
@@ -247,7 +249,7 @@ class Ordinary(TreatingRawData):
         else:
             print 'Invalid argument receveid from referee!'
 
-#############################################################################        
+#############################################################################
         
 class Attacker(Ordinary):
     " " " Attacker class " " "
