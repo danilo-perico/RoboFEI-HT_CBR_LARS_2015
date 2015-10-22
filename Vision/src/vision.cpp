@@ -13,12 +13,13 @@
 
 #include"vision.h"
 
-#define INI_FILE_PATH       "/home/fei/RoboFEI-HT/Control/Data/config.ini"
+#define INI_FILE_PATH       "Control/Data/config.ini"
 
 
 int main(int argc, char **argv)
 {
 
+system("pwd");
 	minIni* ini;
 	ini = new minIni(INI_FILE_PATH);
 
@@ -1147,11 +1148,11 @@ double detect(IplImage *img, double &posx, double &posy)
             img,
             cascade,
             storage,
-            1.1, //-------------------SCALE FACTOR 1,5
-            7,//------------------MIN NEIGHBOURS 2 7
+            1.25, //-------------------SCALE FACTOR 1,5
+            20,//------------------MIN NEIGHBOURS 2 7
             1,//---------------------- 1
                       // CV_HAAR_DO_CANNY_PRUNING,
-            cvSize( 10,10), // ------MINSIZE
+            cvSize( 40,40), // ------MINSIZE
             cvSize(1000,1000) );//---------MAXSIZE
 
     for( i = 0 ; i < ( object ? object->total : 0 ) ; i++ )
