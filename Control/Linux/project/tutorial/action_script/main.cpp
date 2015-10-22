@@ -98,6 +98,8 @@ int main(int argc, char **argv)
     system(string1);//prioridade
     float turn_angle = 20;
     float walk_foward= 15;
+    int value;
+	int erro;
 
     printf( "\n===== ROBOFEI-HT Control Process | based on Jimmy Control=====\n\n");
 
@@ -127,6 +129,7 @@ int main(int argc, char **argv)
 	}
 	else if(walk_foward>20)
 	    walk_foward=20;
+	    
 
 	//**************************************************************************
 	//-------------para entrada de argumentos-----------------------------------
@@ -136,6 +139,7 @@ int main(int argc, char **argv)
 	desc.add_options()
     ("help", "produce help message")
     ("k", "Inicia com o controle do robô pelo teclado")
+    ("v", "Verifica a tensao nos servos do corpo")
 	;
   
 	po::variables_map variables;
@@ -170,6 +174,13 @@ int main(int argc, char **argv)
 		linuxMotionTimer.Start();
     /////////////////////////////////////////////////////////////////////
   
+    if (variables.count("v")) //verifica se foi chamado o argumento de controle pelo teclado
+	{
+	    if(cm730.ReadByte(12, 42, &value, 0) != CM730::SUCCESS)
+            std::cout<<"Erro na leitura da tensao"<<std::endl;
+	    std::cout<<"Tensao = "<<float(value)/10<<"V"<<std::endl;
+	    return 0;
+	}
 
 //	printf("Pronto 3\n");
 //    getchar();
@@ -191,7 +202,7 @@ int main(int argc, char **argv)
     while(Action::GetInstance()->IsRunning()) usleep(8*1000); 
 
 	Action::GetInstance()->Stop();
-	int erro;
+
 
 	//***********************************************************************************************
 	if (variables.count("k")) //verifica se foi chamado o argumento de controle pelo teclado
