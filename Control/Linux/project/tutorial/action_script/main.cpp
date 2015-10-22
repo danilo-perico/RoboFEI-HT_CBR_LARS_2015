@@ -96,6 +96,10 @@ int main(int argc, char **argv)
 	char *Servoport;
     sprintf(string1,"echo fei 123456| sudo -S renice -20 -p %d", getpid()); // prioridade maxima do codigo
     system(string1);//prioridade
+    float turn_angle = 20;
+    float walk_foward= 15;
+    int value;
+	int erro;
 
     printf( "\n===== ROBOFEI-HT Control Process | based on Jimmy Control=====\n\n");
 
@@ -112,6 +116,21 @@ int main(int argc, char **argv)
 		//else
 			ini = new minIni(INI_FILE_PATH);
 
+	if((turn_angle=ini->getd("Walking Config","turn_angle",-1024))==-1024){
+		cout<<"Erro na leitura do conf.ini";
+		turn_angle=20;
+	}
+	else if(turn_angle>30)
+	    turn_angle=30;
+	
+	if((turn_angle=ini->getd("Walking Config","walk_foward",-1024))==-1024){
+		cout<<"Erro na leitura do conf.ini";
+		walk_foward=15;
+	}
+	else if(walk_foward>20)
+	    walk_foward=20;
+	    
+
 	//**************************************************************************
 	//-------------para entrada de argumentos-----------------------------------
 	namespace po=boost::program_options;
@@ -120,6 +139,7 @@ int main(int argc, char **argv)
 	desc.add_options()
     ("help", "produce help message")
     ("k", "Inicia com o controle do robô pelo teclado")
+    ("v", "Verifica a tensao nos servos do corpo")
 	;
   
 	po::variables_map variables;
@@ -154,6 +174,13 @@ int main(int argc, char **argv)
 		linuxMotionTimer.Start();
     /////////////////////////////////////////////////////////////////////
   
+    if (variables.count("v")) //verifica se foi chamado o argumento de controle pelo teclado
+	{
+	    if(cm730.ReadByte(12, 42, &value, 0) != CM730::SUCCESS)
+            std::cout<<"Erro na leitura da tensao"<<std::endl;
+	    std::cout<<"Tensao = "<<float(value)/10<<"V"<<std::endl;
+	    return 0;
+	}
 
 //	printf("Pronto 3\n");
 //    getchar();
@@ -175,7 +202,7 @@ int main(int argc, char **argv)
     while(Action::GetInstance()->IsRunning()) usleep(8*1000); 
 
 	Action::GetInstance()->Stop();
-	int erro;
+
 
 	//***********************************************************************************************
 	if (variables.count("k")) //verifica se foi chamado o argumento de controle pelo teclado
@@ -250,12 +277,12 @@ int main(int argc, char **argv)
 
 		        case 102: //f
 				    cout << "Andar para frente" << endl;
-					move_gait(20.0, 0.0, 0.0, stop_gait);
+					move_gait(walk_foward, 0.0, 0.0, stop_gait);
 		        break;
 
 		        case 100: //d
 				    cout << "Vira para direita" << endl;
-					move_gait(0.0, 0.0, -20.0, stop_gait);
+					move_gait(0.0, 0.0, -turn_angle, stop_gait);
 		        break;
 
 		        case 105: //i
@@ -265,7 +292,7 @@ int main(int argc, char **argv)
 
 		        case 101: //e
 				    cout << "Vira para esquerda" << endl;
-					move_gait(0.0, 0.0, 20.0, stop_gait);
+					move_gait(0.0, 0.0, turn_angle, stop_gait);
 		        break;
 
 		        case 106: //j
@@ -380,19 +407,19 @@ int main(int argc, char **argv)
 			if(DECISION_ACTION_A == 1)
 			{
 				std::cout<<" | Andar para frente"<<std::endl;
-				move_gait(20.0, 0.0, 20.0, stop_gait);
+				move_gait(walk_foward, 0.0, 0.0, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 2)
 			{
 				std::cout<<" | Virar a esquerda"<<std::endl;
-				move_gait(0.0, 0.0, 20.0, stop_gait);
+				move_gait(0.0, 0.0, turn_angle, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 3)
 			{
 				std::cout<<" | Virar a direita"<<std::endl;
-				move_gait(0.0, 0.0, -20.0, stop_gait);
+				move_gait(0.0, 0.0, -turn_angle, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 4)
