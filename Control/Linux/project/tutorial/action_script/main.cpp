@@ -198,8 +198,8 @@ int main(int argc, char **argv)
 				    cout << "Levantar quando o peito está para cima" << endl;
 					move_action(10, 0, stop_gait);
 		        break;
-
-		        case 99: //c
+		        
+		        case 112: //p
 				    cout << "Chutar direito bola branca" << endl;
 					move_action(1, 0, stop_gait);
 					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
@@ -219,7 +219,7 @@ int main(int argc, char **argv)
 					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
 		        break;
 
-		        case 103: //g
+		        case 108: //l
 				    cout << "Chutar esquerdo bola branca" << endl;
 					move_action(1, 0, stop_gait);
 					Action::GetInstance()->Start(21);
@@ -238,12 +238,12 @@ int main(int argc, char **argv)
 					while(Action::GetInstance()->IsRunning()) usleep(8*1000);
 		        break;
 
-		        case 112: //p
+		        case 99: //c
 				    cout << "Chutar direito bola laranja" << endl;
 					move_action(12, 0, stop_gait);
 		        break;
 
-		        case 108: //l
+		        case 103: //g
 				    cout << "Chutar esquerdo bola laranja" << endl;
 					move_action(13, 0, stop_gait);
 		        break;
@@ -398,39 +398,13 @@ int main(int argc, char **argv)
 			if(DECISION_ACTION_A == 4)
 			{
 				std::cout<<"| Chutar com pe direito"<<std::endl;
-				move_action(1, 0, stop_gait);
-				Action::GetInstance()->Start(20);
-				while(Action::GetInstance()->IsRunning()) usleep(8*1000);
-				Action::GetInstance()->Stop();
-		   		Action::GetInstance()->m_Joint.SetEnableBody(false);
-				MotionManager::GetInstance()->SetEnable(false);
-				cm730.WriteWord(13, 32, 1023, &erro);
-				cm730.WriteWord(13, 30, MotionManager::GetInstance()->m_Offset[13]+520, &erro);
-				cm730.WriteWord(15, 32, 1023, &erro);
-				cm730.WriteWord(15, 30, MotionManager::GetInstance()->m_Offset[15]+400, &erro);
-				usleep(1000000);
-				Action::GetInstance()->m_Joint.SetEnableBody(true);
-				MotionManager::GetInstance()->SetEnable(true);
-				Action::GetInstance()->Start(78);  
+				move_action(12, 0, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 5)
 			{
 				std::cout<<" | Chutar com pe esquerdo"<<std::endl;
-				move_action(1, 0, stop_gait);
-				Action::GetInstance()->Start(21);
-				while(Action::GetInstance()->IsRunning()) usleep(8*1000);
-				Action::GetInstance()->Stop();
-		   		Action::GetInstance()->m_Joint.SetEnableBody(false);
-				MotionManager::GetInstance()->SetEnable(false);
-				cm730.WriteWord(14, 32, 1023, &erro);
-				cm730.WriteWord(14, 30, MotionManager::GetInstance()->m_Offset[14]+520, &erro);
-				cm730.WriteWord(16, 32, 1023, &erro);
-				cm730.WriteWord(16, 30, MotionManager::GetInstance()->m_Offset[16]+640, &erro);
-				usleep(1000000);
-				Action::GetInstance()->m_Joint.SetEnableBody(true);
-				MotionManager::GetInstance()->SetEnable(true);
-				Action::GetInstance()->Start(79);
+				move_action(13, 0, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 6)
