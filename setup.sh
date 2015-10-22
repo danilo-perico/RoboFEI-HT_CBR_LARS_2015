@@ -59,9 +59,7 @@ make install
 
 sudo echo  -e "Criando as regras para reconhecer o dispositivo${red} IMU${NC}"
 cat <<EOF > 41-ftdi-imu.rules
-SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403",  ATTRS{idProduct}=="6001", ATTRS{serial}=="A501VM7A", MODE="0666", SYMLINK+="robot/imu"
-SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403",  ATTRS{idProduct}=="6001", ATTRS{serial}=="A501VROG", MODE="0666", SYMLINK+="robot/imu"
-SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403",  ATTRS{idProduct}=="6001", ATTRS{serial}=="A501VRKI", MODE="0666", SYMLINK+="robot/imu"
+KERNEL=="ttyUSB?", SUBSYSTEMS=="usb", ATTRS{idVendor}=="067b",  ATTRS{idProduct}=="2303", MODE="0777", SYMLINK+="robot/imu"
 EOF
 chmod +x 41-ftdi-imu.rules
 sudo echo  -e "Copiando arquivo${blue} 41-ftdi-imu.rules${NC} para ${green}/etc/udev/rules.d${NC}"
@@ -69,7 +67,7 @@ sudo cp  41-ftdi-imu.rules  /etc/udev/rules.d
 
 sudo echo  -e "Criando as regras para reconhecer o dispositivo${red} Servo${NC}"
 cat <<EOF > 41-ftdi-servo.rules
-KERNEL=="ttyUSB?", SUBSYSTEM=="tty", ATTRS{idVendor}=="0403",  ATTRS{idProduct}=="6001", ATTRS{serial}!="A501VRKI", ATTRS{serial}!="A501VROG", ATTRS{serial}!="A501VM7A", ATTRS{product}=="FT232R USB UART", MODE="0666", SYMLINK+="robot/servo%n"
+KERNEL=="ttyUSB?", SUBSYSTEM=="tty", ATTRS{idVendor}=="0403",  ATTRS{idProduct}=="6001", ATTRS{serial}!="A501VRKI", ATTRS{serial}!="A501VROG", ATTRS{serial}!="A501VM7A", ATTRS{product}=="FT232R USB UART", MODE="0777", SYMLINK+="robot/servo%n"
 EOF
 chmod +x 41-ftdi-servo.rules
 sudo echo  -e "Copiando arquivo${blue} 41-ftdi-servo.rules${NC} para ${green}/etc/udev/rules.d${NC}"
