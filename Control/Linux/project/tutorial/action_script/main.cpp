@@ -314,7 +314,7 @@ int main(int argc, char **argv)
 
 		        case 111: //o
 				    cout << "Rotacionar a esquerda em volta da bola" << endl;
-					move_gait(0.0, 23.0, -10.0, stop_gait);
+					move_gait(0.0, turnball.andar_lateral, turnball.turn_angle, stop_gait);
 		        break;
 
 		        case 107: //k
@@ -457,7 +457,7 @@ int main(int argc, char **argv)
 			if(DECISION_ACTION_A == 9)
 			{
 				std::cout<<" | Girar em torno da bola"<<std::endl;
-				move_gait(0.0, 23.0, -10.0, stop_gait);
+				move_gait(0.0, turnball.andar_lateral, turnball.turn_angle, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 10)
