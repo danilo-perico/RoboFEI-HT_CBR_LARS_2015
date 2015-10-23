@@ -318,7 +318,7 @@ int main(int argc, char **argv)
 		        case 111: //o
 				    cout << "Rotacionar a esquerda em volta da bola" << endl;
 				    turnball.updateTurnValue(Walking::GetInstance()); //atualiza para os parametros do turn
-					move_gait(0.0, turnball.andar_lateral, turnball.turn_angle, stop_gait);
+					move_gait(turnball.andar_X, turnball.andar_lateral, turnball.turn_angle, stop_gait);
 		        break;
 
 		        case 107: //k

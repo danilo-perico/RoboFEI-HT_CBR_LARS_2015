@@ -55,16 +55,21 @@ class TurnBall
     	*/
     	TurnBall(minIni* ini);
     
+        double andar_X;
         double turn_angle;
         double andar_lateral;
         double z_offset;
+        double pitch_offset;
         double period_time;
+        double dsp_ratio;
         double foot_height;
         double swing_right_left;
         double swing_top_down;
         
         double c_z_offset;
+        double c_pitch_offset;
         double c_period_time;
+        double c_dsp_ratio;
         double c_foot_height;
         double c_swing_right_left;
         double c_swing_top_down;
