@@ -168,10 +168,9 @@ class Ordinary(TreatingRawData):
 
             if self.get_search_ball_status() == 1: #1 - searching ball
                 self.set_stand_still()
-                if self.get_lost_ball_status() == 1: #1 - lost ball
+                while self.get_lost_ball_status() == 1: #1 - lost ball
                    self.set_turn_right()
-                   time.sleep(2)
-                   self.set_stand_still()
+                self.set_stand_still()
             else:
                 if self.get_lost_ball_status() == 1:
                     self.set_stand_still() #stop robot because the ball
@@ -247,7 +246,7 @@ class Ordinary(TreatingRawData):
                             else:
                                 self.set_kick_right()
         else:
-            print 'Invalid argument receveid from referee!'
+            print 'Invalid argument received from referee!'
 
 #############################################################################
         
