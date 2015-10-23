@@ -17,6 +17,9 @@ Arquivo cabeçalho contendo metodos de movimentos de acoes e gerador de caminhad
 #define MOV_H
 
 #include "minIni.h"
+#include "Walking.h"
+
+using namespace Robot;
 
 // Criação da Classe
 class Move
@@ -60,8 +63,14 @@ class TurnBall
         double swing_right_left;
         double swing_top_down;
         
-        void updateTurnValue();
-        void updateConfig();
+        double c_z_offset;
+        double c_period_time;
+        double c_foot_height;
+        double c_swing_right_left;
+        double c_swing_top_down;
+        
+        void updateTurnValue(Walking* walk);
+        void updateConfig(Walking* walk);
         
         
 };

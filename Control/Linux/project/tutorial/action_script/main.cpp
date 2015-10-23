@@ -101,7 +101,7 @@ int main(int argc, char **argv)
     int value;
 	int erro;
 
-    printf( "\n===== ROBOFEI-HT Control Process | based on Jimmy Control=====\n\n");
+    printf( "\n===== ROBOFEI-HT Control Process | based on Jimmy Control =====\n\n");
 
     change_current_dir();
     //getchar();
@@ -279,6 +279,7 @@ int main(int argc, char **argv)
 
 		        case 102: //f
 				    cout << "Andar para frente" << endl;
+				    turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 					move_gait(walk_foward, 0.0, 0.0, stop_gait);
 		        break;
 
@@ -304,36 +305,43 @@ int main(int argc, char **argv)
 
 		        case 109: //m
 				    cout << "Andar de lado esquerda" << endl;
+				    turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 					move_gait(0.0, 10.0, 0.0, stop_gait);
 		        break;
 
 		        case 110: //n
 				    cout << "Andar de lado direita" << endl;
+				    turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 					move_gait(0.0, -10.0, 0.0, stop_gait);
 		        break;
 
 		        case 111: //o
 				    cout << "Rotacionar a esquerda em volta da bola" << endl;
+				    turnball.updateTurnValue(Walking::GetInstance()); //atualiza para os parametros do turn
 					move_gait(0.0, turnball.andar_lateral, turnball.turn_angle, stop_gait);
 		        break;
 
 		        case 107: //k
 				    cout << "Andar curto para frente" << endl;
+				    turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 					move_gait(10.0, 0.0, 0.0, stop_gait);
 		        break;
 
 		        case 114: //r
 				    cout << "Andar curto para traz" << endl;
+				    turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 					move_gait(-10.0, 0.0, 0.0, stop_gait);
 		        break;
 
 		        case 118: //v
 				    cout << "Andar rapido para traz" << endl;
+				    turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 					move_gait(-20.0, 0.0, 0.0, stop_gait);
 		        break;
 
 		        case 115: //s
 					cout << "Stop com gait" << endl;
+					turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 					Gait_in_place(stop_gait);
 		        break;
 

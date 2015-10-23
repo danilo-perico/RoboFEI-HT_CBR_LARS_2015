@@ -12,24 +12,91 @@ TurnBall::TurnBall(minIni* ini)
 		turn_angle=-10;
 	}	    
     else if(turn_angle>30 || turn_angle<-30) // limita o range
-	    turn_angle=-10;
+	    {turn_angle=-10; std::cout<<"Valor do section:Turn Ball turn_angle no conf.ini fora do range"<<std::endl;}
 	    
 	if((andar_lateral=ini->getd("Turn Ball","andar_lateral",-1024))==-1024){
 		std::cout<<"Erro na leitura do conf.ini section:Turn Ball andar_lateral"<<std::endl;
 		andar_lateral=15;
 	}	    
     else if(andar_lateral>30 || andar_lateral<-30) // limita o range
-	    andar_lateral=15;
+	    {andar_lateral=15; std::cout<<"Valor do section:Turn Ball andar_lateral no conf.ini fora do range"<<std::endl;}
+	    
+	if((z_offset=ini->getd("Turn Ball","z_offset",-1024))==-1024){
+		std::cout<<"Erro na leitura do conf.ini section:Turn Ball z_offset"<<std::endl;
+		z_offset=25;
+	}
+	
+	if((period_time=ini->getd("Turn Ball","period_time",-1024))==-1024){
+		std::cout<<"Erro na leitura do conf.ini section:Turn Ball period_time"<<std::endl;
+		period_time=600;
+	}	
+
+	if((foot_height=ini->getd("Turn Ball","foot_height",-1024))==-1024){
+		std::cout<<"Erro na leitura do conf.ini section:Turn Ball foot_height"<<std::endl;
+		foot_height=30;
+	}	
+
+	if((swing_right_left=ini->getd("Turn Ball","swing_right_left",-1024))==-1024){
+		std::cout<<"Erro na leitura do conf.ini section:Turn Ball swing_right_left"<<std::endl;
+		swing_right_left=15;
+	}
+
+	if((swing_top_down=ini->getd("Turn Ball","swing_top_down",-1024))==-1024){
+		std::cout<<"Erro na leitura do conf.ini section:Turn Ball swing_top_down"<<std::endl;
+		swing_top_down=8;
+	}
+	
+   	//Carregando valores do config.ini na section Walking Config
+	if((c_z_offset=ini->getd("Walking Config","z_offset",-1024))==-1024){
+		std::cout<<"Erro na leitura do conf.ini section:Walking Config z_offset"<<std::endl;
+		c_z_offset=25;
+	}
+	
+	if((c_period_time=ini->getd("Walking Config","period_time",-1024))==-1024){
+		std::cout<<"Erro na leitura do conf.ini section:Walking Config period_time"<<std::endl;
+		c_period_time=600;
+	}	
+
+	if((c_foot_height=ini->getd("Walking Config","foot_height",-1024))==-1024){
+		std::cout<<"Erro na leitura do conf.ini section:Walking Config foot_height"<<std::endl;
+		c_foot_height=30;
+	}	
+
+	if((c_swing_right_left=ini->getd("Walking Config","swing_right_left",-1024))==-1024){
+		std::cout<<"Erro na leitura do conf.ini section:Walking Config swing_right_left"<<std::endl;
+		c_swing_right_left=15;
+	}
+
+	if((c_swing_top_down=ini->getd("Walking Config","swing_top_down",-1024))==-1024){
+		std::cout<<"Erro na leitura do conf.ini section:Walking Config swing_top_down"<<std::endl;
+		c_swing_top_down=8;
+	}
 }
 
 
-void updateTurnValue()
+void TurnBall::updateTurnValue(Walking* walk)
 {
-
+    walk->PERIOD_TIME = period_time;
+    walk->Z_OFFSET = z_offset;
+    walk->Z_MOVE_AMPLITUDE = foot_height;
+    walk->Y_SWAP_AMPLITUDE = swing_right_left;
+    walk->Z_SWAP_AMPLITUDE = swing_top_down;
+    
+    walk->update_param_time();
+    walk->update_param_balance();
+    walk->update_param_move();
 }
 
 
-void updateConfig()
+void TurnBall::updateConfig(Walking* walk)
 {
-
+    walk->PERIOD_TIME = c_period_time;
+    walk->Z_OFFSET = c_z_offset;
+    walk->Z_MOVE_AMPLITUDE = c_foot_height;
+    walk->Y_SWAP_AMPLITUDE = c_swing_right_left;
+    walk->Z_SWAP_AMPLITUDE = c_swing_top_down;
+    
+    walk->update_param_time();
+    walk->update_param_balance();
+    walk->update_param_move();
 }
