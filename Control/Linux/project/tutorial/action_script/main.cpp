@@ -116,20 +116,22 @@ int main(int argc, char **argv)
 		//else
 			ini = new minIni(INI_FILE_PATH);
 
+    //Carregando valores do config.ini -----------------------------------------
 	if((turn_angle=ini->getd("Walking Config","turn_angle",-1024))==-1024){
 		cout<<"Erro na leitura do conf.ini";
 		turn_angle=20;
 	}
-	else if(turn_angle>30)
+	else if(turn_angle>30 || turn_angle<-30)
 	    turn_angle=30;
 	
-	if((turn_angle=ini->getd("Walking Config","walk_foward",-1024))==-1024){
+	if((walk_foward=ini->getd("Walking Config","walk_foward",-1024))==-1024){
 		cout<<"Erro na leitura do conf.ini";
 		walk_foward=15;
 	}
-	else if(walk_foward>20)
-	    walk_foward=20;
-	    
+	else if(walk_foward>25)
+	    walk_foward=25;
+	
+    TurnBall turnball(ini);
 
 	//**************************************************************************
 	//-------------para entrada de argumentos-----------------------------------
