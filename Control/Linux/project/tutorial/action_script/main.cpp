@@ -417,18 +417,21 @@ int main(int argc, char **argv)
 			if(DECISION_ACTION_A == 1)
 			{
 				std::cout<<" | Andar para frente"<<std::endl;
+				turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 				move_gait(walk_foward, 0.0, 0.0, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 2)
 			{
 				std::cout<<" | Virar a esquerda"<<std::endl;
+				turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 				move_gait(0.0, 0.0, turn_angle, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 3)
 			{
 				std::cout<<" | Virar a direita"<<std::endl;
+				turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 				move_gait(0.0, 0.0, -turn_angle, stop_gait);
 				usleep(500000);
 			}
@@ -447,25 +450,29 @@ int main(int argc, char **argv)
 			if(DECISION_ACTION_A == 6)
 			{
 				std::cout<<" | Andar de Lado esquerda"<<std::endl;
+				turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 				move_gait(0.0, 10.0, 0.0, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 7)
 			{
 				std::cout<<" | Andar de Lado direita"<<std::endl;
+				turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 				move_gait(0.0, -10.0, 0.0, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 8)
 			{
 				std::cout<<" | Andar lento para frente"<<std::endl;
+				turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 				move_gait(float(DECISION_ACTION_B), 0.0, 0.0, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 9)
 			{
 				std::cout<<" | Girar em torno da bola"<<std::endl;
-				move_gait(0.0, turnball.andar_lateral, turnball.turn_angle, stop_gait);
+				turnball.updateTurnValue(Walking::GetInstance()); //atualiza para os parametros do turn
+				move_gait(turnball.andar_X, turnball.andar_lateral, turnball.turn_angle, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 10)
@@ -483,6 +490,7 @@ int main(int argc, char **argv)
 			if(DECISION_ACTION_A == 11)
 			{
 				std::cout<<" | Stop com gait"<<std::endl;
+				turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 				Gait_in_place(stop_gait);
 			}
 			if(DECISION_ACTION_A == 12)
