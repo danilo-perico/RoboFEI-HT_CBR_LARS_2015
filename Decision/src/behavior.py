@@ -84,50 +84,64 @@ class TreatingRawData(object):
         
     def set_turn_left(self):
         print 'turn left'
-        return self.bkb.write_int('DECISION_ACTION_A', 2)        
+        return self.bkb.write_int('DECISION_ACTION_A', 2)
         
     def set_turn_right(self):
         print 'turn right'
-        return self.bkb.write_int('DECISION_ACTION_A', 3)       
+        return self.bkb.write_int('DECISION_ACTION_A', 3)
         
     def set_kick_right(self):
         print 'kick right'
-        return self.bkb.write_int('DECISION_ACTION_A', 4)       
+        return self.bkb.write_int('DECISION_ACTION_A', 4)
         
     def set_kick_left(self):
         print 'kick left'
-        return self.bkb.write_int('DECISION_ACTION_A', 5)       
+        return self.bkb.write_int('DECISION_ACTION_A', 5)
         
     def set_sidle_left(self):
         print 'sidle left'
-        return self.bkb.write_int('DECISION_ACTION_A', 6)       
+        return self.bkb.write_int('DECISION_ACTION_A', 6)
         
     def set_sidle_right(self):
         print 'sidle right'
-        return self.bkb.write_int('DECISION_ACTION_A', 7)       
+        return self.bkb.write_int('DECISION_ACTION_A', 7)
         
     def set_walk_forward_slow(self):
         print 'walk forward slow'
         self.set_walk_speed(5)
-        return self.bkb.write_int('DECISION_ACTION_A', 8)       
+        return self.bkb.write_int('DECISION_ACTION_A', 8)
         
     def set_revolve_around_ball(self):
         print 'revolve around ball'
-        return self.bkb.write_int('DECISION_ACTION_A', 9)       
+        return self.bkb.write_int('DECISION_ACTION_A', 9)
         
     def set_walk_backward(self):
         print 'walk backward'
-        return self.bkb.write_int('DECISION_ACTION_A', 10)       
+        return self.bkb.write_int('DECISION_ACTION_A', 10)
         
     def set_gait(self):
         print 'gait'
-        return self.bkb.write_int('DECISION_ACTION_A', 11)       
+        return self.bkb.write_int('DECISION_ACTION_A', 11)
+        
+    def set_pass_left(self):
+        print 'pass left'
+        return self.bkb.write_int('DECISION_ACTION_A', 12)
+        
+    def set_pass_right(self):
+        print 'pass right'
+        return self.bkb.write_int('DECISION_ACTION_A', 13)
+        
+    def set_jump_left(self):
+        return self.bkb.write_int('DECISION_ACTION_A', 14)
+
+    def set_jump_right(self):
+        return self.bkb.write_int('DECISION_ACTION_A', 15)
         
     def set_vision_ball(self):
-        return self.bkb.write_int('DECISION_ACTION_VISION',0)
+        return self.bkb.write_int('DECISION_ACTION_VISION', 0)
         
     def set_vision_orientation(self):
-        return self.bkb.write_int('DECISION_ACTION_VISION',2) 
+        return self.bkb.write_int('DECISION_ACTION_VISION', 2)
         
     def delta_position_pan(self):
         '''right > 0 / left < 0'''
@@ -191,7 +205,7 @@ class Ordinary(TreatingRawData):
                                         self.set_kick_right()
                                     else:
                                         self.set_revolve_around_ball()
-                                        time.sleep(2)
+                                        time.sleep(7)
                                         self.set_vision_ball()
                                 else:
                                     self.set_kick_right()
@@ -203,7 +217,7 @@ class Ordinary(TreatingRawData):
                                         self.set_kick_left()
                                     else:
                                         self.set_revolve_around_ball()
-                                        time.sleep(2)
+                                        time.sleep(7)
                                         self.set_vision_ball()
                                 else:
                                     self.set_kick_left()
@@ -222,7 +236,7 @@ class Ordinary(TreatingRawData):
                                     self.set_kick_right()
                                 else:
                                     self.set_revolve_around_ball()
-                                    time.sleep(2)
+                                    time.sleep(7)
                                     self.set_vision_ball()
                             else:
                                 self.set_kick_right()
@@ -241,7 +255,7 @@ class Ordinary(TreatingRawData):
                                     self.set_kick_right()
                                 else:
                                     self.set_revolve_around_ball()
-                                    time.sleep(2)
+                                    time.sleep(7)
                                     self.set_vision_ball()
                             else:
                                 self.set_kick_right()
@@ -277,10 +291,4 @@ class Golie(Ordinary):
         print
         print  'Golie behavior called' 
         print
-        
-    def set_jump_left(self):
-        return self.bkb.write_int('DECISION_ACTION_A', 13)  
-
-    def set_jump_right(self):
-        return self.bkb.write_int('DECISION_ACTION_A', 14)  
         
