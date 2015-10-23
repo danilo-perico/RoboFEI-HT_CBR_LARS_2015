@@ -289,7 +289,7 @@ int main(int argc, char **argv)
 		        break;
 
 		        case 105: //i
-				    cout << "Passe Direita" << endl;
+				    cout << "Passe Esquerda" << endl;
 					move_action(70, 0, stop_gait);
 		        break;
 
@@ -299,7 +299,7 @@ int main(int argc, char **argv)
 		        break;
 
 		        case 106: //j
-				    cout << "Passe Esquerda" << endl;
+				    cout << "Passe Direita" << endl;
 					move_action(71, 0, stop_gait);
 		        break;
 
@@ -485,7 +485,16 @@ int main(int argc, char **argv)
 				std::cout<<" | Stop com gait"<<std::endl;
 				Gait_in_place(stop_gait);
 			}
-
+			if(DECISION_ACTION_A == 12)
+			{			
+					cout << "Passe Esquerda" << endl;
+					move_action(70, 0, stop_gait);
+            }
+            if(DECISION_ACTION_A == 13)
+			{			
+					cout << "Passe Direito" << endl;
+					move_action(71, 0, stop_gait);
+            }
 	}
 	//--------------------------------------------------------------------------------------------------
 	//==================================================================
