@@ -87,19 +87,19 @@ sudo echo "Informe o numero do robô: "
 read NUM
 case $NUM in
   1) echo "Robô 1 selecionado..."
-     sudo cp ../../conf_robos/01/* .
+     cp ../../conf_robos/01/* .
      echo "Arquivos copiados!"   ;;
 
   2) sudo echo "Robô 2 selecionado..."
-     sudo cp ../../conf_robos/02/* .
+     cp ../../conf_robos/02/* .
      echo "Arquivos copiados!"     ;;
 
   3) sudo echo "Robô 3 selecionado..."
-     sudo cp ../../conf_robos/03/* .
+     cp ../../conf_robos/03/* .
      echo "Arquivos copiados!"     ;;
 
   4) sudo echo "Robô 4 selecionado..."
-     sudo cp ../../conf_robos/04/* .
+     cp ../../conf_robos/04/* .
      echo "Arquivos copiados!"     ;;
   
   *) sudo echo "Numero inválido!" ;;
