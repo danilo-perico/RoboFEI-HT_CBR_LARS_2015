@@ -17,8 +17,6 @@
 #import parser for arguments    
 import argparse
 
-import time
-
 from behavior import *
 
 print
@@ -53,12 +51,12 @@ else:
 #loop
 while True:
     
-    if robot.get_referee_usage() == 1:
+    if robot.get_referee_usage() == 'yes':
         robot.decision(robot.get_referee()) #will read the referee 
     else:
         robot.decision(2) #always on play 
    
-    time.sleep(2) 
+    time.sleep(0.5) 
     
     
     
