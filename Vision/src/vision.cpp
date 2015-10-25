@@ -259,7 +259,7 @@ CvSize tamanho = cvSize(cvGetCaptureProperty(captura, CV_CAP_PROP_FRAME_WIDTH),c
 			storage = cvCreateMemStorage(0);
 			//if(storage) cout<<"storage correto"<<endl;
 
-			assert( cascade && storage && captura );
+//			assert( cascade && storage && captura );
 			//=======================================================
 
     usleep(1000000);
