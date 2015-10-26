@@ -172,7 +172,7 @@ class Ordinary(TreatingRawData):
             self.set_stand_still()
             
         elif referee == 12: #set
-            print 'set' 
+            print 'set'
             self.set_stand_still()
             self.set_vision_ball()
             
@@ -201,11 +201,14 @@ class Ordinary(TreatingRawData):
                                 if self.get_orientation_usage() == 'yes':
                                     self.set_vision_orientation()
                                     time.sleep(2)
+                                    self.set_vision_ball()
+                                    self.set_vision_ball()
                                     if self.get_orientation() == 1:
                                         self.set_kick_right()
                                     else:
                                         self.set_revolve_around_ball()
                                         time.sleep(7)
+                                        self.set_stand_still()
                                         self.set_vision_ball()
                                 else:
                                     self.set_kick_right()
@@ -213,11 +216,13 @@ class Ordinary(TreatingRawData):
                                 if self.get_orientation_usage() == 'yes':
                                     self.set_vision_orientation()
                                     time.sleep(2)
+                                    self.set_vision_ball()
                                     if self.get_orientation() == 1:
                                         self.set_kick_left()
                                     else:
                                         self.set_revolve_around_ball()
                                         time.sleep(7)
+                                        self.set_stand_still()
                                         self.set_vision_ball()
                                 else:
                                     self.set_kick_left()
