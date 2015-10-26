@@ -1148,8 +1148,8 @@ double detect(IplImage *img, double &posx, double &posy)
             img,
             cascade,
             storage,
-            1.25, //-------------------SCALE FACTOR 1,5
-            20,//------------------MIN NEIGHBOURS 2 7
+            1.117, //-------------------SCALE FACTOR 1,5
+            4,//------------------MIN NEIGHBOURS 2 7
             1,//---------------------- 1
                       // CV_HAAR_DO_CANNY_PRUNING,
             cvSize( 40,40), // ------MINSIZE

@@ -141,7 +141,12 @@ class TreatingRawData(object):
         return self.bkb.write_int('DECISION_ACTION_VISION', 0)
         
     def set_vision_orientation(self):
-        return self.bkb.write_int('DECISION_ACTION_VISION', 2)
+        print 'Entrou' 
+        self.bkb.write_int('LOCALIZATION_THETA', -1)
+        self.bkb.write_int('DECISION_ACTION_VISION', 2)
+        while(self.get_orientation() == -1):
+            pass
+        return self.bkb.write_int('DECISION_ACTION_VISION', 0)
         
     def delta_position_pan(self):
         '''right > 0 / left < 0'''
@@ -159,7 +164,7 @@ class Ordinary(TreatingRawData):
     
     def __init__(self):
         print
-        print 'Ordinary behavior called' 
+        print 'Ordinary behavior called'
         print
                 
     def decision(self, referee):
@@ -200,9 +205,6 @@ class Ordinary(TreatingRawData):
                             if self.delta_position_pan() >= 0:
                                 if self.get_orientation_usage() == 'yes':
                                     self.set_vision_orientation()
-                                    time.sleep(2)
-                                    self.set_vision_ball()
-                                    self.set_vision_ball()
                                     if self.get_orientation() == 1:
                                         self.set_kick_right()
                                     else:
@@ -215,8 +217,6 @@ class Ordinary(TreatingRawData):
                             else:
                                 if self.get_orientation_usage() == 'yes':
                                     self.set_vision_orientation()
-                                    time.sleep(2)
-                                    self.set_vision_ball()
                                     if self.get_orientation() == 1:
                                         self.set_kick_left()
                                     else:
@@ -236,7 +236,6 @@ class Ordinary(TreatingRawData):
                         else:
                             if self.get_orientation_usage() == 'yes':
                                 self.set_vision_orientation()
-                                time.sleep(2)
                                 if self.get_orientation() == 1:
                                     self.set_kick_right()
                                 else:
@@ -255,7 +254,6 @@ class Ordinary(TreatingRawData):
                         else:
                             if self.get_orientation_usage() == 'yes':
                                 self.set_vision_orientation()
-                                time.sleep(2)
                                 if self.get_orientation() == 1:
                                     self.set_kick_right()
                                 else:
