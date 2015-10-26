@@ -101,12 +101,13 @@ namespace Robot
 
 		double wsin(double time, double period, double period_shift, double mag, double mag_shift);
 		bool computeIK(double *out, double x, double y, double z, double a, double b, double c);
-		void update_param_time();
-		void update_param_move();
-		void update_param_balance();
 		double splineBalance(double angle, double vel, double gain);
 
 	public:
+		void update_param_time();
+		void update_param_move();
+		void update_param_balance();	
+	
 		// Walking initial pose
 		double X_OFFSET;
 		double X_OFFSET_START;

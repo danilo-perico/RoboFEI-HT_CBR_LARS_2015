@@ -13,10 +13,11 @@ include_directories(
   ${RoboFEI-HT_SOURCE_DIR}/Blackboard/include
   ${RoboFEI-HT_SOURCE_DIR}/Control/Linux/include
   ${RoboFEI-HT_SOURCE_DIR}/Control/Framework/include
+  ${RoboFEI-HT_SOURCE_DIR}/Control/Linux/project/tutorial/action_script
 )
 
 include_directories(include)
-add_library(libcontrol SHARED ./Linux/project/tutorial/action_script/main.cpp ./Linux/project/tutorial/action_script/kbhit.cpp)
+add_library(libcontrol SHARED ./Linux/project/tutorial/action_script/main.cpp ./Linux/project/tutorial/action_script/kbhit.cpp ./Linux/project/tutorial/action_script/mov.cpp)
 install(TARGETS libcontrol DESTINATION ${RoboFEI-HT_BINARY_DIR}/lib)
 
 #link_directories(

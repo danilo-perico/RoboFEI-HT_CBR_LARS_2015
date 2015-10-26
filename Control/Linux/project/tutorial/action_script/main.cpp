@@ -101,7 +101,7 @@ int main(int argc, char **argv)
     int value;
 	int erro;
 
-    printf( "\n===== ROBOFEI-HT Control Process | based on Jimmy Control=====\n\n");
+    printf( "\n===== ROBOFEI-HT Control Process | based on Jimmy Control =====\n\n");
 
     change_current_dir();
     //getchar();
@@ -116,20 +116,22 @@ int main(int argc, char **argv)
 		//else
 			ini = new minIni(INI_FILE_PATH);
 
+    //Carregando valores do config.ini -----------------------------------------
 	if((turn_angle=ini->getd("Walking Config","turn_angle",-1024))==-1024){
 		cout<<"Erro na leitura do conf.ini";
 		turn_angle=20;
 	}
-	else if(turn_angle>30)
+	else if(turn_angle>30 || turn_angle<-30)
 	    turn_angle=30;
 	
-	if((turn_angle=ini->getd("Walking Config","walk_foward",-1024))==-1024){
+	if((walk_foward=ini->getd("Walking Config","walk_foward",-1024))==-1024){
 		cout<<"Erro na leitura do conf.ini";
 		walk_foward=15;
 	}
-	else if(walk_foward>20)
-	    walk_foward=20;
-	    
+	else if(walk_foward>25)
+	    walk_foward=25;
+	
+    TurnBall turnball(ini);
 
 	//**************************************************************************
 	//-------------para entrada de argumentos-----------------------------------
@@ -277,61 +279,71 @@ int main(int argc, char **argv)
 
 		        case 102: //f
 				    cout << "Andar para frente" << endl;
+				    turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 					move_gait(walk_foward, 0.0, 0.0, stop_gait);
 		        break;
 
 		        case 100: //d
 				    cout << "Vira para direita" << endl;
+				    turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 					move_gait(0.0, 0.0, -turn_angle, stop_gait);
 		        break;
 
 		        case 105: //i
-				    cout << "Passe Direita" << endl;
+				    cout << "Passe Esquerda" << endl;
 					move_action(70, 0, stop_gait);
 		        break;
 
 		        case 101: //e
 				    cout << "Vira para esquerda" << endl;
+				    turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 					move_gait(0.0, 0.0, turn_angle, stop_gait);
 		        break;
 
 		        case 106: //j
-				    cout << "Passe Esquerda" << endl;
+				    cout << "Passe Direita" << endl;
 					move_action(71, 0, stop_gait);
 		        break;
 
 		        case 109: //m
 				    cout << "Andar de lado esquerda" << endl;
+				    turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 					move_gait(0.0, 10.0, 0.0, stop_gait);
 		        break;
 
 		        case 110: //n
 				    cout << "Andar de lado direita" << endl;
+				    turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 					move_gait(0.0, -10.0, 0.0, stop_gait);
 		        break;
 
 		        case 111: //o
 				    cout << "Rotacionar a esquerda em volta da bola" << endl;
-					move_gait(0.0, 23.0, -10.0, stop_gait);
+				    turnball.updateTurnValue(Walking::GetInstance()); //atualiza para os parametros do turn
+					move_gait(turnball.andar_X, turnball.andar_lateral, turnball.turn_angle, stop_gait);
 		        break;
 
 		        case 107: //k
 				    cout << "Andar curto para frente" << endl;
+				    turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 					move_gait(10.0, 0.0, 0.0, stop_gait);
 		        break;
 
 		        case 114: //r
 				    cout << "Andar curto para traz" << endl;
+				    turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 					move_gait(-10.0, 0.0, 0.0, stop_gait);
 		        break;
 
 		        case 118: //v
 				    cout << "Andar rapido para traz" << endl;
+				    turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 					move_gait(-20.0, 0.0, 0.0, stop_gait);
 		        break;
 
 		        case 115: //s
 					cout << "Stop com gait" << endl;
+					turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 					Gait_in_place(stop_gait);
 		        break;
 
@@ -407,18 +419,21 @@ int main(int argc, char **argv)
 			if(DECISION_ACTION_A == 1)
 			{
 				std::cout<<" | Andar para frente"<<std::endl;
+				turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 				move_gait(walk_foward, 0.0, 0.0, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 2)
 			{
 				std::cout<<" | Virar a esquerda"<<std::endl;
+				turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 				move_gait(0.0, 0.0, turn_angle, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 3)
 			{
 				std::cout<<" | Virar a direita"<<std::endl;
+				turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 				move_gait(0.0, 0.0, -turn_angle, stop_gait);
 				usleep(500000);
 			}
@@ -437,27 +452,35 @@ int main(int argc, char **argv)
 			if(DECISION_ACTION_A == 6)
 			{
 				std::cout<<" | Andar de Lado esquerda"<<std::endl;
+				turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 				move_gait(0.0, 10.0, 0.0, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 7)
 			{
 				std::cout<<" | Andar de Lado direita"<<std::endl;
+				turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 				move_gait(0.0, -10.0, 0.0, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 8)
 			{
 				std::cout<<" | Andar lento para frente"<<std::endl;
-				move_gait(float(DECISION_ACTION_B), 0.0, 0.0, stop_gait);
+				turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
+				if(float(DECISION_ACTION_B)<walk_foward)
+				    move_gait(float(DECISION_ACTION_B), 0.0, 0.0, stop_gait);
+				else
+				    move_gait(walk_foward, 0.0, 0.0, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 9)
 			{
 				std::cout<<" | Girar em torno da bola"<<std::endl;
-				move_gait(0.0, 23.0, -10.0, stop_gait);
+				turnball.updateTurnValue(Walking::GetInstance()); //atualiza para os parametros do turn
+				move_gait(turnball.andar_X, turnball.andar_lateral, turnball.turn_angle, stop_gait);
 				usleep(500000);
 			}
+
 			if(DECISION_ACTION_A == 10)
 			{							// colocar o action-script para cair e defender!!!
 				std::cout<<" | Defender a bola"<<std::endl;  //---------------------------------------------------------TODO
@@ -473,9 +496,19 @@ int main(int argc, char **argv)
 			if(DECISION_ACTION_A == 11)
 			{
 				std::cout<<" | Stop com gait"<<std::endl;
+				turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 				Gait_in_place(stop_gait);
 			}
-
+			if(DECISION_ACTION_A == 12)
+			{			
+					cout << "Passe Esquerda" << endl;
+					move_action(70, 0, stop_gait);
+            }
+            if(DECISION_ACTION_A == 13)
+			{			
+					cout << "Passe Direito" << endl;
+					move_action(71, 0, stop_gait);
+            }
 	}
 	//--------------------------------------------------------------------------------------------------
 	//==================================================================
