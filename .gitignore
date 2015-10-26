@@ -9,3 +9,4 @@ obj/
 Control/Data/config.ini
 Control/Data/motion_1024.bin
 genfiles/Fields/*.dat
+genfiles/Actual/*.dat
