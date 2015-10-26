@@ -8,33 +8,34 @@ sudo echo "starting all processes"
 
 while true
 do
-    if [ ! "$(pidof imu)" ] 
-    then
-       gnome-terminal -x sh -c './start_imu.sh' &
-   fi
+#    if [ ! "$(pidof imu)" ] 
+#    then
+#       mate-terminal -x sh -c './start_imu.sh' &
+#   fi
+
    if [ ! "$(pidof vision)" ] 
    then
-          gnome-terminal -x sh -c './start_vision.sh' &
+        mate-terminal -x sh -c './start_vision.sh' &
    fi
     if [ ! "$(pidof -x start_decision.sh)" ]  
     then
-        gnome-terminal -x sh -c './start_decision.sh' &
+        mate-terminal -x sh -c './start_decision.sh' &
     fi
     if [ ! "$(pidof control)" ] 
     then
-       gnome-terminal -x sh -c 'echo 123456 | sudo -S ./start_control.sh' &
+       mate-terminal -x sh -c 'echo 123456 | sudo -S ./start_control.sh' &
     fi
     if [ ! "$(pidof communication)" ] 
     then
-       gnome-terminal -x sh -c './start_comm.sh' &
+       mate-terminal -x sh -c './start_comm.sh' &
     fi
     if [ ! "$(pidof commServer)" ] 
     then
-       gnome-terminal -x sh -c './start_commServer.sh' &
+       mate-terminal -x sh -c './start_commServer.sh' &
     fi
     if [ ! "$(pidof commClient)" ] 
     then
-       gnome-terminal -x sh -c './start_commClient.sh' &
+       mate-terminal -x sh -c './start_commClient.sh' &
     fi
     sleep 10
 done

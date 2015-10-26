@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 #coding: utf-8
 #  ----------------------------------------------------------------------------
 #  ****************************************************************************
@@ -17,8 +18,6 @@
 #import parser for arguments    
 import argparse
 
-import time
-
 from behavior import *
 
 print
@@ -26,7 +25,7 @@ print '################### Decision #########################'
 print 
 
 #create arguments for each behavior
-parser = argparse.ArgumentParser(description='Robot behavior', epilog= 'Se nenhuma ação for selecionada um comportamento híbrido será adotado! / If there is not a selected argument a hybrid behavior will be adopted!')
+parser = argparse.ArgumentParser(description='Robot behavior', epilog= 'Se nenhuma ação for selecionada um comportamento comum será adotado! / If there is not a selected argument an ordinary behavior will be adopted!')
 parser.add_argument('--golie', '-g', action="store_true", help = 'Seleciona comportamento de goleiro / selects golie behavior')
 parser.add_argument('--quarterback', '-q', action="store_true", help = 'Seleciona comportamento de zagueiro / selects quarterback behavior')
 parser.add_argument('--attacker', '-a', action="store_true", help = 'Seleciona comportamento de atacante / selects attacker behavior')
@@ -53,12 +52,12 @@ else:
 #loop
 while True:
     
-    if robot.get_referee_usage() == 1:
+    if robot.get_referee_usage() == 'yes':
         robot.decision(robot.get_referee()) #will read the referee 
     else:
         robot.decision(2) #always on play 
    
-    time.sleep(2) 
+    time.sleep(0.5) 
     
     
     
