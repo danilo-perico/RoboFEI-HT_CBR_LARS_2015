@@ -145,12 +145,12 @@ class TreatingRawData(object):
         return self.bkb.write_int('DECISION_ACTION_VISION', 0)
         
     def set_vision_orientation(self):
-        print 'Entrou' 
+        self.set_stand_still()
+        time.sleep(5) #Espera fica em pe
         self.bkb.write_int('LOCALIZATION_THETA', 0)
         self.bkb.write_int('DECISION_ACTION_VISION', 2)
         while(self.get_orientation() == 0):
             pass
-        print 'Mudou' 
         self.bkb.write_int('DECISION_ACTION_VISION', 0)
         return time.sleep(2)
         
