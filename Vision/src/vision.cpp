@@ -452,6 +452,8 @@ VideoWriter video("/home/fei/RoboFEI-HT/genfiles/SavedVideo/Bola.avi",CV_FOURCC(
             cvPutText (frame, ca ,cvPoint(300,400), &font, cvScalar(255,255,0));
             print_tela = 0;
         }
+        VISION_MOTOR1_ANGLE = dxl_read_word( HEAD_TILT, P_PRESENT_POSITION_L);
+        VISION_MOTOR2_ANGLE = dxl_read_word( HEAD_PAN, P_PRESENT_POSITION_L);
 
 
 
