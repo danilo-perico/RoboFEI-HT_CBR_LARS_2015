@@ -285,6 +285,7 @@ int main(int argc, char **argv)
 
 		        case 100: //d
 				    cout << "Vira para direita" << endl;
+				    turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 					move_gait(0.0, 0.0, -turn_angle, stop_gait);
 		        break;
 
@@ -295,6 +296,7 @@ int main(int argc, char **argv)
 
 		        case 101: //e
 				    cout << "Vira para esquerda" << endl;
+				    turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
 					move_gait(0.0, 0.0, turn_angle, stop_gait);
 		        break;
 
@@ -465,7 +467,10 @@ int main(int argc, char **argv)
 			{
 				std::cout<<" | Andar lento para frente"<<std::endl;
 				turnball.updateConfig(Walking::GetInstance()); //volta para os parametros padrao do gait
-				move_gait(float(DECISION_ACTION_B), 0.0, 0.0, stop_gait);
+				if(float(DECISION_ACTION_B)<walk_foward)
+				    move_gait(float(DECISION_ACTION_B), 0.0, 0.0, stop_gait);
+				else
+				    move_gait(walk_foward, 0.0, 0.0, stop_gait);
 				usleep(500000);
 			}
 			if(DECISION_ACTION_A == 9)
@@ -475,6 +480,7 @@ int main(int argc, char **argv)
 				move_gait(turnball.andar_X, turnball.andar_lateral, turnball.turn_angle, stop_gait);
 				usleep(500000);
 			}
+
 			if(DECISION_ACTION_A == 10)
 			{							// colocar o action-script para cair e defender!!!
 				std::cout<<" | Defender a bola"<<std::endl;  //---------------------------------------------------------TODO
