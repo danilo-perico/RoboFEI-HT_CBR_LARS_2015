@@ -113,7 +113,11 @@ class TreatingRawData(object):
         
     def set_revolve_around_ball(self):
         print 'revolve around ball'
-        return self.bkb.write_int('DECISION_ACTION_A', 9)
+        self.bkb.write_int('DECISION_ACTION_A', 9)
+        print 'girando'
+        time.sleep(7)
+        print 'girado'
+        return self.set_stand_still()
         
     def set_walk_backward(self):
         print 'walk backward'
@@ -142,11 +146,13 @@ class TreatingRawData(object):
         
     def set_vision_orientation(self):
         print 'Entrou' 
-        self.bkb.write_int('LOCALIZATION_THETA', -1)
+        self.bkb.write_int('LOCALIZATION_THETA', 0)
         self.bkb.write_int('DECISION_ACTION_VISION', 2)
-        while(self.get_orientation() == -1):
+        while(self.get_orientation() == 0):
             pass
-        return self.bkb.write_int('DECISION_ACTION_VISION', 0)
+        print 'Mudou' 
+        self.bkb.write_int('DECISION_ACTION_VISION', 0)
+        return time.sleep(2)
         
     def delta_position_pan(self):
         '''right > 0 / left < 0'''
@@ -209,7 +215,6 @@ class Ordinary(TreatingRawData):
                                         self.set_kick_right()
                                     else:
                                         self.set_revolve_around_ball()
-                                        time.sleep(7)
                                         self.set_stand_still()
                                         self.set_vision_ball()
                                 else:
@@ -221,8 +226,6 @@ class Ordinary(TreatingRawData):
                                         self.set_kick_left()
                                     else:
                                         self.set_revolve_around_ball()
-                                        time.sleep(7)
-                                        self.set_stand_still()
                                         self.set_vision_ball()
                                 else:
                                     self.set_kick_left()
@@ -240,7 +243,6 @@ class Ordinary(TreatingRawData):
                                     self.set_kick_right()
                                 else:
                                     self.set_revolve_around_ball()
-                                    time.sleep(7)
                                     self.set_vision_ball()
                             else:
                                 self.set_kick_right()
@@ -258,7 +260,6 @@ class Ordinary(TreatingRawData):
                                     self.set_kick_right()
                                 else:
                                     self.set_revolve_around_ball()
-                                    time.sleep(7)
                                     self.set_vision_ball()
                             else:
                                 self.set_kick_right()
