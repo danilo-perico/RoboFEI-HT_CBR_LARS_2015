@@ -73,7 +73,8 @@ class TreatingRawData(object):
 
     def set_stand_still(self):
         print 'stand still'
-        return self.bkb.write_int('DECISION_ACTION_A', 0)
+        self.bkb.write_int('DECISION_ACTION_A', 0)
+        return time.sleep(3)
 
     def set_walk_forward(self):
         print 'walk forward'
@@ -92,11 +93,13 @@ class TreatingRawData(object):
         
     def set_kick_right(self):
         print 'kick right'
-        return self.bkb.write_int('DECISION_ACTION_A', 4)
+        self.bkb.write_int('DECISION_ACTION_A', 4)
+        return time.sleep(2)
         
     def set_kick_left(self):
         print 'kick left'
-        return self.bkb.write_int('DECISION_ACTION_A', 5)
+        self.bkb.write_int('DECISION_ACTION_A', 5)
+        return time.sleep(2)
         
     def set_sidle_left(self):
         print 'sidle left'
@@ -146,13 +149,11 @@ class TreatingRawData(object):
         
     def set_vision_orientation(self):
         self.set_stand_still()
-        time.sleep(5) #Espera fica em pe
         self.bkb.write_int('LOCALIZATION_THETA', 0)
         self.bkb.write_int('DECISION_ACTION_VISION', 2)
         while(self.get_orientation() == 0):
             pass
-        self.bkb.write_int('DECISION_ACTION_VISION', 0)
-        return time.sleep(2)
+        return self.bkb.write_int('DECISION_ACTION_VISION', 0)
         
     def delta_position_pan(self):
         '''right > 0 / left < 0'''
