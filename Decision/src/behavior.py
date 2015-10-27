@@ -70,11 +70,14 @@ class TreatingRawData(object):
         
     def get_lost_ball_status(self):
         return self.bkb.read_int('VISION_LOST_BALL')
-
+        
+    def set_search_ball_status(self):
+        return self.bkb.write_int('VISION_SEARCH_BALL', 1)
+        
     def set_stand_still(self):
         print 'stand still'
         self.bkb.write_int('DECISION_ACTION_A', 0)
-        return time.sleep(3)
+        return time.sleep(2)
 
     def set_walk_forward(self):
         print 'walk forward'
@@ -94,12 +97,12 @@ class TreatingRawData(object):
     def set_kick_right(self):
         print 'kick right'
         self.bkb.write_int('DECISION_ACTION_A', 4)
-        return time.sleep(2)
+        return self.set_search_ball_status()
         
     def set_kick_left(self):
         print 'kick left'
         self.bkb.write_int('DECISION_ACTION_A', 5)
-        return time.sleep(2)
+        return self.set_search_ball_status()
         
     def set_sidle_left(self):
         print 'sidle left'
@@ -117,9 +120,7 @@ class TreatingRawData(object):
     def set_revolve_around_ball(self):
         print 'revolve around ball'
         self.bkb.write_int('DECISION_ACTION_A', 9)
-        print 'girando'
-        time.sleep(7)
-        print 'girado'
+        time.sleep(7) #Tempo de Giro
         return self.set_stand_still()
         
     def set_walk_backward(self):
@@ -145,9 +146,11 @@ class TreatingRawData(object):
         return self.bkb.write_int('DECISION_ACTION_A', 15)
         
     def set_vision_ball(self):
-        return self.bkb.write_int('DECISION_ACTION_VISION', 0)
+        self.bkb.write_int('DECISION_ACTION_VISION', 0)
+        return time.sleep(2)
         
     def set_vision_orientation(self):
+        print "orientating"
         self.set_stand_still()
         self.bkb.write_int('LOCALIZATION_THETA', 0)
         self.bkb.write_int('DECISION_ACTION_VISION', 2)
@@ -193,7 +196,7 @@ class Ordinary(TreatingRawData):
             self.set_vision_ball() #set vision to find ball
 
             if self.get_search_ball_status() == 1: #1 - searching ball
-                self.set_stand_still()
+                #self.set_stand_still()
                 while self.get_lost_ball_status() == 1: #1 - lost ball
                    self.set_turn_right()
                 self.set_stand_still()
@@ -258,12 +261,12 @@ class Ordinary(TreatingRawData):
                             if self.get_orientation_usage() == 'yes':
                                 self.set_vision_orientation()
                                 if self.get_orientation() == 1:
-                                    self.set_kick_right()
+                                    self.set_kick_left()
                                 else:
                                     self.set_revolve_around_ball()
                                     self.set_vision_ball()
                             else:
-                                self.set_kick_right()
+                                self.set_kick_left()
         else:
             print 'Invalid argument received from referee!'
 
