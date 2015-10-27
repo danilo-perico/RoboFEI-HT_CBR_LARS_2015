@@ -282,57 +282,50 @@ VideoWriter video("/home/fei/RoboFEI-HT/genfiles/SavedVideo/Bola.avi",CV_FOURCC(
     while( 1 )
  	{
 
+//*********************************************************************
+// 		DECISION_ACTION_VISION = 0 BALL SEARCH
+//*********************************************************************
+
 		if(DECISION_ACTION_VISION==0 && IMU_STATE==0) //Decide ver a bola se o robo estiver em pé
 		{
 	
-			//if(VISION_STATE==1)		
-			//{
-			//    dxl_write_word(HEAD_TILT, P_GOAL_POSITION_L, pos_servo1);
-			//    dxl_write_word(HEAD_PAN, P_GOAL_POSITION_L, pos_servo2);
-			//}
+			frame = cvQueryFrame( captura );
+			Raio=detect(frame, posX, posY);
+			VISION_MOTOR1_ANGLE = dxl_read_word( HEAD_TILT, P_PRESENT_POSITION_L);
+			VISION_MOTOR2_ANGLE = dxl_read_word( HEAD_PAN, P_PRESENT_POSITION_L);
+	
+			if (Raio>0.1 && Raio<RESOLUCAO_X)
+			{
+				lost_ball=0;
+				cont_BallSearch=0;
 
-			//while(1){}
-			//cvNamedWindow("video", 1);
+				if(a<10)
+				{
+				raio_medio=raio_medio+Raio;	
+				a++;
+				}
 
-				//while((cvWaitKey(10) & 255) != 27) 
-				//{
-					frame = cvQueryFrame( captura );
-
-					Raio=detect(frame, posX, posY);
-					VISION_MOTOR1_ANGLE = dxl_read_word( HEAD_TILT, P_PRESENT_POSITION_L);
-					VISION_MOTOR2_ANGLE = dxl_read_word( HEAD_PAN, P_PRESENT_POSITION_L);
-		
-					if (Raio>0.1 && Raio<RESOLUCAO_X){
-						lost_ball=0;
-						cont_BallSearch=0;
-						if(a<10){
-							raio_medio=raio_medio+Raio;	
-							a++;
-							}
-						else{
-							a=0;
-							raio_medio=raio_medio/10;
-		//VISION_DIST_BALL=(1e-05*pow(raio_medio,4))+(-0.0049*pow(raio_medio,3))+(0.8284*pow(raio_medio,2))+(-62.05*raio_medio)+1869.1;
-							VISION_DIST_BALL=331.59-53.3*log(raio_medio-50);
-							printf("Raio Medio: %g\n", raio_medio);
-							printf("Distancia: %g\n", VISION_DIST_BALL);
-							printf("Motor 1: %d\n", VISION_MOTOR1_ANGLE);
-							raio_medio=0;
-						}
-					}
+			else
+				{
+				a=0;
+				raio_medio=raio_medio/10;
+				VISION_DIST_BALL=331.59-53.3*log(raio_medio-50);
+				printf("Raio Medio: %g\n", raio_medio);
+				printf("Distancia: %g\n", VISION_DIST_BALL);
+				printf("Motor 1: %d\n", VISION_MOTOR1_ANGLE);
+				raio_medio=0;
+				}
+			}
 
 					if(lost_ball>20) //verifica se depois de 30 frames a bola está perdida no campo
 					{
-						//while(*comunica!=0);
-						//if(*comunica)
 						VISION_SEARCH_BALL = 1;
 
 						if(VISION_STATE==0)
-						      BallSearch(inicio);//Procura a bola pelo campo
-
-						saida = 0;
-						//char cD[10];
-						//sprintf(cD, "procurando a bola");
+						      {
+							BallSearch(inicio);//Procura a bola pelo campo
+						      }
+						saida = /0;
 						cvPutText (frame, "Procurando a bola" ,cvPoint(150,450), &font, cvScalar(255,255,0));
 						//call_search = 1;
 						inicio = 0;
@@ -342,14 +335,13 @@ VideoWriter video("/home/fei/RoboFEI-HT/genfiles/SavedVideo/Bola.avi",CV_FOURCC(
 						VISION_SEARCH_BALL = 0;
 						if(inicio==0)// Faz o robô parar a cabeça no instante que achou a bola que estava perdida
 						{            // Sem esse comando o código não funciona porque ele não para a cabeça
-						    dxl_write_word(HEAD_TILT, P_GOAL_POSITION_L, dxl_read_word( HEAD_TILT, P_PRESENT_POSITION_L));
-						    dxl_write_word(HEAD_PAN, P_GOAL_POSITION_L, dxl_read_word( HEAD_PAN, P_PRESENT_POSITION_L));
+						dxl_write_word(HEAD_TILT, P_GOAL_POSITION_L, dxl_read_word( HEAD_TILT, P_PRESENT_POSITION_L));
+						dxl_write_word(HEAD_PAN, P_GOAL_POSITION_L, dxl_read_word( HEAD_PAN, P_PRESENT_POSITION_L));
 						}
 
 						inicio =1;
-
-						//if(VISION_STATE==0)
-						if (HeadFollow(posX, posY, &head_move1, &head_move2) == 1){// Move a cabeça para seguir a bola
+						if (HeadFollow(posX, posY, &head_move1, &head_move2) == 1)
+						{// Move a cabeça para seguir a bola
 						         saida++;
 						}
 
@@ -359,61 +351,33 @@ VideoWriter video("/home/fei/RoboFEI-HT/genfiles/SavedVideo/Bola.avi",CV_FOURCC(
 
 					if (variables.count("vb"))
 					{
-						//cvShowImage( "Filtragem das cores", segmentada ); // O stream depois da filtragem de cores
-						//cvShowImage( "Imagem", Quadro ); // Stream Original com a bola detectada
-						//	cvShowImage( "Video2", Quadro2 ); // Stream Original com a bola detectada
-
 	 					  Mat MatFrame(frame);
        	   					  video.write(MatFrame);
-           
-						cvShowImage( "Video Bola", frame );
+     						  cvShowImage( "Video Bola", frame );
 					}
-					//cvReleaseMemStorage(&memoria);
-
 
 					if( (cvWaitKey(10) & 255) == 27 || saida > 22 || cont_BallSearch > 9 )
 					{
-						 ///////////  cvReleaseCapture( &captura );
-						//      cvReleaseCapture( &captura1 );
-						 //   cvDestroyWindow( "Video1" );
-						//    cvDestroyWindow( "Filtragem das cores" );
-						//    cvDestroyWindow( "Sistema de cores RGB - HSV" );
-						if (cont_BallSearch > 9){
-						//dxl_write_word(HEAD_PAN, P_GOAL_POSITION_L, 594);
-						//dxl_write_word(HEAD_TILT, P_GOAL_POSITION_L, 304);
 
-						std::cout << "bola não encontrada" << std::endl;
-						VISION_LOST_BALL = 1;
-
-							//VISION_MOTOR2_ANGLE = dxl_read_word( HEAD_PAN, P_PRESENT_POSITION_L);
-							//VISION_MOTOR1_ANGLE = dxl_read_word( HEAD_TILT, P_PRESENT_POSITION_L);
-
-							BufferBallServo1 = VISION_MOTOR1_ANGLE; //Guarda a posição do servo1
-							BufferBallServo2 = VISION_MOTOR2_ANGLE; //Guarda a posição do servo2
-						//return 2;
-						}
-						else
-						{
-							//printf("servo 1: %d",dxl_read_word( HEAD_TILT, P_PRESENT_POSITION_L));
-							VISION_LOST_BALL = 0;
-				//alpha = ((531-dxl_read_word( HEAD_TILT, P_PRESENT_POSITION_L))*0.005111)+0.0349;  //0.0349
-			//dist = tan(alpha)*(cos(3.1415-alpha)*YC+.448-sin(1.5708-alpha)*XC)+(sin(3.1415-alpha)*YC)+cos(1.5708-alpha)*XC;
-
-							//VISION_DIST_BALL = dist;
-							//std::cout << VISION_DIST_BALL << std::endl;
-
-							VISION_DIST_GOAL=0; //zera a variavel do gol
-
-							VISION_MOTOR2_ANGLE = dxl_read_word( HEAD_PAN, P_PRESENT_POSITION_L);
-							//std::cout <<"Servo2 Bola = "<< VISION_MOTOR2_ANGLE << std::endl;
-
-							VISION_MOTOR1_ANGLE = dxl_read_word( HEAD_TILT, P_PRESENT_POSITION_L);
-							//std::cout <<"Servo1 Bola= "<<VISION_MOTOR1_ANGLE << std::endl;
-
-					   	}
+						if (cont_BallSearch > 9)
+							{
+								std::cout << "bola não encontrada" << std::endl;
+								VISION_LOST_BALL = 1;
+								BufferBallServo1 = VISION_MOTOR1_ANGLE; //Guarda a posição do servo1
+								BufferBallServo2 = VISION_MOTOR2_ANGLE; //Guarda a posição do servo2
+							}
+								else
+								{
+								VISION_LOST_BALL = 0;
+								VISION_DIST_GOAL=0; //zera a variavel do gol
+								VISION_MOTOR2_ANGLE = dxl_read_word( HEAD_PAN, P_PRESENT_POSITION_L);
+								//std::cout <<"Servo2 Bola = "<< VISION_MOTOR2_ANGLE << std::endl;
+								VISION_MOTOR1_ANGLE = dxl_read_word( HEAD_TILT, P_PRESENT_POSITION_L);
+								//std::cout <<"Servo1 Bola= "<<VISION_MOTOR1_ANGLE << std::endl;
+					   			}	
 					}
-							BufferBallServo1 = VISION_MOTOR1_ANGLE; //Guarda a posição do servo1
-							BufferBallServo2 = VISION_MOTOR2_ANGLE; //Guarda a posição do servo2
+					BufferBallServo1 = VISION_MOTOR1_ANGLE; //Guarda a posição do servo1
+					BufferBallServo2 = VISION_MOTOR2_ANGLE; //Guarda a posição do servo2
 
 					
 				 	if( (cvWaitKey(10) & 255) == 27)
@@ -425,14 +389,6 @@ VideoWriter video("/home/fei/RoboFEI-HT/genfiles/SavedVideo/Bola.avi",CV_FOURCC(
 						cvReleaseMemStorage(&storage);
 						break;
 					}
-
-				
-
-				//key = cvWaitKey(50);
-				//}
-
-
-
 
 
 	}
