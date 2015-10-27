@@ -17,25 +17,31 @@ do
    then
         mate-terminal -x sh -c './start_vision.sh' &
    fi
+
     if [ ! "$(pidof -x start_decision.sh)" ]  
     then
         mate-terminal -x sh -c './start_decision.sh' &
     fi
+
     if [ ! "$(pidof control)" ] 
     then
        mate-terminal -x sh -c 'echo 123456 | sudo -S ./start_control.sh' &
     fi
-    if [ ! "$(pidof communication)" ] 
-    then
-       mate-terminal -x sh -c './start_comm.sh' &
-    fi
-    if [ ! "$(pidof commServer)" ] 
-    then
-       mate-terminal -x sh -c './start_commServer.sh' &
-    fi
-    if [ ! "$(pidof commClient)" ] 
-    then
-       mate-terminal -x sh -c './start_commClient.sh' &
-    fi
+
+#    if [ ! "$(pidof communication)" ] 
+#    then
+#       mate-terminal -x sh -c './start_comm.sh' &
+#    fi
+
+#    if [ ! "$(pidof commServer)" ] 
+#    then
+#       mate-terminal -x sh -c './start_commServer.sh' &
+#    fi
+
+#    if [ ! "$(pidof commClient)" ] 
+#    then
+#       mate-terminal -x sh -c './start_commClient.sh' &
+#    fi
+
     sleep 10
 done

@@ -3,4 +3,6 @@
 
 echo "vision"
 
+cd ../
+
 vision --F2
