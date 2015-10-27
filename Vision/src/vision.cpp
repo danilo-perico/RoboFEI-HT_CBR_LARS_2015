@@ -325,7 +325,7 @@ VideoWriter video("/home/fei/RoboFEI-HT/genfiles/SavedVideo/Bola.avi",CV_FOURCC(
 						      {
 							BallSearch(inicio);//Procura a bola pelo campo
 						      }
-						saida = /0;
+						saida = 0;
 						cvPutText (frame, "Procurando a bola" ,cvPoint(150,450), &font, cvScalar(255,255,0));
 						//call_search = 1;
 						inicio = 0;
