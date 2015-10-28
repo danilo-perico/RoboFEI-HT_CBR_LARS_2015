@@ -277,7 +277,7 @@ DECISION_ACTION_VISION = 0;
 
 VISION_STATE =0;
 
-VideoWriter video("/home/fei/RoboFEI-HT/genfiles/SavedVideo/Bola.avi",CV_FOURCC('M','J','P','G'), 10, Size(RESOLUCAO_X,RESOLUCAO_Y),true);
+//VideoWriter video("/home/fei/RoboFEI-HT/genfiles/SavedVideo/Bola.avi",CV_FOURCC('M','J','P','G'), 10, Size(RESOLUCAO_X,RESOLUCAO_Y),true);
 
     while( 1 )
  	{
@@ -351,8 +351,8 @@ VideoWriter video("/home/fei/RoboFEI-HT/genfiles/SavedVideo/Bola.avi",CV_FOURCC(
 
 					if (variables.count("vb"))
 					{
-	 					  Mat MatFrame(frame);
-       	   					  video.write(MatFrame);
+	 					  //Mat MatFrame(frame);
+       	   					 // video.write(MatFrame);
      						  cvShowImage( "Video Bola", frame );
 					}
 
@@ -1104,7 +1104,7 @@ double detect(IplImage *img, double &posx, double &posy)
             img,
             cascade,
             storage,
-            1.129, //-------------------SCALE FACTOR 1,5
+            1.15, //-------------------SCALE FACTOR 1,5
             2,//------------------MIN NEIGHBOURS 2 7            
             1,//---------------------- 1
                       // CV_HAAR_DO_CANNY_PRUNING,
