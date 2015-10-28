@@ -557,7 +557,7 @@ flagnear = true;}
 inicio = 0;
 
 
-	double Threshold = 0.65;
+	double Threshold = 0.7;
 	double Margin = 0.05;
 
 	//VISION_MOTOR1_ANGLE = dxl_read_word( HEAD_TILT, P_PRESENT_POSITION_L);
