@@ -28,10 +28,10 @@ do
        mate-terminal -x sh -c 'echo 123456 | sudo -S ./start_control.sh' &
     fi
 
-#    if [ ! "$(pidof communication)" ] 
-#    then
-#       mate-terminal -x sh -c './start_comm.sh' &
-#    fi
+    if [ ! "$(pidof communication)" ] 
+    then
+       mate-terminal -x sh -c './start_comm.sh' &
+    fi
 
 #    if [ ! "$(pidof commServer)" ] 
 #    then
