@@ -197,7 +197,7 @@ class Ordinary(TreatingRawData):
 
             if self.get_search_ball_status() == 1: #1 - searching ball
                 #self.set_stand_still()
-                while self.get_lost_ball_status() == 1: #1 - lost ball
+                if self.get_lost_ball_status() == 1: #1 - lost ball
                    self.set_turn_right()
                 self.set_stand_still()
             else:
