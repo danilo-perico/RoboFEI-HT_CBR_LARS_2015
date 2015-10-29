@@ -299,7 +299,7 @@ VISION_STATE =0;
 				lost_ball=0;
 				cont_BallSearch=0;
 
-				if(a<10)
+				if(a<20)
 				{
 				raio_medio=raio_medio+Raio;	
 				a++;
@@ -1104,12 +1104,12 @@ double detect(IplImage *img, double &posx, double &posy)
             img,
             cascade,
             storage,
-            1.15, //-------------------SCALE FACTOR 1,5
-            2,//------------------MIN NEIGHBOURS 2 7            
+            1.29, //-------------------SCALE FACTOR 1,5
+            7,//------------------MIN NEIGHBOURS 2 7            
             1,//---------------------- 1
                       // CV_HAAR_DO_CANNY_PRUNING,
-            cvSize( 40,40), // ------MINSIZE
-            cvSize(800,800) );//---------MAXSIZE
+            cvSize( 50,50), // ------MINSIZE
+            cvSize(1000,1000) );//---------MAXSIZE
 
     for( i = 0 ; i < ( object ? object->total : 0 ) ; i++ )
         {

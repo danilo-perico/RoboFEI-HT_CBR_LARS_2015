@@ -49,7 +49,7 @@ using namespace std;
 #define RESOLUCAO_X 1920 //1280   1920
 #define RESOLUCAO_Y 1080  //720   1080
 
-#define CENTERBALL 0.05 // Porcentagem de quanto centraliza a bola no quadro
+#define CENTERBALL 0.07 // Porcentagem de quanto centraliza a bola no quadro
 //#define AJUSTE 0.285 // para resolução de 640x480
 //#define AJUSTE 0.285*0.49 // para resolução de 1280x720
 //#define AJUSTE 0.285*0.33 // para resolução de 1920x1080
